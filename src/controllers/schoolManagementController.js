@@ -260,14 +260,14 @@ exports.getPublicSchoolManagement = async (req, res) => {
       { expiryDate: { $gt: now } }
     ];
     
-    console.log('Query:', JSON.stringify(query, null, 2));
+    //console.log('Query:', JSON.stringify(query, null, 2));
     
     const entries = await SchoolManagement.find(query)
       .populate('author', 'name')
       .sort({ priority: -1, publishedDate: -1 })
       .limit(20);
     
-    console.log(`Found ${entries.length} entries`);
+    //console.log(`Found ${entries.length} entries`);
     
     // Helper function for category colors
     const getCategoryColor = (category) => {

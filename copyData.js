@@ -11,7 +11,7 @@ async function copyAllCollections() {
   try {
     await localClient.connect();
     await atlasClient.connect();
-    console.log('Connected to both local and Atlas databases.');
+    //console.log('Connected to both local and Atlas databases.');
 
     const localDb = localClient.db();
     const atlasDb = atlasClient.db();
@@ -19,7 +19,7 @@ async function copyAllCollections() {
     const collections = await localDb.listCollections().toArray();
     for (const coll of collections) {
       const name = coll.name;
-      console.log(`Copying collection: ${name}`);
+      //console.log(`Copying collection: ${name}`);
       const docs = await localDb.collection(name).find({}).toArray();
       if (docs.length > 0) {
         // Remove _id to avoid duplicate key error if needed
@@ -30,18 +30,18 @@ async function copyAllCollections() {
         });
         await atlasDb.collection(name).deleteMany({}); // Optional: clear target collection first
         await atlasDb.collection(name).insertMany(docsToInsert);
-        console.log(`Copied ${docs.length} documents to Atlas collection: ${name}`);
+        //console.log(`Copied ${docs.length} documents to Atlas collection: ${name}`);
       } else {
-        console.log(`No documents found in collection: ${name}`);
+        //console.log(`No documents found in collection: ${name}`);
       }
     }
-    console.log('All collections copied successfully!');
+    //console.log('All collections copied successfully!');
   } catch (err) {
     console.error('Error copying collections:', err);
   } finally {
     await localClient.close();
     await atlasClient.close();
-    console.log('Connections closed.');
+    //console.log('Connections closed.');
   }
 }
 

@@ -335,28 +335,28 @@ exports.getPublicResultSummaries = async (req, res) => {
       query.academicYear = academicYear;
     }
 
-    //console.log('Query:', query); // Debug log
-    //console.log('Query parameters:', { className, examType, academicYear }); // Debug log
+    ////console.log('Query:', query); // Debug log
+    ////console.log('Query parameters:', { className, examType, academicYear }); // Debug log
 
     // Check total count first
     const totalCount = await ResultSummary.countDocuments();
     const publishedCount = await ResultSummary.countDocuments({ isPublished: true });
-    //console.log('Total result summaries:', totalCount);
-    //console.log('Published result summaries:', publishedCount);
+    ////console.log('Total result summaries:', totalCount);
+    ////console.log('Published result summaries:', publishedCount);
 
     const results = await ResultSummary.find(query)
       .populate('createdBy', 'name')
       .sort({ examDate: -1, createdAt: -1 })
       .lean(); // Use lean() for better performance
 
-    //console.log('Found results:', results.length); // Debug log
+    ////console.log('Found results:', results.length); // Debug log
 
     // Get unique values for filters from all results (not just published)
     const classes = await ResultSummary.distinct('class');
     const examTypes = await ResultSummary.distinct('examType');
     const academicYears = await ResultSummary.distinct('academicYear');
 
-    //console.log('Filter options:', { classes, examTypes, academicYears }); // Debug log
+    ////console.log('Filter options:', { classes, examTypes, academicYears }); // Debug log
 
     // Add virtual properties manually since we're using lean()
     const resultsWithVirtuals = results.map(result => ({
@@ -402,11 +402,11 @@ exports.getPublicResultSummaryDetails = async (req, res) => {
     const resultSummary = await ResultSummary.findById(req.params.id)
       .populate('createdBy', 'name');
     
-    //console.log('Looking for result summary with ID:', req.params.id);
-    //console.log('Found result summary:', resultSummary ? 'Yes' : 'No');
+    ////console.log('Looking for result summary with ID:', req.params.id);
+    ////console.log('Found result summary:', resultSummary ? 'Yes' : 'No');
     if (resultSummary) {
-      //console.log('Published status:', resultSummary.isPublished);
-      //console.log('Title:', resultSummary.title);
+      ////console.log('Published status:', resultSummary.isPublished);
+      ////console.log('Title:', resultSummary.title);
     }
     
     if (!resultSummary) {

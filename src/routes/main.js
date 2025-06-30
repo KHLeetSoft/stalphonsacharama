@@ -66,7 +66,7 @@ router.get("/teachers", async (req, res) => {
 
 router.get("/academics", async (req, res) => {
   try {
-    //console.log("Fetching academic content...");
+    ////console.log("Fetching academic content...");
 
     const [programs, academics] = await Promise.all([
       AcademicProgram.find({ isActive: true }).sort({ createdAt: -1 }),

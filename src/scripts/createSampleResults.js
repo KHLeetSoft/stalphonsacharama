@@ -13,7 +13,7 @@ const createSampleResults = async () => {
     // Get the first admin user
     const admin = await Admin.findOne();
     if (!admin) {
-      console.log('No admin user found. Please create an admin user first.');
+      //console.log('No admin user found. Please create an admin user first.');
       return;
     }
 
@@ -114,15 +114,15 @@ const createSampleResults = async () => {
 
     // Clear existing result summaries
     await ResultSummary.deleteMany({});
-    console.log('Cleared existing result summaries');
+    //console.log('Cleared existing result summaries');
 
     // Insert sample results
     const insertedResults = await ResultSummary.insertMany(sampleResults);
-    console.log(`Created ${insertedResults.length} sample result summaries`);
+    //console.log(`Created ${insertedResults.length} sample result summaries`);
 
-    console.log('Sample result summaries created successfully!');
-    console.log('Published results:', insertedResults.filter(r => r.isPublished).length);
-    console.log('Unpublished results:', insertedResults.filter(r => !r.isPublished).length);
+    //console.log('Sample result summaries created successfully!');
+    //console.log('Published results:', insertedResults.filter(r => r.isPublished).length);
+    //console.log('Unpublished results:', insertedResults.filter(r => !r.isPublished).length);
 
   } catch (error) {
     console.error('Error creating sample results:', error);

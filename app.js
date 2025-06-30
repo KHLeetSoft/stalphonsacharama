@@ -76,7 +76,7 @@ app.use(async (req, res, next) => {
   try {
     // Check if database is connected
     if (mongoose.connection.readyState !== 1) {
-      console.log("Database not connected, skipping logo fetch");
+      //console.log("Database not connected, skipping logo fetch");
       res.locals.logo = null;
       return next();
     }
@@ -123,7 +123,7 @@ app.use("/", galleryRoutes);
 app.use("/contact", contactRoutes);
 app.use("/", documentRoutes);
 app.use("/", require("./src/routes/testimonialRoutes"));
-console.log("Line no 127", process.env.MONGO_URI);
+//console.log("Line no 127", process.env.MONGO_URI);
 
 
 // Database connection

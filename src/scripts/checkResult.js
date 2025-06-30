@@ -26,21 +26,21 @@ const checkResult = async () => {
       return;
     }
 
-    //console.log('✅ Result summary found!');
-    //console.log('Title:', resultSummary.title);
-    //console.log('Published:', resultSummary.isPublished);
-    //console.log('Class:', resultSummary.class);
-    //console.log('Exam Type:', resultSummary.examType);
-    //console.log('Academic Year:', resultSummary.academicYear);
-    //console.log('Created At:', resultSummary.createdAt);
-    //console.log('Published Date:', resultSummary.publishedDate);
+    ////console.log('✅ Result summary found!');
+    ////console.log('Title:', resultSummary.title);
+    ////console.log('Published:', resultSummary.isPublished);
+    ////console.log('Class:', resultSummary.class);
+    ////console.log('Exam Type:', resultSummary.examType);
+    ////console.log('Academic Year:', resultSummary.academicYear);
+    ////console.log('Created At:', resultSummary.createdAt);
+    ////console.log('Published Date:', resultSummary.publishedDate);
 
     if (!resultSummary.isPublished) {
-      //console.log('\n⚠️  Result summary is not published. Publishing it now...');
+      ////console.log('\n⚠️  Result summary is not published. Publishing it now...');
       resultSummary.isPublished = true;
       resultSummary.publishedDate = new Date();
       await resultSummary.save();
-      //console.log('✅ Result summary published successfully!');
+      ////console.log('✅ Result summary published successfully!');
     }
 
   } catch (error) {

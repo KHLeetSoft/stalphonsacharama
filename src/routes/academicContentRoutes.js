@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
 router.get("/admin/academics", async (req, res) => {
   try {
     const academics = await Academic.find();
-    //console.log(academics);
+    ////console.log(academics);
     res.render("admin/academics/index", { content: academics });
   } catch (error) {
     res.status(500).json({ error: "Error fetching academic content" });
@@ -91,7 +91,7 @@ router.post(
   "/admin/academics/update",
   upload.single("image"),
   async (req, res) => {
-    //console.log("Update request received", req.body);
+    ////console.log("Update request received", req.body);
     try {
       const { title, description, programs } = req.body;
 

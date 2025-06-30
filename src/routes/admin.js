@@ -76,7 +76,7 @@ router.post("/edit/:id", upload.single("image"), async (req, res) => {
 
 // Logo management routes
 // router.get("/logo", auth, async (req, res) => {
-//   //console.log("Logo route accessed");
+//   ////console.log("Logo route accessed");
 //   const logo = await Logo.findOne();
 //   res.render("admin/logo/manage", { logo, admin: req.admin });
 // });

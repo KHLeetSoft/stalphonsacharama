@@ -19,7 +19,7 @@ const activityController = {
   getAllActivities: async (req, res) => {
     try {
       const activities = await Activity.find({ isActive: true });
-      //console.log(activities);
+      ////console.log(activities);
       res.render("pages/activity", { activities });
     } catch (error) {
       console.error("Error fetching activities:", error);

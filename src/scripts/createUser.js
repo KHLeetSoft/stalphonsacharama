@@ -14,7 +14,7 @@ async function createUser() {
 
     try {
         await mongoose.connect(MONGO_URI);
-        console.log('MongoDB connected successfully');
+        //console.log('MongoDB connected successfully');
 
         // Find an admin to set as createdBy
         const admin = await Admin.findOne();
@@ -32,12 +32,12 @@ async function createUser() {
         // Check if user already exists
         let existingUser = await User.findOne({ username });
         if (existingUser) {
-            console.log('User with this username already exists');
+            //console.log('User with this username already exists');
             return;
         }
         existingUser = await User.findOne({ email });
         if (existingUser) {
-            console.log('User with this email already exists');
+            //console.log('User with this email already exists');
             return;
         }
 
@@ -52,12 +52,12 @@ async function createUser() {
         });
 
         await user.save();
-        console.log('User created successfully');
+        //console.log('User created successfully');
     } catch (error) {
         console.error('Error creating user:', error);
     } finally {
         await mongoose.disconnect();
-        console.log('MongoDB disconnected');
+        //console.log('MongoDB disconnected');
     }
 }
 

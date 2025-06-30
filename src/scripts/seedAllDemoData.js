@@ -46,7 +46,7 @@ async function seedDemoData() {
 
   try {
     await mongoose.connect(MONGO_URI);
-    console.log('MongoDB connected successfully');
+    //console.log('MongoDB connected successfully');
 
     // Admin (needed for createdBy fields)
     let admin = await models.Admin.findOne({ username: 'admin' });
@@ -59,7 +59,7 @@ async function seedDemoData() {
         isActive: true
       });
       await admin.save();
-      console.log('Seeded admin');
+      //console.log('Seeded admin');
     }
 
     // Add a second admin with username 'administrator'
@@ -73,7 +73,7 @@ async function seedDemoData() {
         isActive: true
       });
       await admin2.save();
-      console.log('Seeded admin (administrator)');
+      //console.log('Seeded admin (administrator)');
     }
 
     // User
@@ -89,7 +89,7 @@ async function seedDemoData() {
         createdBy: admin._id
       });
       await user.save();
-      console.log('Seeded user');
+      //console.log('Seeded user');
     }
 
     // HomeContent
@@ -111,7 +111,7 @@ async function seedDemoData() {
         infrastructure: { title: 'Modern Infrastructure', isActive: true, items: [] },
         recentAnnouncements: { title: 'Announcements', isActive: true, announcements: [] }
       });
-      console.log('Seeded HomeContent');
+      //console.log('Seeded HomeContent');
     }
 
     // About
@@ -122,7 +122,7 @@ async function seedDemoData() {
         vision: 'To nurture responsible citizens.',
         mission: 'To provide quality education to all.'
       });
-      console.log('Seeded About');
+      //console.log('Seeded About');
     }
 
     // Academic
@@ -132,7 +132,7 @@ async function seedDemoData() {
         description: 'Physics, Chemistry, Biology, Mathematics',
         isActive: true
       });
-      console.log('Seeded Academic');
+      //console.log('Seeded Academic');
     }
 
     // AcademicProgram
@@ -142,7 +142,7 @@ async function seedDemoData() {
         description: 'Comprehensive CBSE program for all grades.',
         isActive: true
       });
-      console.log('Seeded AcademicProgram');
+      //console.log('Seeded AcademicProgram');
     }
 
     // Activity
@@ -152,7 +152,7 @@ async function seedDemoData() {
         description: 'A day full of sports and fun!',
         isActive: true
       });
-      console.log('Seeded Activity');
+      //console.log('Seeded Activity');
     }
 
     // News
@@ -163,7 +163,7 @@ async function seedDemoData() {
         isActive: true,
         createdBy: admin._id
       });
-      console.log('Seeded News');
+      //console.log('Seeded News');
     }
 
     // ResultSummary
@@ -191,18 +191,18 @@ async function seedDemoData() {
         tags: ['class10', 'final'],
         createdBy: admin._id
       });
-      console.log('Seeded ResultSummary');
+      //console.log('Seeded ResultSummary');
     }
 
     // Add similar demo data for all other models (BookList, FeeStructure, Teacher, Student, etc.)
     // For brevity, only a few are shown here. You can expand as needed.
 
-    console.log('Demo data seeding complete!');
+    //console.log('Demo data seeding complete!');
   } catch (error) {
     console.error('Error seeding demo data:', error);
   } finally {
     await mongoose.disconnect();
-    console.log('MongoDB disconnected');
+    //console.log('MongoDB disconnected');
   }
 }
 

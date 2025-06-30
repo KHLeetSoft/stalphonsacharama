@@ -164,15 +164,15 @@ router.post(
 
 router.post("/login", async (req, res) => {
   try {
-    // console.log("=== Admin Login Attempt ===");
-    // console.log("Request body:", req.body);
-    // console.log("Username:", req.body.username);
-    // console.log("Password provided:", req.body.password ? "YES" : "NO");
+    // //console.log("=== Admin Login Attempt ===");
+    // //console.log("Request body:", req.body);
+    // //console.log("Username:", req.body.username);
+    // //console.log("Password provided:", req.body.password ? "YES" : "NO");
     
     const { username, password } = req.body;
 
     if (!username || !password) {
-      // console.log("❌ Missing username or password");
+      // //console.log("❌ Missing username or password");
       res.status(400).render("admin/login", {
         error: "Username and password are required",
         username: username,
@@ -180,12 +180,12 @@ router.post("/login", async (req, res) => {
       return;
     }
 
-    // console.log("Looking for admin with username:", username);
+    // //console.log("Looking for admin with username:", username);
     const admin = await Admin.findOne({ username });
-    // console.log("Admin found:", !!admin);
+    // //console.log("Admin found:", !!admin);
     
     if (!admin) {
-      // console.log("❌ Admin not found with username:", username);
+      // //console.log("❌ Admin not found with username:", username);
       res.status(401).render("admin/login", {
         error: "Invalid username or password",
         username: username,
@@ -193,7 +193,7 @@ router.post("/login", async (req, res) => {
       return;
     }
 
-    // console.log("Admin details:", {
+    // //console.log("Admin details:", {
       // username: admin.username,
       // email: admin.email,
       // role: admin.role,
@@ -202,7 +202,7 @@ router.post("/login", async (req, res) => {
     // });
 
     if (!admin.isActive) {
-      // console.log("❌ Admin account is inactive");
+      // //console.log("❌ Admin account is inactive");
       res.status(401).render("admin/login", {
         error: "Account is inactive. Please contact administrator.",
         username: username,
@@ -210,12 +210,12 @@ router.post("/login", async (req, res) => {
       return;
     }
 
-    // console.log("Comparing passwords...");
+    // //console.log("Comparing passwords...");
     const passwordMatch = await bcrypt.compare(password, admin.password);
-    // console.log("Password match result:", passwordMatch);
+    // //console.log("Password match result:", passwordMatch);
     
     if (!passwordMatch) {
-      // console.log("❌ Password does not match");
+      // //console.log("❌ Password does not match");
       res.status(401).render("admin/login", {
         error: "Invalid username or password",
         username: username,
@@ -223,16 +223,16 @@ router.post("/login", async (req, res) => {
       return;
     }
 
-    // console.log("✅ Password matched, generating token...");
+    // //console.log("✅ Password matched, generating token...");
     const token = await admin.generateAuthToken();
-    // console.log("Token generated successfully");
+    // //console.log("Token generated successfully");
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
 
-    // console.log("✅ Login successful, redirecting to dashboard");
+    // //console.log("✅ Login successful, redirecting to dashboard");
     res.redirect("/admin/dashboard");
   } catch (error) {
     console.error("❌ Login error:", error.message);
@@ -444,7 +444,7 @@ router.post("/contact/update", auth, async (req, res) => {
 router.get("/home", auth, async (req, res) => {
   try {
     let homeContent = (await HomeContent.findOne()) || new HomeContent({});
-    console.log("Line no 412",homeContent)
+    //console.log("Line no 412",homeContent)
     res.render("admin/home/edit", {
       homeContent,
       bannerSlides: homeContent.bannerSlides || [],
@@ -470,7 +470,7 @@ router.get("/home", auth, async (req, res) => {
 });
 
 router.get("/home/edit", auth, async (req, res) => {
-  console.log("this is home edit page", res)
+  //console.log("this is home edit page", res)
   try {
     // Set cache-busting headers to prevent 304 responses
     res.set({
@@ -481,16 +481,16 @@ router.get("/home/edit", auth, async (req, res) => {
       'ETag': `"${Date.now()}"`
     });
 
-    // console.log("=== Loading Home Edit Page ===");
+    // //console.log("=== Loading Home Edit Page ===");
     let homeContent = (await HomeContent.findOne()) || new HomeContent({});
     
-    // console.log("Home content found:", !!homeContent._id);
-    // console.log("Banner slides count:", homeContent.bannerSlides?.length || 0);
-    // console.log("Infrastructure items count:", homeContent.infrastructure?.items?.length || 0);
-    // console.log("Announcements count:", homeContent.recentAnnouncements?.announcements?.length || 0);
-    // console.log("Sports achievements count:", homeContent.sportsAchievements?.achievements?.length || 0);
-    // console.log("Co-curricular achievements count:", homeContent.coCurricularAchievements?.achievements?.length || 0);
-    // console.log("Achievers count:", homeContent.achievers?.achievers?.length || 0);
+    // //console.log("Home content found:", !!homeContent._id);
+    // //console.log("Banner slides count:", homeContent.bannerSlides?.length || 0);
+    // //console.log("Infrastructure items count:", homeContent.infrastructure?.items?.length || 0);
+    // //console.log("Announcements count:", homeContent.recentAnnouncements?.announcements?.length || 0);
+    // //console.log("Sports achievements count:", homeContent.sportsAchievements?.achievements?.length || 0);
+    // //console.log("Co-curricular achievements count:", homeContent.coCurricularAchievements?.achievements?.length || 0);
+    // //console.log("Achievers count:", homeContent.achievers?.achievers?.length || 0);
     
     // Ensure all sections have default values if they don't exist
     if (!homeContent.ourSociety) {
@@ -551,9 +551,9 @@ router.post(
   "/home/update",
   auth,
   (req, res, next) => {
-    // console.log("This is the Line no 552",req.body)
+    // //console.log("This is the Line no 552",req.body)
     homeContentUpload(req, res, (err) => {
-      console.log("this is the line no 556", req.body)
+      //console.log("this is the line no 556", req.body)
       if (err instanceof multer.MulterError) {
         console.error("Multer error:", err);
         return res.status(400).render("admin/home/edit", {
@@ -602,9 +602,9 @@ router.post(
   },
   async (req, res) => {
     try {
-      // console.log("=== Home Content Update Started ===");
-      // console.log("Request body keys:", Object.keys(req.body));
-      // console.log("Uploaded files:", req.files ? Object.keys(req.files) : 'No files');
+      // //console.log("=== Home Content Update Started ===");
+      // //console.log("Request body keys:", Object.keys(req.body));
+      // //console.log("Uploaded files:", req.files ? Object.keys(req.files) : 'No files');
       
       // Check database connection first
       const mongoose = require('mongoose');
@@ -614,7 +614,7 @@ router.post(
       }
       
       let homeContent = (await HomeContent.findOne()) || new HomeContent({});
-      // console.log("Existing home content found:", !!homeContent._id);
+      // //console.log("Existing home content found:", !!homeContent._id);
 
       // Helper function to parse array-like form data
       const parseArrayData = (prefix) => {
@@ -624,7 +624,7 @@ router.post(
           
           // Debug: Log all keys that start with the prefix
           const matchingKeys = Object.keys(req.body).filter(key => key.startsWith(prefix));
-          // console.log(`Keys matching ${prefix}:`, matchingKeys);
+          // //console.log(`Keys matching ${prefix}:`, matchingKeys);
           
           while (req.body[`${prefix}[${index}][title]`] !== undefined) {
             const item = {};
@@ -637,7 +637,7 @@ router.post(
             result.push(item);
             index++;
           }
-          // console.log(`Parsed ${prefix} data:`, result.length, "items");
+          // //console.log(`Parsed ${prefix} data:`, result.length, "items");
           return result;
         } catch (error) {
           console.error(`Error parsing ${prefix} data:`, error);
@@ -650,15 +650,15 @@ router.post(
         homeContent.welcomeTitle = req.body.welcomeTitle || "Welcome to Our School";
         homeContent.welcomeContent = req.body.welcomeContent || "";
         homeContent.history = req.body.history || '';
-        // console.log("Updated welcome section");
+        // //console.log("Updated welcome section");
       } catch (error) {
         console.error("Error updating welcome section:", error);
       }
 
       // Update banner slides - Handle both JSON and individual field formats
       try {
-        // console.log("=== Banner Slides Processing ===");
-        // console.log("Uploaded files:", req.files ? req.files.map(f => ({ fieldname: f.fieldname, filename: f.filename })) : 'No files');
+        // //console.log("=== Banner Slides Processing ===");
+        // //console.log("Uploaded files:", req.files ? req.files.map(f => ({ fieldname: f.fieldname, filename: f.filename })) : 'No files');
         
         const processedSlides = [];
         const bannerSlideFiles = req.files ? req.files.filter(file => file.fieldname.includes('bannerSlides')) : [];
@@ -672,9 +672,9 @@ router.post(
             } else if (Array.isArray(req.body.bannerSlides)) {
               bannerSlidesData = req.body.bannerSlides;
             }
-            // console.log("Banner slides from JSON:", bannerSlidesData.length, "slides");
+            // //console.log("Banner slides from JSON:", bannerSlidesData.length, "slides");
           } catch (error) {
-            // console.log("Failed to parse banner slides JSON, trying individual fields");
+            // //console.log("Failed to parse banner slides JSON, trying individual fields");
             bannerSlidesData = [];
           }
         }
@@ -696,12 +696,12 @@ router.post(
           Object.keys(bannerSlideData).forEach(index => {
             bannerSlidesData.push(bannerSlideData[index]);
           });
-          // console.log("Banner slides from individual fields:", bannerSlidesData.length, "slides");
+          // //console.log("Banner slides from individual fields:", bannerSlidesData.length, "slides");
         }
         
         // Process each banner slide
         bannerSlidesData.forEach((slideData, index) => {
-          // console.log(`Processing slide ${index}:`, slideData);
+          // //console.log(`Processing slide ${index}:`, slideData);
           
           // Find the uploaded image for this slide
           const slideImage = bannerSlideFiles.find(file => file.fieldname === `bannerSlides[${index}][image]`);
@@ -711,15 +711,15 @@ router.post(
           if (slideImage) {
             // New image uploaded
             imageUrl = `/uploads/${slideImage.filename}`;
-            // console.log(`Slide ${index}: New image uploaded - ${imageUrl}`);
+            // //console.log(`Slide ${index}: New image uploaded - ${imageUrl}`);
           } else if (slideData.imageUrl && slideData.imageUrl.trim() !== '') {
             // Keep existing image - this is the key fix
             imageUrl = slideData.imageUrl;
-            // console.log(`Slide ${index}: Keeping existing image - ${imageUrl}`);
+            // //console.log(`Slide ${index}: Keeping existing image - ${imageUrl}`);
           } else {
             // No image at all
             imageUrl = '';
-            // console.log(`Slide ${index}: No image`);
+            // //console.log(`Slide ${index}: No image`);
           }
           
           // Create slide object
@@ -733,13 +733,13 @@ router.post(
             order: parseInt(slideData.order) || index
           };
           
-          // console.log(`Slide ${index} processed:`, slide);
+          // //console.log(`Slide ${index} processed:`, slide);
           processedSlides.push(slide);
         });
         
         // If no slides were processed but files were uploaded, create slides from files
         if (processedSlides.length === 0 && bannerSlideFiles.length > 0) {
-          // console.log("No slide data found, creating slides from uploaded files");
+          // //console.log("No slide data found, creating slides from uploaded files");
           bannerSlideFiles.forEach((file, index) => {
             const slideIndex = parseInt(file.fieldname.match(/bannerSlides\[(\d+)\]\[image\]/)?.[1] || '0');
             const slide = {
@@ -752,16 +752,16 @@ router.post(
               order: slideIndex
             };
             processedSlides.push(slide);
-            // console.log(`Created slide from file ${index}:`, slide);
+            // //console.log(`Created slide from file ${index}:`, slide);
           });
         }
         
         // Only update banner slides if we have processed data or existing slides
         if (processedSlides.length > 0 || homeContent.bannerSlides.length > 0) {
           homeContent.bannerSlides = processedSlides;
-          // console.log("Final banner slides count:", processedSlides.length);
+          // //console.log("Final banner slides count:", processedSlides.length);
         } else {
-          // console.log("No banner slides data to update, keeping existing slides");
+          // //console.log("No banner slides data to update, keeping existing slides");
         }
         
       } catch (error) {
@@ -792,7 +792,7 @@ router.post(
               link: section.link || '',
             })
           );
-          // console.log("Updated featured sections:", homeContent.featuredSections.length, "sections");
+          // //console.log("Updated featured sections:", homeContent.featuredSections.length, "sections");
         } catch (error) {
           console.error("Error updating featured sections:", error);
           homeContent.featuredSections = [];
@@ -810,7 +810,7 @@ router.post(
             image: ourSocietyImage ? `/uploads/${ourSocietyImage.filename}` : cleanImageUrl(req.body.ourSociety.imageUrl || ''),
             isActive: req.body.ourSociety.isActive === 'true' || req.body.ourSociety.isActive === 'on'
           };
-          // console.log("Updated Our Society section");
+          // //console.log("Updated Our Society section");
         }
       } catch (error) {
         console.error("Error updating Our Society section:", error);
@@ -827,7 +827,7 @@ router.post(
             image: whoWeAreImage ? `/uploads/${whoWeAreImage.filename}` : cleanImageUrl(req.body.whoWeAre.imageUrl || ''),
             isActive: req.body.whoWeAre.isActive === 'true' || req.body.whoWeAre.isActive === 'on'
           };
-          // console.log("Updated Who We Are section");
+          // //console.log("Updated Who We Are section");
         }
       } catch (error) {
         console.error("Error updating Who We Are section:", error);
@@ -875,7 +875,7 @@ router.post(
             items: infrastructureItems,
             isActive: req.body.infrastructure.isActive === 'true' || req.body.infrastructure.isActive === 'on'
           };
-          // console.log("Updated Infrastructure section:", infrastructureItems.length, "items");
+          // //console.log("Updated Infrastructure section:", infrastructureItems.length, "items");
         }
       } catch (error) {
         console.error("Error updating Infrastructure section:", error);
@@ -906,7 +906,7 @@ router.post(
             announcements: announcements,
             isActive: req.body.recentAnnouncements.isActive === 'true' || req.body.recentAnnouncements.isActive === 'on'
           };
-          // console.log("Updated Recent Announcements section:", announcements.length, "announcements");
+          // //console.log("Updated Recent Announcements section:", announcements.length, "announcements");
         }
       } catch (error) {
         console.error("Error updating Recent Announcements section:", error);
@@ -954,7 +954,7 @@ router.post(
             achievements: achievements,
             isActive: req.body.sportsAchievements.isActive === 'true' || req.body.sportsAchievements.isActive === 'on'
           };
-          // console.log("Updated Sports Achievements section:", achievements.length, "achievements");
+          // //console.log("Updated Sports Achievements section:", achievements.length, "achievements");
         }
       } catch (error) {
         console.error("Error updating Sports Achievements section:", error);
@@ -1002,7 +1002,7 @@ router.post(
             achievements: achievements,
             isActive: req.body.coCurricularAchievements.isActive === 'true' || req.body.coCurricularAchievements.isActive === 'on'
           };
-          // console.log("Updated Co-Curricular Achievements section:", achievements.length, "achievements");
+          // //console.log("Updated Co-Curricular Achievements section:", achievements.length, "achievements");
         }
       } catch (error) {
         console.error("Error updating Co-Curricular Achievements section:", error);
@@ -1051,7 +1051,7 @@ router.post(
             achievers: achievers,
             isActive: req.body.achievers.isActive === 'true' || req.body.achievers.isActive === 'on'
           };
-          // console.log("Updated Achievers section:", achievers.length, "achievers");
+          // //console.log("Updated Achievers section:", achievers.length, "achievers");
         }
       } catch (error) {
         console.error("Error updating Achievers section:", error);
@@ -2185,14 +2185,14 @@ const cleanImageUrl = (imageUrl) => {
   if (!imageUrl) return '';
   // Remove any URLs that contain invalid characters (like fieldnames)
   if (imageUrl.includes('[') || imageUrl.includes(']')) {
-    // console.log(`Cleaning problematic URL: ${imageUrl}`);
+    // //console.log(`Cleaning problematic URL: ${imageUrl}`);
     // Extract file extension and create a new clean filename
     const fileExtension = imageUrl.split('.').pop() || 'jpg';
     const timestamp = Date.now();
     const random = Math.round(Math.random() * 1e9);
     const newFilename = `${timestamp}-${random}.${fileExtension}`;
     const newUrl = `/uploads/${newFilename}`;
-    // console.log(`New clean URL: ${newUrl}`);
+    // //console.log(`New clean URL: ${newUrl}`);
     return newUrl;
   }
   return imageUrl;

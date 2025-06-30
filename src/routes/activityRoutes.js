@@ -6,7 +6,7 @@ const upload = require("../middleware/fileUpload");
 
 // Public routes
 router.get("/", (req, res, next) => {
-  //console.log(res)
+  ////console.log(res)
   if (req.baseUrl === "/admin/activities") {
     return activityController.renderAdminActivities(req, res, next);
   }

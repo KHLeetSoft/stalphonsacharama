@@ -44,9 +44,9 @@ exports.showCreateForm = (req, res) => {
 // Create new news
 exports.createNews = async (req, res) => {
   try {
-    console.log('Creating news with data:', req.body);
-    console.log('File uploaded:', req.file);
-    console.log('Admin info:', req.admin);
+    //console.log('Creating news with data:', req.body);
+    //console.log('File uploaded:', req.file);
+    //console.log('Admin info:', req.admin);
 
     const {
       title,
@@ -61,7 +61,7 @@ exports.createNews = async (req, res) => {
 
     // Validate required fields
     if (!title || !content || !category) {
-      console.log('Validation failed - missing required fields');
+      //console.log('Validation failed - missing required fields');
       return res.render('admin/news/create', {
         admin: req.admin,
         title: 'Add News',
@@ -113,11 +113,11 @@ exports.createNews = async (req, res) => {
       isPublished: false // Default to unpublished
     };
 
-    console.log('News data to save:', newsData);
+    //console.log('News data to save:', newsData);
 
     const news = new News(newsData);
     await news.save();
-    console.log('News created successfully with ID:', news._id);
+    //console.log('News created successfully with ID:', news._id);
 
     req.flash('success', 'News created successfully!');
     res.redirect('/admin/news');
@@ -283,7 +283,7 @@ exports.getNewsDetails = async (req, res) => {
 // Get public news listing
 exports.getPublicNews = async (req, res) => {
   try {
-    console.log('Public news request:', req.query);
+    //console.log('Public news request:', req.query);
     
     const page = parseInt(req.query.page) || 1;
     const limit = 9;
@@ -311,10 +311,10 @@ exports.getPublicNews = async (req, res) => {
       query.$or = searchConditions;
     }
     
-    console.log('Final query:', JSON.stringify(query, null, 2));
+    //console.log('Final query:', JSON.stringify(query, null, 2));
 
     const totalNews = await News.countDocuments(query);
-    console.log('Total news found:', totalNews);
+    //console.log('Total news found:', totalNews);
     
     const totalPages = Math.ceil(totalNews / limit);
 
@@ -324,7 +324,7 @@ exports.getPublicNews = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    console.log('News articles fetched:', news.length);
+    //console.log('News articles fetched:', news.length);
 
     // Get featured news
     const featuredNews = await News.getFeaturedNews(3);
@@ -508,12 +508,12 @@ exports.getStatistics = async (req, res) => {
       { $sort: { _id: 1 } }
     ]);
 
-    console.log('News Statistics:', {
-      total: totalNews,
-      published: publishedNews,
-      featured: featuredNews,
-      byCategory: newsByCategory
-    });
+    //console.log('News Statistics:', {
+    //   total: totalNews,
+    //   published: publishedNews,
+    //   featured: featuredNews,
+    //   byCategory: newsByCategory
+    // });
 
     res.json({
       success: true,
@@ -536,16 +536,16 @@ exports.debugNewsStatus = async (req, res) => {
     const allNews = await News.find().populate('author', 'name');
     const publishedNews = await News.find({ isPublished: true }).populate('author', 'name');
     
-    console.log('All news count:', allNews.length);
-    console.log('Published news count:', publishedNews.length);
+    //console.log('All news count:', allNews.length);
+    //console.log('Published news count:', publishedNews.length);
     
-    console.log('All news:', allNews.map(n => ({
-      id: n._id,
-      title: n.title,
-      isPublished: n.isPublished,
-      publishedDate: n.publishedDate,
-      author: n.author ? n.author.name : 'Unknown'
-    })));
+    //console.log('All news:', allNews.map(n => ({
+    //   id: n._id,
+    //   title: n.title,
+    //   isPublished: n.isPublished,
+    //   publishedDate: n.publishedDate,
+    //   author: n.author ? n.author.name : 'Unknown'
+    // })));
     
     res.json({
       success: true,
@@ -568,15 +568,15 @@ exports.debugNewsStatus = async (req, res) => {
 // Publish all articles for testing
 exports.publishAllArticles = async (req, res) => {
   try {
-    console.log('Publishing all unpublished articles...');
+    //console.log('Publishing all unpublished articles...');
     
     // First, let's see what we have
     const allNews = await News.find();
-    console.log('All news before publishing:', allNews.map(n => ({
-      id: n._id,
-      title: n.title,
-      isPublished: n.isPublished
-    })));
+    //console.log('All news before publishing:', allNews.map(n => ({
+    //   id: n._id,
+    //   title: n.title,
+    //   isPublished: n.isPublished
+    // })));
     
     const result = await News.updateMany(
       { isPublished: false },
@@ -586,16 +586,16 @@ exports.publishAllArticles = async (req, res) => {
       }
     );
     
-    console.log(`Published ${result.modifiedCount} articles`);
+    //console.log(`Published ${result.modifiedCount} articles`);
     
     // Check what we have after publishing
     const publishedNews = await News.find({ isPublished: true });
-    console.log('Published news after update:', publishedNews.map(n => ({
-      id: n._id,
-      title: n.title,
-      isPublished: n.isPublished,
-      publishedDate: n.publishedDate
-    })));
+    // console.log('Published news after update:', publishedNews.map(n => ({
+    //   // id: n._id,
+    //   // title: n.title,
+    //   // isPublished: n.isPublished,
+    //   // publishedDate: n.publishedDate
+    // })));
     
     req.flash('success', `Published ${result.modifiedCount} articles successfully!`);
     res.redirect('/admin/news');

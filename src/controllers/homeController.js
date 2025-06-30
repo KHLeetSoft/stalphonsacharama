@@ -38,9 +38,9 @@ exports.getEditPage = async (req, res) => {
 
 exports.updateContent = async (req, res) => {
   try {
-    console.log("=== Starting Home Content Update ===");
-    console.log("Request body keys:", Object.keys(req.body));
-    console.log("Files received:", req.files ? req.files.length : 0);
+    //console.log("=== Starting Home Content Update ===");
+    //console.log("Request body keys:", Object.keys(req.body));
+    //console.log("Files received:", req.files ? req.files.length : 0);
     
     let homeContent = (await HomeContent.findOne()) || new HomeContent();
 
@@ -48,8 +48,8 @@ exports.updateContent = async (req, res) => {
     const bannerSlidesData = JSON.parse(req.body.bannerSlides || "[]");
     const files = req.files || [];
     
-    console.log("Banner slides data:", bannerSlidesData.length, "slides");
-    console.log("Files received:", files.map(f => f.fieldname));
+    //console.log("Banner slides data:", bannerSlidesData.length, "slides");
+    //console.log("Files received:", files.map(f => f.fieldname));
     
     // Process each banner slide
     homeContent.bannerSlides = bannerSlidesData.map((slideData, index) => {
@@ -70,21 +70,21 @@ exports.updateContent = async (req, res) => {
         if (slideData.imageUrl) {
           try {
             fs.unlink(path.join("public", slideData.imageUrl)).catch(console.error);
-            console.log(`Deleted old image: ${slideData.imageUrl}`);
+            //console.log(`Deleted old image: ${slideData.imageUrl}`);
           } catch (error) {
             console.error("Error deleting old image:", error);
           }
         }
         slide.imageUrl = `/uploads/banners/${slideImageFile.filename}`;
-        console.log(`New image uploaded for slide ${index}:`, slide.imageUrl);
+        //console.log(`New image uploaded for slide ${index}:`, slide.imageUrl);
       } else if (slideData.imageUrl) {
         // No new image - preserve existing image
         slide.imageUrl = slideData.imageUrl;
-        console.log(`Preserving existing image for slide ${index}:`, slideData.imageUrl);
+        //console.log(`Preserving existing image for slide ${index}:`, slideData.imageUrl);
       } else {
         // No image at all
         slide.imageUrl = null;
-        console.log(`No image for slide ${index}`);
+        //console.log(`No image for slide ${index}`);
       }
 
       return slide;
@@ -148,7 +148,7 @@ exports.updateContent = async (req, res) => {
 
     // Process Infrastructure section
     if (req.body.infrastructure) {
-      console.log("=== Infrastructure Processing ===");
+      //console.log("=== Infrastructure Processing ===");
       
       homeContent.infrastructure = {
         title: req.body.infrastructure.title || 'Infrastructure',
@@ -173,12 +173,12 @@ exports.updateContent = async (req, res) => {
         homeContent.infrastructure.image = req.body.infrastructure.imageUrl;
       }
 
-      console.log(`Processed infrastructure section with image: ${homeContent.infrastructure.image ? 'Yes' : 'No'}`);
+      //console.log(`Processed infrastructure section with image: ${homeContent.infrastructure.image ? 'Yes' : 'No'}`);
     }
 
     // Process Recent Announcements section
     if (req.body.recentAnnouncements) {
-      console.log("=== Recent Announcements Processing ===");
+      //console.log("=== Recent Announcements Processing ===");
       
       homeContent.recentAnnouncements = {
         title: req.body.recentAnnouncements.title || 'Recent Announcements',
@@ -194,7 +194,7 @@ exports.updateContent = async (req, res) => {
       if (req.body['recentAnnouncements[announcements]']) {
         try {
           const announcementsData = JSON.parse(req.body['recentAnnouncements[announcements]']);
-          console.log("Parsed announcements from JSON:", announcementsData.length, "announcements");
+          //console.log("Parsed announcements from JSON:", announcementsData.length, "announcements");
           
           announcements = announcementsData.map((announcement, index) => {
             return {
@@ -211,10 +211,10 @@ exports.updateContent = async (req, res) => {
       
       // If no announcements found in JSON, try individual field format
       if (announcements.length === 0) {
-        console.log("Trying individual field format for announcements");
+        //console.log("Trying individual field format for announcements");
         let index = 0;
         while (req.body[`recentAnnouncements[announcements][${index}][title]`]) {
-          console.log(`Found announcement ${index} (individual field):`, req.body[`recentAnnouncements[announcements][${index}][title]`]);
+          //console.log(`Found announcement ${index} (individual field):`, req.body[`recentAnnouncements[announcements][${index}][title]`]);
           const announcement = {
             title: req.body[`recentAnnouncements[announcements][${index}][title]`] || '',
             content: req.body[`recentAnnouncements[announcements][${index}][content]`] || '',
@@ -242,12 +242,12 @@ exports.updateContent = async (req, res) => {
       }
 
       homeContent.recentAnnouncements.announcements = announcements;
-      console.log(`Processed ${homeContent.recentAnnouncements.announcements.length} announcements`);
+      //console.log(`Processed ${homeContent.recentAnnouncements.announcements.length} announcements`);
     }
 
     // Process Sports Achievements section
     if (req.body.sportsAchievements) {
-      console.log("=== Sports Achievements Processing ===");
+      //console.log("=== Sports Achievements Processing ===");
       
       homeContent.sportsAchievements = {
         title: req.body.sportsAchievements.title || 'Sports Achievements',
@@ -264,7 +264,7 @@ exports.updateContent = async (req, res) => {
       if (req.body['sportsAchievements[achievements]']) {
         try {
           const achievementsData = JSON.parse(req.body['sportsAchievements[achievements]']);
-          console.log("Parsed sports achievements from JSON:", achievementsData.length, "achievements");
+          //console.log("Parsed sports achievements from JSON:", achievementsData.length, "achievements");
           
           achievements = achievementsData.map((achievement, index) => {
             const achievementItem = {
@@ -298,10 +298,10 @@ exports.updateContent = async (req, res) => {
       
       // If no achievements found in JSON, try individual field format
       if (achievements.length === 0) {
-        console.log("Trying individual field format for sports achievements");
+        //console.log("Trying individual field format for sports achievements");
         let index = 0;
         while (req.body[`sportsAchievements[achievements][${index}][title]`]) {
-          console.log(`Found sports achievement ${index} (individual field):`, req.body[`sportsAchievements[achievements][${index}][title]`]);
+          //console.log(`Found sports achievement ${index} (individual field):`, req.body[`sportsAchievements[achievements][${index}][title]`]);
           const achievement = {
             title: req.body[`sportsAchievements[achievements][${index}][title]`] || '',
             description: req.body[`sportsAchievements[achievements][${index}][description]`] || '',
@@ -330,12 +330,12 @@ exports.updateContent = async (req, res) => {
       }
 
       homeContent.sportsAchievements.achievements = achievements;
-      console.log(`Processed ${homeContent.sportsAchievements.achievements.length} sports achievements`);
+      //console.log(`Processed ${homeContent.sportsAchievements.achievements.length} sports achievements`);
     }
 
     // Process Co-Curricular Achievements section
     if (req.body.coCurricularAchievements) {
-      console.log("=== Co-Curricular Achievements Processing ===");
+      //console.log("=== Co-Curricular Achievements Processing ===");
       
       homeContent.coCurricularAchievements = {
         title: req.body.coCurricularAchievements.title || 'Co-Curricular Achievements',
@@ -352,7 +352,7 @@ exports.updateContent = async (req, res) => {
       if (req.body['coCurricularAchievements[achievements]']) {
         try {
           const achievementsData = JSON.parse(req.body['coCurricularAchievements[achievements]']);
-          console.log("Parsed co-curricular achievements from JSON:", achievementsData.length, "achievements");
+          //console.log("Parsed co-curricular achievements from JSON:", achievementsData.length, "achievements");
           
           achievements = achievementsData.map((achievement, index) => {
             const achievementItem = {
@@ -386,10 +386,10 @@ exports.updateContent = async (req, res) => {
       
       // If no achievements found in JSON, try individual field format
       if (achievements.length === 0) {
-        console.log("Trying individual field format for co-curricular achievements");
+        //console.log("Trying individual field format for co-curricular achievements");
         let index = 0;
         while (req.body[`coCurricularAchievements[achievements][${index}][title]`]) {
-          console.log(`Found co-curricular achievement ${index} (individual field):`, req.body[`coCurricularAchievements[achievements][${index}][title]`]);
+          //console.log(`Found co-curricular achievement ${index} (individual field):`, req.body[`coCurricularAchievements[achievements][${index}][title]`]);
           const achievement = {
             title: req.body[`coCurricularAchievements[achievements][${index}][title]`] || '',
             description: req.body[`coCurricularAchievements[achievements][${index}][description]`] || '',
@@ -418,12 +418,12 @@ exports.updateContent = async (req, res) => {
       }
 
       homeContent.coCurricularAchievements.achievements = achievements;
-      console.log(`Processed ${homeContent.coCurricularAchievements.achievements.length} co-curricular achievements`);
+      //console.log(`Processed ${homeContent.coCurricularAchievements.achievements.length} co-curricular achievements`);
     }
 
     // Process Achievers section
     if (req.body.achievers) {
-      console.log("=== Achievers Processing ===");
+      //console.log("=== Achievers Processing ===");
       
       homeContent.achievers = {
         title: req.body.achievers.title || 'Our Achievers',
@@ -440,7 +440,7 @@ exports.updateContent = async (req, res) => {
       if (req.body['achievers[achievers]']) {
         try {
           const achieversData = JSON.parse(req.body['achievers[achievers]']);
-          console.log("Parsed achievers from JSON:", achieversData.length, "achievers");
+          //console.log("Parsed achievers from JSON:", achieversData.length, "achievers");
           
           achievers = achieversData.map((achiever, index) => {
             const achieverItem = {
@@ -475,10 +475,10 @@ exports.updateContent = async (req, res) => {
       
       // If no achievers found in JSON, try individual field format
       if (achievers.length === 0) {
-        console.log("Trying individual field format for achievers");
+        //console.log("Trying individual field format for achievers");
         let index = 0;
         while (req.body[`achievers[achievers][${index}][name]`]) {
-          console.log(`Found achiever ${index} (individual field):`, req.body[`achievers[achievers][${index}][name]`]);
+          //console.log(`Found achiever ${index} (individual field):`, req.body[`achievers[achievers][${index}][name]`]);
           const achiever = {
             name: req.body[`achievers[achievers][${index}][name]`] || '',
             achievement: req.body[`achievers[achievers][${index}][achievement]`] || '',
@@ -508,12 +508,12 @@ exports.updateContent = async (req, res) => {
       }
 
       homeContent.achievers.achievers = achievers;
-      console.log(`Processed ${homeContent.achievers.achievers.length} achievers`);
+      //console.log(`Processed ${homeContent.achievers.achievers.length} achievers`);
     }
 
-    console.log("Saving home content...");
+    //console.log("Saving home content...");
     await homeContent.save();
-    console.log("Home content saved successfully!");
+    //console.log("Home content saved successfully!");
 
     // Redirect back to edit page
     res.redirect("/admin/home/edit");
