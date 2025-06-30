@@ -1,0 +1,85 @@
+<%- include('../../partials/admin/header') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Admission Details</h3>
+          <div class="card-tools">
+            <a href="/admin/admissions" class="btn btn-secondary btn-sm">
+              <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Basic Information</h4>
+              <table class="table table-bordered">
+                <tr>
+                  <th>Title</th>
+                  <td><%= admission.title %></td>
+                </tr>
+                <tr>
+                  <th>Description</th>
+                  <td><%= admission.description %></td>
+                </tr>
+                <tr>
+                  <th>Deadline</th>
+                  <td><%= new Date(admission.deadline).toLocaleDateString() %></td>
+                </tr>
+                <tr>
+                  <th>Fees</th>
+                  <td>$<%= admission.fees %></td>
+                </tr>
+                <tr>
+                  <th>Status</th>
+                  <td>
+                    <form action="/admin/admissions/<%= admission._id %>/status" method="POST" class="d-inline">
+                      <select name="status" class="form-control" onchange="this.form.submit()">
+                        <option value="open" <%= admission.status === 'open' ? 'selected' : '' %>>Open</option>
+                        <option value="closed" <%= admission.status === 'closed' ? 'selected' : '' %>>Closed</option>
+                      </select>
+                    </form>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <h4>Requirements</h4>
+              <ul class="list-group">
+                <% admission.requirements.forEach(requirement => { %>
+                  <li class="list-group-item"><%= requirement %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-12">
+              <h4>Application Process</h4>
+              <div class="timeline">
+                <% admission.applicationProcess.forEach((step, index) => { %>
+                  <div class="time-label">
+                    <span class="bg-primary">Step <%= index + 1 %></span>
+                  </div>
+                  <div>
+                    <i class="fas fa-check bg-success"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><%= step.step %></h3>
+                      <div class="timeline-body">
+                        <%= step.description %>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/admin/footer') %> 

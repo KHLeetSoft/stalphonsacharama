@@ -1,0 +1,375 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/result-summaries">Result Summaries</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= resultSummary.title %></li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="card bg-gradient-primary text-white">
+          <div class="card-body text-center py-5">
+            <h1 class="display-5 fw-bold mb-3"><%= resultSummary.title %></h1>
+            <p class="lead mb-4"><%= resultSummary.description || 'Comprehensive analysis of academic performance and achievements.' %></p>
+            <div class="row justify-content-center">
+              <div class="col-md-3">
+                <div class="border-end border-white">
+                  <h4 class="mb-0"><%= resultSummary.className %></h4>
+                  <small>Class</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="border-end border-white">
+                  <h4 class="mb-0"><%= resultSummary.examTypeName %></h4>
+                  <small>Exam Type</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="border-end border-white">
+                  <h4 class="mb-0"><%= resultSummary.academicYear %></h4>
+                  <small>Academic Year</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <h4 class="mb-0"><%= resultSummary.examDate ? new Date(resultSummary.examDate).toLocaleDateString() : 'N/A' %></h4>
+                <small>Exam Date</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Statistics -->
+    <div class="row mb-5">
+      <div class="col-md-3 mb-3">
+        <div class="card text-center h-100 stat-card">
+          <div class="card-body">
+            <i class="fas fa-users fa-2x text-primary mb-3"></i>
+            <h3 class="text-primary"><%= resultSummary.totalStudents || 0 %></h3>
+            <p class="mb-0">Total Students</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-center h-100 stat-card">
+          <div class="card-body">
+            <i class="fas fa-user-check fa-2x text-info mb-3"></i>
+            <h3 class="text-info"><%= resultSummary.appearedStudents || 0 %></h3>
+            <p class="mb-0">Appeared Students</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-center h-100 stat-card">
+          <div class="card-body">
+            <i class="fas fa-trophy fa-2x text-success mb-3"></i>
+            <h3 class="text-success"><%= resultSummary.passedStudents || 0 %></h3>
+            <p class="mb-0">Passed Students</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-center h-100 stat-card">
+          <div class="card-body">
+            <i class="fas fa-percentage fa-2x text-warning mb-3"></i>
+            <h3 class="text-warning"><%= resultSummary.passPercentage || 0 %>%</h3>
+            <p class="mb-0">Pass Percentage</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Statistics -->
+    <div class="row mb-5">
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Division Breakdown</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Distinction:</span>
+                  <strong class="text-success"><%= resultSummary.distinctionStudents || 0 %></strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>First Division:</span>
+                  <strong class="text-primary"><%= resultSummary.firstDivisionStudents || 0 %></strong>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Second Division:</span>
+                  <strong class="text-warning"><%= resultSummary.secondDivisionStudents || 0 %></strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Third Division:</span>
+                  <strong class="text-danger"><%= resultSummary.thirdDivisionStudents || 0 %></strong>
+                </div>
+              </div>
+            </div>
+            <div class="progress mt-3" style="height: 8px;">
+              <div class="progress-bar bg-success" style="width: 25%"></div>
+              <div class="progress-bar bg-primary" style="width: 35%"></div>
+              <div class="progress-bar bg-warning" style="width: 25%"></div>
+              <div class="progress-bar bg-danger" style="width: 15%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-chart-line"></i> Score Statistics</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="border-end">
+                  <h4 class="text-primary mb-1"><%= resultSummary.averageScore || 'N/A' %>%</h4>
+                  <small class="text-muted">Average Score</small>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="border-end">
+                  <h4 class="text-success mb-1"><%= resultSummary.highestScore || 'N/A' %>%</h4>
+                  <small class="text-muted">Highest Score</small>
+                </div>
+              </div>
+              <div class="col-4">
+                <h4 class="text-warning mb-1"><%= resultSummary.lowestScore || 'N/A' %>%</h4>
+                <small class="text-muted">Lowest Score</small>
+              </div>
+            </div>
+            <% if (resultSummary.averageScore) { %>
+              <div class="mt-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <small>Performance Range</small>
+                  <small><%= resultSummary.lowestScore || 0 %>% - <%= resultSummary.highestScore || 100 %>%</small>
+                </div>
+                <div class="progress" style="height: 6px;">
+                  <div class="progress-bar bg-warning" style="width: 30%"></div>
+                  <div class="progress-bar bg-primary" style="width: 40%"></div>
+                  <div class="progress-bar bg-success" style="width: 30%"></div>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subject-wise Results -->
+    <% if (resultSummary.subjectWiseResults && resultSummary.subjectWiseResults.length > 0) { %>
+      <div class="row mb-5">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0"><i class="fas fa-book"></i> Subject-wise Performance</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Subject</th>
+                      <th>Average Score</th>
+                      <th>Highest Score</th>
+                      <th>Pass Percentage</th>
+                      <th>Performance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% resultSummary.subjectWiseResults.forEach(subject => { %>
+                      <tr>
+                        <td><strong><%= subject.subject %></strong></td>
+                        <td>
+                          <span class="badge bg-<%= subject.averageScore >= 80 ? 'success' : subject.averageScore >= 60 ? 'warning' : 'danger' %>">
+                            <%= subject.averageScore || 'N/A' %>%
+                          </span>
+                        </td>
+                        <td>
+                          <span class="badge bg-info"><%= subject.highestScore || 'N/A' %>%</span>
+                        </td>
+                        <td>
+                          <span class="badge bg-<%= subject.passPercentage >= 80 ? 'success' : subject.passPercentage >= 60 ? 'warning' : 'danger' %>">
+                            <%= subject.passPercentage || 'N/A' %>%
+                          </span>
+                        </td>
+                        <td>
+                          <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-<%= subject.averageScore >= 80 ? 'success' : subject.averageScore >= 60 ? 'warning' : 'danger' %>" 
+                                 style="width: 75%"></div>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Top Performers -->
+    <% if (resultSummary.topPerformers && resultSummary.topPerformers.length > 0) { %>
+      <div class="row mb-5">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0"><i class="fas fa-trophy"></i> Top Performers</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <% resultSummary.topPerformers.forEach((performer, index) => { %>
+                  <div class="col-lg-6 col-xl-4 mb-3">
+                    <div class="card performer-card h-100">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                          <div class="flex-shrink-0">
+                            <div class="rank-circle rank-<%= index + 1 %>">
+                              <%= performer.rank %>
+                            </div>
+                          </div>
+                          <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-1"><%= performer.studentName %></h6>
+                            <small class="text-muted">Roll No: <%= performer.rollNumber %></small>
+                          </div>
+                        </div>
+                        <div class="row text-center">
+                          <div class="col-6">
+                            <h5 class="text-primary mb-0"><%= performer.totalScore || 'N/A' %></h5>
+                            <small class="text-muted">Total Score</small>
+                          </div>
+                          <div class="col-6">
+                            <h5 class="text-success mb-0"><%= performer.percentage || 'N/A' %>%</h5>
+                            <small class="text-muted">Percentage</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Additional Information -->
+    <% if (resultSummary.remarks || (resultSummary.tags && resultSummary.tags.length > 0)) { %>
+      <div class="row mb-5">
+        <% if (resultSummary.remarks) { %>
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-sticky-note"></i> Remarks</h5>
+              </div>
+              <div class="card-body">
+                <p class="mb-0"><%= resultSummary.remarks %></p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        <% if (resultSummary.tags && resultSummary.tags.length > 0) { %>
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-tags"></i> Tags</h5>
+              </div>
+              <div class="card-body">
+                <% resultSummary.tags.forEach(tag => { %>
+                  <span class="badge bg-light text-dark me-1 mb-1"><%= tag %></span>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+
+    <!-- Back to Results -->
+    <div class="row">
+      <div class="col-12 text-center">
+        <a href="/result-summaries" class="btn btn-primary btn-lg">
+          <i class="fas fa-arrow-left"></i> Back to All Results
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card {
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.performer-card {
+  border-left: 4px solid #007bff;
+  transition: transform 0.3s ease;
+}
+
+.performer-card:hover {
+  transform: translateY(-3px);
+}
+
+.rank-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 14px;
+}
+
+.rank-1 {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+}
+
+.rank-2 {
+  background: linear-gradient(135deg, #c0c0c0 0%, #e5e5e5 100%);
+}
+
+.rank-3 {
+  background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+}
+
+.rank-4, .rank-5, .rank-6, .rank-7, .rank-8, .rank-9, .rank-10 {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+</style>
+
+<%- include('../partials/footer') %> 

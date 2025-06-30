@@ -1,0 +1,239 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold text-primary mb-3">Result Summaries</h1>
+        <p class="lead text-muted">Explore our academic performance and achievements across different classes and exam types.</p>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <form method="GET" action="/result-summaries" class="row g-3">
+              <div class="col-md-3">
+                <label for="class" class="form-label">Class</label>
+                <select class="form-select" id="class" name="class">
+                  <option value="">All Classes</option>
+                  <option value="nursery" <%= currentFilters && currentFilters.class === 'nursery' ? 'selected' : '' %>>Nursery</option>
+                  <option value="lkg" <%= currentFilters && currentFilters.class === 'lkg' ? 'selected' : '' %>>LKG</option>
+                  <option value="ukg" <%= currentFilters && currentFilters.class === 'ukg' ? 'selected' : '' %>>UKG</option>
+                  <option value="1" <%= currentFilters && currentFilters.class === '1' ? 'selected' : '' %>>Class 1</option>
+                  <option value="2" <%= currentFilters && currentFilters.class === '2' ? 'selected' : '' %>>Class 2</option>
+                  <option value="3" <%= currentFilters && currentFilters.class === '3' ? 'selected' : '' %>>Class 3</option>
+                  <option value="4" <%= currentFilters && currentFilters.class === '4' ? 'selected' : '' %>>Class 4</option>
+                  <option value="5" <%= currentFilters && currentFilters.class === '5' ? 'selected' : '' %>>Class 5</option>
+                  <option value="6" <%= currentFilters && currentFilters.class === '6' ? 'selected' : '' %>>Class 6</option>
+                  <option value="7" <%= currentFilters && currentFilters.class === '7' ? 'selected' : '' %>>Class 7</option>
+                  <option value="8" <%= currentFilters && currentFilters.class === '8' ? 'selected' : '' %>>Class 8</option>
+                  <option value="9" <%= currentFilters && currentFilters.class === '9' ? 'selected' : '' %>>Class 9</option>
+                  <option value="10" <%= currentFilters && currentFilters.class === '10' ? 'selected' : '' %>>Class 10</option>
+                  <option value="11" <%= currentFilters && currentFilters.class === '11' ? 'selected' : '' %>>Class 11</option>
+                  <option value="12" <%= currentFilters && currentFilters.class === '12' ? 'selected' : '' %>>Class 12</option>
+                  <option value="all" <%= currentFilters && currentFilters.class === 'all' ? 'selected' : '' %>>All Classes</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="examType" class="form-label">Exam Type</label>
+                <select class="form-select" id="examType" name="examType">
+                  <option value="">All Exam Types</option>
+                  <option value="unit-test" <%= currentFilters && currentFilters.examType === 'unit-test' ? 'selected' : '' %>>Unit Test</option>
+                  <option value="mid-term" <%= currentFilters && currentFilters.examType === 'mid-term' ? 'selected' : '' %>>Mid Term</option>
+                  <option value="final" <%= currentFilters && currentFilters.examType === 'final' ? 'selected' : '' %>>Final Exam</option>
+                  <option value="board" <%= currentFilters && currentFilters.examType === 'board' ? 'selected' : '' %>>Board Exam</option>
+                  <option value="competitive" <%= currentFilters && currentFilters.examType === 'competitive' ? 'selected' : '' %>>Competitive Exam</option>
+                  <option value="other" <%= currentFilters && currentFilters.examType === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="academicYear" class="form-label">Academic Year</label>
+                <select class="form-select" id="academicYear" name="academicYear">
+                  <option value="">All Years</option>
+                  <% if (academicYears) { %>
+                    <% academicYears.forEach(year => { %>
+                      <option value="<%= year %>" <%= currentFilters && currentFilters.academicYear === year ? 'selected' : '' %>><%= year %></option>
+                    <% }); %>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Apply Filters
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="row">
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="col-12">
+          <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle"></i> <%= error %>
+          </div>
+        </div>
+      <% } %>
+
+      <% if (results && results.length > 0) { %>
+        <% results.forEach(result => { %>
+          <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h5 class="card-title text-primary mb-1"><%= result.title %></h5>
+                    <p class="text-muted small mb-0"><%= result.description ? result.description.substring(0, 80) + '...' : 'No description' %></p>
+                  </div>
+                  <div class="text-end">
+                    <span class="badge bg-<%= result.passPercentage >= 80 ? 'success' : result.passPercentage >= 60 ? 'warning' : 'danger' %> fs-6">
+                      <%= result.passPercentage %>%
+                    </span>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <small class="text-muted">Class</small><br>
+                    <span class="badge bg-info"><%= result.className %></span>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted">Exam Type</small><br>
+                    <span class="badge bg-secondary"><%= result.examTypeName %></span>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <small class="text-muted">Academic Year</small><br>
+                    <strong><%= result.academicYear %></strong>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted">Exam Date</small><br>
+                    <strong><%= result.examDate ? new Date(result.examDate).toLocaleDateString() : 'N/A' %></strong>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-4 text-center">
+                    <div class="border-end">
+                      <h6 class="mb-0 text-primary"><%= result.totalStudents || 0 %></h6>
+                      <small class="text-muted">Total</small>
+                    </div>
+                  </div>
+                  <div class="col-4 text-center">
+                    <div class="border-end">
+                      <h6 class="mb-0 text-info"><%= result.appearedStudents || 0 %></h6>
+                      <small class="text-muted">Appeared</small>
+                    </div>
+                  </div>
+                  <div class="col-4 text-center">
+                    <h6 class="mb-0 text-success"><%= result.passedStudents || 0 %></h6>
+                    <small class="text-muted">Passed</small>
+                  </div>
+                </div>
+
+                <% if (result.averageScore) { %>
+                  <div class="row mb-3">
+                    <div class="col-4 text-center">
+                      <small class="text-muted">Avg Score</small><br>
+                      <strong class="text-primary"><%= result.averageScore %>%</strong>
+                    </div>
+                    <div class="col-4 text-center">
+                      <small class="text-muted">Highest</small><br>
+                      <strong class="text-success"><%= result.highestScore || 'N/A' %>%</strong>
+                    </div>
+                    <div class="col-4 text-center">
+                      <small class="text-muted">Lowest</small><br>
+                      <strong class="text-warning"><%= result.lowestScore || 'N/A' %>%</strong>
+                    </div>
+                  </div>
+                <% } %>
+
+                <div class="d-grid">
+                  <a href="/result-summaries/<%= result._id %>" class="btn btn-outline-primary">
+                    <i class="fas fa-eye"></i> View Details
+                  </a>
+                </div>
+              </div>
+              <div class="card-footer bg-light">
+                <small class="text-muted">
+                  <i class="fas fa-calendar"></i> Published: <%= result.publishedDate ? new Date(result.publishedDate).toLocaleDateString() : 'N/A' %>
+                </small>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="text-center py-5">
+            <i class="fas fa-chart-bar fa-4x text-muted mb-4"></i>
+            <h4 class="text-muted">No Result Summaries Found</h4>
+            <p class="text-muted">Try adjusting your filters or check back later for new results.</p>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Statistics Section -->
+    <% if (results && results.length > 0) { %>
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+              <h4 class="text-center mb-4">
+                <i class="fas fa-chart-line"></i> Overall Performance Highlights
+              </h4>
+              <div class="row text-center">
+                <div class="col-md-3">
+                  <h3 class="mb-0"><%= results.length %></h3>
+                  <p class="mb-0">Total Results</p>
+                </div>
+                <div class="col-md-3">
+                  <h3 class="mb-0"><%= Math.round(results.reduce((sum, r) => sum + (r.passPercentage || 0), 0) / results.length) %>%</h3>
+                  <p class="mb-0">Average Pass Rate</p>
+                </div>
+                <div class="col-md-3">
+                  <h3 class="mb-0"><%= results.reduce((sum, r) => sum + (r.totalStudents || 0), 0) %></h3>
+                  <p class="mb-0">Total Students</p>
+                </div>
+                <div class="col-md-3">
+                  <h3 class="mb-0"><%= results.reduce((sum, r) => sum + (r.passedStudents || 0), 0) %></h3>
+                  <p class="mb-0">Students Passed</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<style>
+.hover-shadow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.3s ease;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+</style> 

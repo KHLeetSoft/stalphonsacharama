@@ -1,0 +1,279 @@
+<%- include('../layouts/admin', { title: 'Edit About Content', style: '',
+script: '', content: `
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Edit About Content</h3>
+        </div>
+        <div class="card-body">
+          <div id="alert-container"></div>
+
+          <form
+            id="aboutForm"
+            action="/admin/about/update"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <!-- Image Upload Section -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h4>About Page Image</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Upload New Image</label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        name="image"
+                        accept="image/*"
+                      />
+                      <small class="text-muted"
+                        >Recommended size: 1200x800px. Max file size: 2MB</small
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Current Image</label>
+                      <div class="current-image-container">
+                        ${about && about.image ? `
+                        <img
+                          src="${about.image}"
+                          alt="Current About Image"
+                          class="img-fluid rounded"
+                          style="
+                            max-height: 200px;
+                            width: 100%;
+                            object-fit: cover;
+                          "
+                        />
+                        <div class="mt-2">
+                          <a
+                            href="${about.image}"
+                            target="_blank"
+                            class="btn btn-sm btn-info"
+                          >
+                            <i class="fas fa-eye me-1"></i>View Full Image
+                          </a>
+                        </div>
+                        ` : `
+                        <div class="alert alert-info">
+                          <i class="fas fa-info-circle me-2"></i>No image
+                          uploaded yet
+                        </div>
+                        `}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mission Section -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h4>Mission Statement</h4>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label">Mission Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="missionTitle"
+                    value="${typeof missionTitle !== 'undefined' ? missionTitle : ''}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Mission Content</label>
+                  <textarea
+                    class="form-control"
+                    name="missionContent"
+                    rows="5"
+                    required
+                  >
+${typeof missionContent !== 'undefined' ? missionContent : ''}</textarea
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Vision Section -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h4>Vision Statement</h4>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label">Vision Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="visionTitle"
+                    value="${typeof visionTitle !== 'undefined' ? visionTitle : ''}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Vision Content</label>
+                  <textarea
+                    class="form-control"
+                    name="visionContent"
+                    rows="5"
+                    required
+                  >
+${typeof visionContent !== 'undefined' ? visionContent : ''}</textarea
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h4>School History</h4>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label">History Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="historyTitle"
+                    value="${typeof historyTitle !== 'undefined' ? historyTitle : ''}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">History Content</label>
+                  <textarea
+                    class="form-control"
+                    name="historyContent"
+                    rows="5"
+                    required
+                  >
+${typeof historyContent !== 'undefined' ? historyContent : ''}</textarea
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-end">
+                      <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+` }) %>
+
+<script>
+  // Image preview functionality
+  document
+    .querySelector('input[type="file"]')
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const currentImageContainer = document.querySelector(
+            ".current-image-container"
+          );
+          currentImageContainer.innerHTML = `
+        <img src="${e.target.result}" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+        <div class="mt-2">
+          <small class="text-muted">New image preview</small>
+        </div>
+      `;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+  // Form submission handler
+  document.getElementById("aboutForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const alertContainer = document.getElementById("alert-container");
+
+    try {
+      const response = await fetch("/admin/about/update", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      // Clear previous alerts
+      alertContainer.innerHTML = "";
+
+      if (response.ok) {
+        // Show success message
+        const alert = document.createElement("div");
+        alert.className = "alert alert-success alert-dismissible fade show";
+        alert.innerHTML = `
+        ${data.message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+        alertContainer.appendChild(alert);
+
+        // Update the current image container if a new image was uploaded
+        if (data.image) {
+          const currentImageContainer = document.querySelector(
+            ".current-image-container"
+          );
+          currentImageContainer.innerHTML = `
+            <img src="${data.image}" alt="Current About Image" class="img-fluid rounded" style="max-height: 200px">
+            <div class="mt-2">
+              <a href="${data.image}" target="_blank" class="btn btn-sm btn-info">
+                <i class="fas fa-eye me-1"></i>View Full Image
+              </a>
+            </div>
+          `;
+        }
+
+        // Clear the file input
+        document.querySelector('input[type="file"]').value = "";
+
+        // Scroll to the top to show the success message
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        // Show error message
+        const alert = document.createElement("div");
+        alert.className = "alert alert-danger alert-dismissible fade show";
+        alert.innerHTML = `
+        ${data.error}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+        alertContainer.appendChild(alert);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alertContainer.innerHTML = `
+      <div class="alert alert-danger alert-dismissible fade show">
+        An unexpected error occurred. Please try again.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+    }
+  });
+</script>
+
+<%- include('../layouts/admin-footer') %>

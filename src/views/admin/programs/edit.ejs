@@ -1,0 +1,76 @@
+<%- include('../../partials/header') %>
+
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Edit Academic Program</h2>
+    <a href="/admin/programs" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Back to Programs
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form action="/admin/programs/<%= program._id %>/edit" method="POST" enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="title" class="form-label">Program Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="<%= program.title %>" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="duration" class="form-label">Duration</label>
+            <input type="text" class="form-control" id="duration" name="duration" value="<%= program.duration %>" required>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="level" class="form-label">Level</label>
+            <select class="form-select" id="level" name="level" required>
+              <option value="">Select Level</option>
+              <option value="Certificate" <%= program.level === 'Certificate' ? 'selected' : '' %>>Certificate</option>
+              <option value="Diploma" <%= program.level === 'Diploma' ? 'selected' : '' %>>Diploma</option>
+              <option value="Bachelor's Degree" <%= program.level === 'Bachelor\'s Degree' ? 'selected' : '' %>>Bachelor's Degree</option>
+              <option value="Master's Degree" <%= program.level === 'Master\'s Degree' ? 'selected' : '' %>>Master's Degree</option>
+              <option value="Doctorate" <%= program.level === 'Doctorate' ? 'selected' : '' %>>Doctorate</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3" required><%= program.description %></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="requirements" class="form-label">Requirements</label>
+          <textarea class="form-control" id="requirements" name="requirements" rows="3"><%= program.requirements %></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="curriculum" class="form-label">Curriculum</label>
+          <textarea class="form-control" id="curriculum" name="curriculum" rows="4"><%= program.curriculum %></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="image" class="form-label">Program Image</label>
+          <% if (program.image) { %>
+            <div class="mb-2">
+              <img src="<%= program.image %>" alt="Current program image" class="img-thumbnail" style="max-height: 200px">
+            </div>
+          <% } %>
+          <input type="file" class="form-control" id="image" name="image" accept="image/*">
+          <small class="text-muted">Leave empty to keep current image</small>
+        </div>
+
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" id="isActive" name="isActive" <%= program.isActive ? 'checked' : '' %>>
+          <label class="form-check-label" for="isActive">Active Program</label>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <a href="/admin/programs" class="btn btn-light me-md-2">Cancel</a>
+          <button type="submit" class="btn btn-primary">Update Program</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

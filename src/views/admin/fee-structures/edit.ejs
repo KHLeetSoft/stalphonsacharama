@@ -1,0 +1,266 @@
+<%- include('../layouts/admin', {
+  title: 'Edit Fee Structure',
+  style: '',
+  script: '',
+  content: `
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-edit"></i> Edit Fee Structure: ${feeStructure.className} (${feeStructure.academicYear})
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" id="feeStructureForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="class" class="form-label">Class *</label>
+                  <select class="form-select" id="class" name="class" required>
+                    <option value="">Select Class</option>
+                    ${['nursery','lkg','ukg','1','2','3','4','5','6','7','8','9','10','11','12'].map(cls => `
+                      <option value="${cls}" ${feeStructure.class === cls ? 'selected' : ''}>
+                        ${cls === 'nursery' ? 'Nursery' : cls === 'lkg' ? 'LKG' : cls === 'ukg' ? 'UKG' : 'Class ' + cls}
+                      </option>
+                    `).join('')}
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="academicYear" class="form-label">Academic Year *</label>
+                  <input type="text" class="form-control" id="academicYear" name="academicYear" 
+                        value="${feeStructure.academicYear}" placeholder="e.g., 2024-25" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                <label for="paymentSchedule" class="form-label">Payment Schedule</label>
+                <select class="form-select" id="paymentSchedule" name="paymentSchedule">
+                  ${['monthly', 'quarterly', 'half-yearly', 'annually'].map(option => `
+                    <option value="${option}" ${feeStructure.paymentSchedule === option ? 'selected' : ''}>
+                      ${option.charAt(0).toUpperCase() + option.slice(1).replace('-', ' ')}
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="dueDate" class="form-label">Due Date (Day of Month)</label>
+                  <input type="number" class="form-control" id="dueDate" name="dueDate" 
+                        min="1" max="31" value="${feeStructure.dueDate}">
+                </div>
+              </div>
+             <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="lateFee" class="form-label">Late Fee (₹)</label>
+                  <input type="number" class="form-control" id="lateFee" name="lateFee" 
+                        min="0" step="0.01" value="${feeStructure.lateFee}">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="discount" class="form-label">Discount (%)</label>
+                  <input type="number" class="form-control" id="discount" name="discount" 
+                        min="0" max="100" step="0.01" value="${feeStructure.discount}">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="notes" class="form-label">Notes</label>
+                  <textarea class="form-control" id="notes" name="notes" rows="2" 
+                            placeholder="Additional notes about the fee structure...">${feeStructure.notes || ''}</textarea>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+         <div class="row">
+              <div class="col-12">
+                <h5>Fee Components</h5>
+                <div id="feeComponents">
+                  ${feeStructure.fees.map((fee, index) => `
+                    <div class="fee-component border rounded p-3 mb-3">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <label class="form-label">Category *</label>
+                          <select class="form-select" name="fees[${index}][category]" required>
+                            <option value="">Select Category</option>
+                            ${[
+                              { value: 'tuition', label: 'Tuition Fee' },
+                              { value: 'transport', label: 'Transport Fee' },
+                              { value: 'library', label: 'Library Fee' },
+                              { value: 'laboratory', label: 'Laboratory Fee' },
+                              { value: 'sports', label: 'Sports Fee' },
+                              { value: 'computer', label: 'Computer Fee' },
+                              { value: 'examination', label: 'Examination Fee' },
+                              { value: 'development', label: 'Development Fee' },
+                              { value: 'other', label: 'Other' }
+                            ].map(option => `
+                              <option value="${option.value}" ${fee.category === option.value ? 'selected' : ''}>${option.label}</option>
+                            `).join('')}
+                          </select>
+                        </div>
+
+                        <div class="col-md-3">
+                          <label class="form-label">Name *</label>
+                          <input type="text" class="form-control" name="fees[${index}][name]" 
+                                value="${fee.name}" placeholder="Fee name" required>
+                        </div>
+
+                        <div class="col-md-2">
+                          <label class="form-label">Amount (₹) *</label>
+                          <input type="number" class="form-control" name="fees[${index}][amount]" 
+                                min="0" step="0.01" value="${fee.amount}" placeholder="0.00" required>
+                        </div>
+
+                        <div class="col-md-2">
+                          <label class="form-label">Frequency *</label>
+                          <select class="form-select" name="fees[${index}][frequency]" required>
+                            <option value="">Select</option>
+                            ${['monthly', 'quarterly', 'half-yearly', 'annually', 'one-time'].map(option => `
+                              <option value="${option}" ${fee.frequency === option ? 'selected' : ''}>
+                                ${option.charAt(0).toUpperCase() + option.slice(1).replace('-', ' ')}
+                              </option>
+                            `).join('')}
+                          </select>
+                        </div>
+
+                        <div class="col-md-2">
+                          <label class="form-label">Required</label>
+                          <select class="form-select" name="fees[${index}][isRequired]">
+                            <option value="true" ${fee.isRequired ? 'selected' : ''}>Yes</option>
+                            <option value="false" ${!fee.isRequired ? 'selected' : ''}>No</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="row mt-2">
+                        <div class="col-11">
+                          <label class="form-label">Description</label>
+                          <input type="text" class="form-control" name="fees[${index}][description]" 
+                                value="${fee.description || ''}" placeholder="Optional description">
+                        </div>
+                        <div class="col-1">
+                          <label class="form-label">&nbsp;</label>
+                          <button type="button" class="btn btn-danger btn-sm" onclick="removeFeeComponent(this)">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="addFeeComponent()">
+                  <i class="fas fa-plus"></i> Add Fee Component
+                </button>
+              </div>
+            </div>
+
+
+            <hr>
+
+            <div class="d-flex justify-content-between">
+              <a href="/admin/fee-structures" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update Fee Structure
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  `
+}) %>
+<script>
+let feeComponentCount = `${feeStructure.fees.length}` ;
+
+function addFeeComponent() {
+  const container = document.getElementById('feeComponents');
+  const newComponent = document.createElement('div');
+  newComponent.className = 'fee-component border rounded p-3 mb-3';
+  newComponent.innerHTML = `
+    <div class="row">
+      <div class="col-md-3">
+        <label class="form-label">Category *</label>
+        <select class="form-select" name="fees[${feeComponentCount}][category]" required>
+          <option value="">Select Category</option>
+          <option value="tuition">Tuition Fee</option>
+          <option value="transport">Transport Fee</option>
+          <option value="library">Library Fee</option>
+          <option value="laboratory">Laboratory Fee</option>
+          <option value="sports">Sports Fee</option>
+          <option value="computer">Computer Fee</option>
+          <option value="examination">Examination Fee</option>
+          <option value="development">Development Fee</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-control" name="fees[${feeComponentCount}][name]" 
+               placeholder="Fee name" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Amount (₹) *</label>
+        <input type="number" class="form-control" name="fees[${feeComponentCount}][amount]" 
+               min="0" step="0.01" placeholder="0.00" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Frequency *</label>
+        <select class="form-select" name="fees[${feeComponentCount}][frequency]" required>
+          <option value="">Select</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="half-yearly">Half Yearly</option>
+          <option value="annually">Annually</option>
+          <option value="one-time">One Time</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Required</label>
+        <select class="form-select" name="fees[${feeComponentCount}][isRequired]">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-11">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-control" name="fees[${feeComponentCount}][description]" 
+               placeholder="Optional description">
+      </div>
+      <div class="col-1">
+        <label class="form-label">&nbsp;</label>
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeFeeComponent(this)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  container.appendChild(newComponent);
+  feeComponentCount++;
+}
+
+function removeFeeComponent(button) {
+  button.closest('.fee-component').remove();
+}
+</script>
+
+<%- include('../layouts/admin-footer') %> 

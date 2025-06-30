@@ -1,0 +1,188 @@
+<%- include('../layouts/admin', { 
+  title: 'Edit News',
+  style: `
+    <style>
+      .image-preview { max-width: 200px; max-height: 150px; object-fit: cover; }
+      .category-badge { cursor: pointer; }
+      .category-badge.active { background-color: #007bff !important; }
+    </style>
+  `,
+  script: `
+    <!-- <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script> -->
+    <script>
+      // Image preview functionality
+      function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(input.files[0]);
+        } else {
+          preview.style.display = 'none';
+        }
+      }
+
+      // Auto-generate meta title and description from title
+      document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('title');
+        const metaTitle = document.getElementById('metaTitle');
+        const metaDescription = document.getElementById('metaDescription');
+        
+        titleInput.addEventListener('input', function() {
+          const title = this.value;
+          if (!metaTitle.value) {
+            metaTitle.value = title;
+          }
+          if (!metaDescription.value) {
+            metaDescription.value = title + ' - Latest news and updates from our school.';
+          }
+        });
+
+        // Initialize CKEditor
+        ClassicEditor
+          .create(document.querySelector('#content'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo'],
+            heading: {
+              options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+              ]
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      });
+    </script>
+  `,
+  content: `
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Edit Article</h2>
+    <a href="/admin/news" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST" action="/admin/news/edit/${news._id}" enctype="multipart/form-data">
+        <!-- Basic Information -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Basic Information</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" class="form-control" id="title" name="title" value="${news.title}" required>
+          </div>
+          <div class="col-md-4">
+            <label for="category" class="form-label">Category *</label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="">Select Category</option>
+              <option value="academic" ${news.category === 'academic' ? 'selected' : ''}>Academic</option>
+              <option value="events" ${news.category === 'events' ? 'selected' : ''}>Events</option>
+              <option value="achievements" ${news.category === 'achievements' ? 'selected' : ''}>Achievements</option>
+              <option value="announcements" ${news.category === 'announcements' ? 'selected' : ''}>Announcements</option>
+              <option value="sports" ${news.category === 'sports' ? 'selected' : ''}>Sports</option>
+              <option value="cultural" ${news.category === 'cultural' ? 'selected' : ''}>Cultural</option>
+              <option value="general" ${news.category === 'general' ? 'selected' : ''}>General</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="image" class="form-label">Featured Image</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+            ${news.image ? `
+              <div class="mt-2">
+                <p class="text-muted">Current Image:</p>
+                <img src="${news.image}" alt="Current Image" class="image-preview rounded">
+              </div>
+            ` : ''}
+            <div id="imagePreview" class="mt-2" style="display: none;">
+              <p class="text-muted">New Image Preview:</p>
+              <img id="previewImg" class="image-preview rounded" alt="Preview">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Options</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="featured" name="featured" ${news.featured ? 'checked' : ''}>
+              <label class="form-check-label" for="featured">
+                Mark as Featured Article
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Content</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12">
+            <label for="content" class="form-label">Content *</label>
+            <textarea class="form-control" id="content" name="content" rows="10" required>${news.content}</textarea>
+          </div>
+        </div>
+
+        <!-- SEO Information -->
+        <!-- <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">SEO Information</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="metaTitle" class="form-label">Meta Title</label>
+            <input type="text" class="form-control" id="metaTitle" name="metaTitle" value="${news.metaTitle || ''}" placeholder="SEO title for search engines">
+          </div>
+          <div class="col-md-6">
+            <label for="metaDescription" class="form-label">Meta Description</label>
+            <input type="text" class="form-control" id="metaDescription" name="metaDescription" value="${news.metaDescription || ''}" placeholder="Brief description for search engines">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="tags" class="form-label">Tags (comma-separated)</label>
+            <input type="text" class="form-control" id="tags" name="tags" value="${news.tags ? news.tags.join(', ') : ''}" placeholder="e.g., school, education, students">
+          </div>
+          <div class="col-md-6">
+            <label for="seoKeywords" class="form-label">SEO Keywords (comma-separated)</label>
+            <input type="text" class="form-control" id="seoKeywords" name="seoKeywords" value="${news.seoKeywords ? news.seoKeywords.join(', ') : ''}" placeholder="e.g., school news, education updates">
+          </div>
+        </div> -->
+
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Update Article
+            </button>
+            <a href="/admin/news" class="btn btn-secondary ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  `
+}) %>
+
+<%- include('../layouts/admin-footer') %> 

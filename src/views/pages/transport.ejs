@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+
+<div class="container my-5">
+  <h2 class="mb-4">Transport Information</h2>
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+  <% if (typeof transports === 'undefined' || transports.length === 0) { %>
+    <p>No transport information available at this time.</p>
+  <% } else { %>
+    <div class="row">
+      <% transports.forEach(function(transport) { %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <% if (transport.vehicleImage) { %>
+              <img src="<%= transport.vehicleImage %>" class="card-img-top" alt="Vehicle Image" style="max-height:180px;object-fit:cover;">
+            <% } %>
+            <div class="card-body">
+              <h5 class="card-title">Driver: <%= transport.driverName %></h5>
+              <p><strong>Time:</strong> <%= transport.time %></p>
+              <p><strong>Rules:</strong><br><%= transport.rules %></p>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %> 

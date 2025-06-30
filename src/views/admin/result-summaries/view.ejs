@@ -1,0 +1,301 @@
+<%- include('../layouts/admin', {
+  title: 'Result Summary Details',
+  style: `
+    <style>
+      .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+      .stat-card.success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+      .stat-card.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+      .stat-card.info { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+      .performer-card { border-left: 4px solid #007bff; }
+      .subject-card { border-left: 4px solid #28a745; }
+    </style>
+  `,
+  script: '',
+  content: `
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Result Summary Details</h2>
+    <div>
+      <a href="/admin/result-summaries/edit/${resultSummary._id}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edit
+      </a>
+      <a href="/admin/result-summaries" class="btn btn-secondary ms-2">
+        <i class="fas fa-arrow-left"></i> Back to List
+      </a>
+    </div>
+  </div>
+
+  <!-- Basic Information -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4 class="mb-0"><i class="fas fa-info-circle"></i> Basic Information</h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>${resultSummary.title}</h5>
+          <p class="text-muted">${resultSummary.description || 'No description provided'}</p>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-6">
+              <strong>Class:</strong><br>
+              <span class="badge bg-info">${resultSummary.className}</span>
+            </div>
+            <div class="col-6">
+              <strong>Exam Type:</strong><br>
+              <span class="badge bg-secondary">${resultSummary.examTypeName}</span>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-6">
+              <strong>Academic Year:</strong><br>
+              <span class="badge bg-primary">${resultSummary.academicYear}</span>
+            </div>
+            <div class="col-6">
+              <strong>Exam Date:</strong><br>
+              <span class="text-muted">${new Date(resultSummary.examDate).toLocaleDateString()}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <h3 class="mb-0">${resultSummary.totalStudents}</h3>
+          <p class="mb-0">Total Students</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card info">
+        <div class="card-body text-center">
+          <h3 class="mb-0">${resultSummary.appearedStudents}</h3>
+          <p class="mb-0">Appeared Students</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card success">
+        <div class="card-body text-center">
+          <h3 class="mb-0">${resultSummary.passedStudents}</h3>
+          <p class="mb-0">Passed Students</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card warning">
+        <div class="card-body text-center">
+          <h3 class="mb-0">${resultSummary.passPercentage}%</h3>
+          <p class="mb-0">Pass Percentage</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Division Breakdown -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Division Breakdown</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="d-flex justify-content-between">
+                <span>Distinction:</span>
+                <strong>${resultSummary.distinctionStudents}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>First Division:</span>
+                <strong>${resultSummary.firstDivisionStudents}</strong>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex justify-content-between">
+                <span>Second Division:</span>
+                <strong>${resultSummary.secondDivisionStudents}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>Third Division:</span>
+                <strong>${resultSummary.thirdDivisionStudents}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-chart-line"></i> Score Statistics</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-4">
+              <div class="text-center">
+                <h4 class="text-primary">${resultSummary.averageScore || 'N/A'}%</h4>
+                <small class="text-muted">Average Score</small>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="text-center">
+                <h4 class="text-success">${resultSummary.highestScore || 'N/A'}%</h4>
+                <small class="text-muted">Highest Score</small>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="text-center">
+                <h4 class="text-warning">${resultSummary.lowestScore || 'N/A'}%</h4>
+                <small class="text-muted">Lowest Score</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subject-wise Results -->
+  ${resultSummary.subjectWiseResults && resultSummary.subjectWiseResults.length > 0 ? `
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-book"></i> Subject-wise Results</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>Subject</th>
+                <th>Average Score</th>
+                <th>Highest Score</th>
+                <th>Pass Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${resultSummary.subjectWiseResults.map(subject => `
+                <tr>
+                  <td><strong>${subject.subject}</strong></td>
+                  <td>
+                    <span class="badge bg-${subject.averageScore >= 80 ? 'success' : subject.averageScore >= 60 ? 'warning' : 'danger'}">
+                      ${subject.averageScore || 'N/A'}%
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge bg-info">${subject.highestScore || 'N/A'}%</span>
+                  </td>
+                  <td>
+                    <span class="badge bg-${subject.passPercentage >= 80 ? 'success' : subject.passPercentage >= 60 ? 'warning' : 'danger'}">
+                      ${subject.passPercentage || 'N/A'}%
+                    </span>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  ` : ''}
+
+  <!-- Top Performers -->
+  ${resultSummary.topPerformers && resultSummary.topPerformers.length > 0 ? `
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-trophy"></i> Top Performers</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          ${resultSummary.topPerformers.map((performer, index) => `
+            <div class="col-md-6 mb-3">
+              <div class="card performer-card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-1">
+                        <span class="badge bg-${index === 0 ? 'warning' : index === 1 ? 'secondary' : index === 2 ? 'danger' : 'info'} me-2">
+                          ${performer.rank}
+                        </span>
+                        ${performer.studentName}
+                      </h6>
+                      <small class="text-muted">Roll No: ${performer.rollNumber}</small>
+                    </div>
+                    <div class="text-end">
+                      <h5 class="mb-0 text-primary">${performer.totalScore || 'N/A'}</h5>
+                      <small class="text-muted">Total Score</small>
+                      <br>
+                      <span class="badge bg-success">${performer.percentage || 'N/A'}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  ` : ''}
+
+  <!-- Additional Information -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-sticky-note"></i> Remarks</h5>
+        </div>
+        <div class="card-body">
+          <p>${resultSummary.remarks || 'No remarks provided'}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-tags"></i> Tags</h5>
+        </div>
+        <div class="card-body">
+          ${resultSummary.tags && resultSummary.tags.length > 0 ? 
+            resultSummary.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('') : 
+            '<span class="text-muted">No tags</span>'
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metadata -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0"><i class="fas fa-info"></i> Metadata</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <strong>Status:</strong><br>
+          ${resultSummary.isPublished ? 
+            `<span class="badge bg-success">Published</span><br><small class="text-muted">${new Date(resultSummary.publishedDate).toLocaleDateString()}</small>` : 
+            '<span class="badge bg-warning">Draft</span>'
+          }
+        </div>
+        <div class="col-md-4">
+          <strong>Created By:</strong><br>
+          <span class="text-muted">${resultSummary.createdBy ? resultSummary.createdBy.name : 'Unknown'}</span>
+        </div>
+        <div class="col-md-4">
+          <strong>Created Date:</strong><br>
+          <span class="text-muted">${new Date(resultSummary.createdAt).toLocaleDateString()}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+` }) %>
+
+<%- include('../layouts/admin-footer') %> 

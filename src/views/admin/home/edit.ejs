@@ -1,0 +1,1236 @@
+<%- include('../layouts/admin', { title: 'Edit Home Content', content: `
+<div class="container mt-4">
+  <h2>Edit Home Content</h2>
+  
+  <form action="/admin/home/update?_t=${Date.now()}" method="POST" enctype="multipart/form-data">
+    <!-- Banner Slides Section -->
+    <div class="card mb-4">
+      <div class="card-header"><h4>Banner Slides</h4></div>
+      <div class="card-body">
+        <div id="bannerSlides">
+          ${homeContent.bannerSlides && homeContent.bannerSlides.length > 0 ? homeContent.bannerSlides.map((slide,
+          index) => `
+          <div class="banner-slide mb-3">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Image</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    name="bannerSlides[${index}][image]"
+                    accept="image/*"
+                  />
+                  ${slide.imageUrl ? `
+                  <input
+                    type="hidden"
+                    name="bannerSlides[${index}][imageUrl]"
+                    value="${slide.imageUrl}"
+                  />
+                  <img
+                    src="${slide.imageUrl}"
+                    class="img-thumbnail mt-2"
+                    style="max-height: 100px"
+                  />
+                  ` : ''}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="bannerSlides[${index}][title]"
+                    value="${slide.title}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Subtitle</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="bannerSlides[${index}][subtitle]"
+                    value="${slide.subtitle}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">CTA Text</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="bannerSlides[${index}][ctaText]"
+                    value="${slide.ctaText}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">CTA Link</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="bannerSlides[${index}][ctaLink]"
+                    value="${slide.ctaLink}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input 
+                      class="form-check-input" 
+                      type="checkbox" 
+                      name="bannerSlides[${index}][isActive]" 
+                      value="true" 
+                      ${slide.isActive !== false ? 'checked' : ''} 
+                    />
+                    <label class="form-check-label">Active</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm"
+              onclick="removeBannerSlide(this)"
+            >
+              Remove
+            </button>
+          </div>
+          `).join('') : ''}
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="addBannerSlide()"
+        >
+          Add Banner Slide
+        </button>
+      </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="card mb-4">
+      <div class="card-header"><h4>Welcome Section</h4></div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">Welcome Title</label>
+          <input
+            type="text"
+            class="form-control"
+            name="welcomeTitle"
+            value="${homeContent.welcomeTitle}"
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Welcome Content</label>
+          <textarea class="form-control" name="welcomeContent" rows="5">
+${homeContent.welcomeContent}</textarea
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Sections -->
+    <div class="card mb-4">
+      <div class="card-header"><h4>Featured Sections</h4></div>
+      <div class="card-body">
+        <div id="featuredSections">
+          ${homeContent.featuredSections && homeContent.featuredSections.length > 0 ?
+          homeContent.featuredSections.map((section, index) => `
+          <div class="featured-section mb-3">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="featuredSections[${index}][title]"
+                    value="${section.title}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Content</label>
+                  <textarea
+                    class="form-control"
+                    name="featuredSections[${index}][content]"
+                    rows="3"
+                  >
+${section.content}</textarea
+                  >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Icon</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="featuredSections[${index}][icon]"
+                    value="${section.icon}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Link</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="featuredSections[${index}][link]"
+                    value="${section.link}"
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm"
+              onclick="removeFeaturedSection(this)"
+            >
+              Remove
+            </button>
+          </div>
+          `).join('') : ''}
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="addFeaturedSection()"
+        >
+          Add Featured Section
+        </button>
+      </div>
+    </div>
+
+    <!-- History Section -->
+    <div class="card mb-4">
+      <div class="card-header"><h4>History Section</h4></div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">History Content</label>
+          <textarea class="form-control" name="history" rows="5">${typeof history !== 'undefined' ? history : (homeContent.history || '')}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Our Society Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="fas fa-users me-2"></i>Our Society</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label class="form-label">Section Title</label>
+              <input type="text" class="form-control" name="ourSociety[title]" value="${homeContent.ourSociety?.title || 'Our Society'}" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Content</label>
+              <textarea class="form-control" name="ourSociety[content]" rows="4">${homeContent.ourSociety?.content || ''}</textarea>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Image</label>
+              <input type="file" class="form-control" name="ourSociety[image]" accept="image/*" />
+              ${homeContent.ourSociety?.image ? `
+              <img src="${homeContent.ourSociety.image}" class="img-thumbnail mt-2" style="max-height: 100px" />
+              <input type="hidden" name="ourSociety[imageUrl]" value="${homeContent.ourSociety.image}" />
+              ` : ''}
+            </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ourSociety[isActive]" value="true" ${homeContent.ourSociety?.isActive !== false ? 'checked' : ''} />
+                <label class="form-check-label">Active</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Who We Are Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-info text-white">
+        <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Who We Are</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Image</label>
+              <input type="file" class="form-control" name="whoWeAre[image]" accept="image/*" />
+              ${homeContent.whoWeAre?.image ? `
+              <img src="${homeContent.whoWeAre.image}" class="img-thumbnail mt-2" style="max-height: 100px" />
+              <input type="hidden" name="whoWeAre[imageUrl]" value="${homeContent.whoWeAre.image}" />
+              ` : ''}
+            </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="whoWeAre[isActive]" value="true" ${homeContent.whoWeAre?.isActive !== false ? 'checked' : ''} />
+                <label class="form-check-label">Active</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label class="form-label">Section Title</label>
+              <input type="text" class="form-control" name="whoWeAre[title]" value="${homeContent.whoWeAre?.title || 'Who We Are'}" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Content</label>
+              <textarea class="form-control" name="whoWeAre[content]" rows="4">${homeContent.whoWeAre?.content || ''}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infrastructure Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="fas fa-building me-2"></i>Infrastructure</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Image</label>
+              <input type="file" class="form-control" name="infrastructure[image]" accept="image/*" />
+              ${homeContent.infrastructure?.image ? `
+              <img src="${homeContent.infrastructure.image}" class="img-thumbnail mt-2" style="max-height: 100px" />
+              <input type="hidden" name="infrastructure[imageUrl]" value="${homeContent.infrastructure.image}" />
+              ` : ''}
+            </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="infrastructure[isActive]" value="true" ${homeContent.infrastructure?.isActive !== false ? 'checked' : ''} />
+                <label class="form-check-label">Active</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label class="form-label">Section Title</label>
+              <input type="text" class="form-control" name="infrastructure[title]" value="${homeContent.infrastructure?.title || 'Infrastructure'}" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Subtitle</label>
+              <input type="text" class="form-control" name="infrastructure[subtitle]" value="${homeContent.infrastructure?.subtitle || 'Our Facilities'}" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Content</label>
+              <textarea class="form-control" name="infrastructure[content]" rows="4">${homeContent.infrastructure?.content || ''}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Announcements Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white">
+        <h4 class="mb-0"><i class="fas fa-bullhorn me-2"></i>Recent Announcements</h4>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Section Title</label>
+            <input type="text" class="form-control" name="recentAnnouncements[title]" value="${homeContent.recentAnnouncements?.title || 'Recent Announcements'}" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Subtitle</label>
+            <input type="text" class="form-control" name="recentAnnouncements[subtitle]" value="${homeContent.recentAnnouncements?.subtitle || 'Stay Updated'}" />
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="recentAnnouncements[isActive]" value="true" ${homeContent.recentAnnouncements?.isActive !== false ? 'checked' : ''} />
+            <label class="form-check-label">Active</label>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <label class="form-label mb-0">Announcements</label>
+            <button type="button" class="btn btn-success btn-sm" id="addAnnouncement">
+              <i class="fas fa-plus me-2"></i>Add Announcement
+            </button>
+          </div>
+          <div id="announcements">
+            ${homeContent.recentAnnouncements?.announcements && homeContent.recentAnnouncements.announcements.length > 0 ? homeContent.recentAnnouncements.announcements.map((announcement, index) => `
+            <div class="announcement-item card mb-3" data-index="${index}">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="recentAnnouncements[announcements][${index}][title]" value="${announcement.title}" required />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Content</label>
+                    <textarea class="form-control" name="recentAnnouncements[announcements][${index}][content]" rows="2" required>${announcement.content}</textarea>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" name="recentAnnouncements[announcements][${index}][date]" value="${new Date(announcement.date).toISOString().split('T')[0]}" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Images</label>
+                    <input type="file" class="form-control" name="recentAnnouncements[announcements][${index}][images]" accept="image/*" multiple />
+                    ${announcement.images && announcement.images.length > 0 ? `
+                    <div class="mt-2">
+                      ${announcement.images.map(img => `<img src="${img}" class="img-thumbnail me-1" style="max-height: 40px; max-width: 40px;" />`).join('')}
+                      <input type="hidden" name="recentAnnouncements[announcements][${index}][existingImages]" value="${JSON.stringify(announcement.images)}" />
+                    </div>
+                    ` : ''}
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="recentAnnouncements[announcements][${index}][isActive]" value="true" ${announcement.isActive !== false ? 'checked' : ''} />
+                    <label class="form-check-label">Active</label>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-danger remove-announcement" data-index="${index}">
+                    <i class="fas fa-trash me-1"></i>Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+            `).join('') : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sports Achievements Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">
+        <h4 class="mb-0"><i class="fas fa-trophy me-2"></i>Sports Achievements</h4>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Section Title</label>
+            <input type="text" class="form-control" name="sportsAchievements[title]" value="${homeContent.sportsAchievements?.title || 'Sports Achievements'}" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Subtitle</label>
+            <input type="text" class="form-control" name="sportsAchievements[subtitle]" value="${homeContent.sportsAchievements?.subtitle || 'Excellence in Sports'}" />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Section Content</label>
+          <textarea class="form-control" name="sportsAchievements[content]" rows="3">${homeContent.sportsAchievements?.content || ''}</textarea>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="sportsAchievements[isActive]" value="true" ${homeContent.sportsAchievements?.isActive !== false ? 'checked' : ''} />
+            <label class="form-check-label">Active</label>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <label class="form-label mb-0">Achievements</label>
+            <button type="button" class="btn btn-success btn-sm" id="addSportsAchievement">
+              <i class="fas fa-plus me-2"></i>Add Achievement
+            </button>
+          </div>
+          <div id="sportsAchievements">
+            ${homeContent.sportsAchievements?.achievements && homeContent.sportsAchievements.achievements.length > 0 ? homeContent.sportsAchievements.achievements.map((achievement, index) => `
+            <div class="achievement-item card mb-3" data-index="${index}">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="sportsAchievements[achievements][${index}][title]" value="${achievement.title}" required />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="sportsAchievements[achievements][${index}][description]" rows="2" required>${achievement.description}</textarea>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" name="sportsAchievements[achievements][${index}][category]">
+                      <option value="sports" ${achievement.category === 'sports' ? 'selected' : ''}>Sports</option>
+                      <option value="academic" ${achievement.category === 'academic' ? 'selected' : ''}>Academic</option>
+                      <option value="cultural" ${achievement.category === 'cultural' ? 'selected' : ''}>Cultural</option>
+                      <option value="other" ${achievement.category === 'other' ? 'selected' : ''}>Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" name="sportsAchievements[achievements][${index}][date]" value="${new Date(achievement.date).toISOString().split('T')[0]}" />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Images</label>
+                    <input type="file" class="form-control" name="sportsAchievements[achievements][${index}][images]" accept="image/*" multiple />
+                    ${achievement.images && achievement.images.length > 0 ? `
+                    <div class="mt-2">
+                      ${achievement.images.map(img => `<img src="${img}" class="img-thumbnail me-1" style="max-height: 40px; max-width: 40px;" />`).join('')}
+                      <input type="hidden" name="sportsAchievements[achievements][${index}][existingImages]" value="${JSON.stringify(achievement.images)}" />
+                    </div>
+                    ` : ''}
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="sportsAchievements[achievements][${index}][isActive]" value="true" ${achievement.isActive !== false ? 'checked' : ''} />
+                    <label class="form-check-label">Active</label>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-danger remove-achievement" data-index="${index}">
+                    <i class="fas fa-trash me-1"></i>Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+            `).join('') : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Co-Curricular Achievements Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-info text-white">
+        <h4 class="mb-0"><i class="fas fa-award me-2"></i>Co-Curricular Achievements</h4>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Section Title</label>
+            <input type="text" class="form-control" name="coCurricularAchievements[title]" value="${homeContent.coCurricularAchievements?.title || 'Co-Curricular Achievements'}" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Subtitle</label>
+            <input type="text" class="form-control" name="coCurricularAchievements[subtitle]" value="${homeContent.coCurricularAchievements?.subtitle || 'Excellence Beyond Academics'}" />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Section Content</label>
+          <textarea class="form-control" name="coCurricularAchievements[content]" rows="3">${homeContent.coCurricularAchievements?.content || ''}</textarea>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="coCurricularAchievements[isActive]" value="true" ${homeContent.coCurricularAchievements?.isActive !== false ? 'checked' : ''} />
+            <label class="form-check-label">Active</label>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <label class="form-label mb-0">Achievements</label>
+            <button type="button" class="btn btn-success btn-sm" id="addCoCurricularAchievement">
+              <i class="fas fa-plus me-2"></i>Add Achievement
+            </button>
+          </div>
+          <div id="coCurricularAchievements">
+            ${homeContent.coCurricularAchievements?.achievements && homeContent.coCurricularAchievements.achievements.length > 0 ? homeContent.coCurricularAchievements.achievements.map((achievement, index) => `
+            <div class="achievement-item card mb-3" data-index="${index}">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="coCurricularAchievements[achievements][${index}][title]" required />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="coCurricularAchievements[achievements][${index}][description]" rows="2" required></textarea>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" name="coCurricularAchievements[achievements][${index}][category]">
+                      <option value="cultural">Cultural</option>
+                      <option value="academic">Academic</option>
+                      <option value="other">Other</option>
+                      <option value="sports">Sports</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" name="coCurricularAchievements[achievements][${index}][date]" value="${new Date().toISOString().split('T')[0]}" />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Images</label>
+                    <input type="file" class="form-control" name="coCurricularAchievements[achievements][${index}][images]" accept="image/*" multiple />
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="coCurricularAchievements[achievements][${index}][isActive]" value="true" checked />
+                    <label class="form-check-label">Active</label>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-danger remove-co-curricular-achievement" data-index="${index}">
+                    <i class="fas fa-trash me-1"></i>Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+            `).join('') : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievers Section -->
+    <div class="card mb-4">
+      <div class="card-header bg-danger text-white">
+        <h4 class="mb-0"><i class="fas fa-star me-2"></i>Our Achievers</h4>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Section Title</label>
+            <input type="text" class="form-control" name="achievers[title]" value="${homeContent.achievers?.title || 'Our Achievers'}" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Subtitle</label>
+            <input type="text" class="form-control" name="achievers[subtitle]" value="${homeContent.achievers?.subtitle || 'Celebrating Success'}" />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Section Content</label>
+          <textarea class="form-control" name="achievers[content]" rows="3">${homeContent.achievers?.content || ''}</textarea>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="achievers[isActive]" value="true" ${homeContent.achievers?.isActive !== false ? 'checked' : ''} />
+            <label class="form-check-label">Active</label>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <label class="form-label mb-0">Achievers</label>
+            <button type="button" class="btn btn-success btn-sm" id="addAchiever">
+              <i class="fas fa-plus me-2"></i>Add Achiever
+            </button>
+          </div>
+          <div id="achievers">
+            ${homeContent.achievers?.achievers && homeContent.achievers.achievers.length > 0 ? homeContent.achievers.achievers.map((achiever, index) => `
+            <div class="achiever-item card mb-3" data-index="${index}">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-2">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" name="achievers[achievers][${index}][name]" value="${achiever.name}" required />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Achievement</label>
+                    <textarea class="form-control" name="achievers[achievers][${index}][achievement]" rows="2" required>${achiever.achievement}</textarea>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" name="achievers[achievers][${index}][category]">
+                      <option value="student" ${achiever.category === 'student' ? 'selected' : ''}>Student</option>
+                      <option value="teacher" ${achiever.category === 'teacher' ? 'selected' : ''}>Teacher</option>
+                      <option value="alumni" ${achiever.category === 'alumni' ? 'selected' : ''}>Alumni</option>
+                      <option value="other" ${achiever.category === 'other' ? 'selected' : ''}>Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Year</label>
+                    <input type="text" class="form-control" name="achievers[achievers][${index}][year]" value="${achiever.year || ''}" placeholder="2024" />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Images</label>
+                    <input type="file" class="form-control" name="achievers[achievers][${index}][images]" accept="image/*" multiple />
+                    ${achiever.images && achiever.images.length > 0 ? `
+                    <div class="mt-2">
+                      ${achiever.images.map(img => `<img src="${img}" class="img-thumbnail me-1" style="max-height: 40px; max-width: 40px;" />`).join('')}
+                      <input type="hidden" name="achievers[achievers][${index}][existingImages]" value="${JSON.stringify(achiever.images)}" />
+                    </div>
+                    ` : ''}
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-1">
+                    <label class="form-label">Order</label>
+                    <input type="number" class="form-control" name="achievers[achievers][${index}][order]" value="${achiever.order || index}" min="0" />
+                  </div>
+                  <div class="col-md-11">
+                    <div class="form-check mt-4">
+                      <input class="form-check-input" type="checkbox" name="achievers[achievers][${index}][isActive]" value="true" ${achiever.isActive !== false ? 'checked' : ''} />
+                      <label class="form-check-label">Active</label>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger remove-achiever" data-index="${index}">
+                      <i class="fas fa-trash me-1"></i>Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            `).join('') : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fas fa-save me-2"></i>Save Changes
+      </button>
+      
+      <!-- Reset Button -->
+      <button type="button" class="btn btn-danger btn-lg ms-3" onclick="resetHomeContent()">
+        <i class="fas fa-trash me-2"></i>Reset All Data
+      </button>
+    </div>
+  </form>
+  
+  <!-- Reset Form -->
+  <form id="resetForm" action="/admin/home/reset" method="POST" style="display: none;">
+  </form>
+</div>
+` }) %>
+<script>
+  // Get initial counts from server-side data
+  let announcementIndex = 0;
+  let sportsAchievementIndex = 0;
+  let coCurricularAchievementIndex = 0;
+  let achieverIndex = 0;
+  let bannerSlideIndex = 0;
+  let featuredSectionIndex = 0;
+
+  // Initialize counts when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // Count existing items
+    announcementIndex = document.querySelectorAll('.announcement-item').length;
+    sportsAchievementIndex = document.querySelectorAll('#sportsAchievements .achievement-item').length;
+    coCurricularAchievementIndex = document.querySelectorAll('#coCurricularAchievements .achievement-item').length;
+    achieverIndex = document.querySelectorAll('.achiever-item').length;
+    bannerSlideIndex = document.querySelectorAll('.banner-slide').length;
+    featuredSectionIndex = document.querySelectorAll('.featured-section').length;
+
+    // Add event listeners for all add buttons
+    setupEventListeners();
+  });
+
+  function setupEventListeners() {
+    // Announcements
+    const addAnnouncementBtn = document.getElementById('addAnnouncement');
+    if (addAnnouncementBtn) {
+      addAnnouncementBtn.addEventListener('click', addAnnouncement);
+    }
+
+    // Sports Achievements
+    const addSportsAchievementBtn = document.getElementById('addSportsAchievement');
+    if (addSportsAchievementBtn) {
+      addSportsAchievementBtn.addEventListener('click', addSportsAchievement);
+    }
+
+    // Co-Curricular Achievements
+    const addCoCurricularAchievementBtn = document.getElementById('addCoCurricularAchievement');
+    if (addCoCurricularAchievementBtn) {
+      addCoCurricularAchievementBtn.addEventListener('click', addCoCurricularAchievement);
+    }
+
+    // Achievers
+    const addAchieverBtn = document.getElementById('addAchiever');
+    if (addAchieverBtn) {
+      addAchieverBtn.addEventListener('click', addAchiever);
+    }
+  }
+
+  function addAnnouncement() {
+    const container = document.getElementById('announcements');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'announcement-item card mb-3';
+    itemDiv.setAttribute('data-index', announcementIndex);
+    
+    itemDiv.innerHTML = `
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="recentAnnouncements[announcements][${announcementIndex}][title]" required />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Content</label>
+            <textarea class="form-control" name="recentAnnouncements[announcements][${announcementIndex}][content]" rows="2" required></textarea>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="recentAnnouncements[announcements][${announcementIndex}][date]" value="${new Date().toISOString().split('T')[0]}" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Images</label>
+            <input type="file" class="form-control" name="recentAnnouncements[announcements][${announcementIndex}][images]" accept="image/*" multiple />
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="recentAnnouncements[announcements][${announcementIndex}][isActive]" value="true" checked />
+            <label class="form-check-label">Active</label>
+          </div>
+          <button type="button" class="btn btn-sm btn-danger remove-announcement" data-index="${announcementIndex}">
+            <i class="fas fa-trash me-1"></i>Remove
+          </button>
+        </div>
+      </div>
+    `;
+    
+    container.appendChild(itemDiv);
+    announcementIndex++;
+  }
+
+  function addSportsAchievement() {
+    const container = document.getElementById('sportsAchievements');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'achievement-item card mb-3';
+    itemDiv.setAttribute('data-index', sportsAchievementIndex);
+    
+    itemDiv.innerHTML = `
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="sportsAchievements[achievements][${sportsAchievementIndex}][title]" required />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="sportsAchievements[achievements][${sportsAchievementIndex}][description]" rows="2" required></textarea>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Category</label>
+            <select class="form-control" name="sportsAchievements[achievements][${sportsAchievementIndex}][category]">
+              <option value="sports">Sports</option>
+              <option value="academic">Academic</option>
+              <option value="cultural">Cultural</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="sportsAchievements[achievements][${sportsAchievementIndex}][date]" value="${new Date().toISOString().split('T')[0]}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Images</label>
+            <input type="file" class="form-control" name="sportsAchievements[achievements][${sportsAchievementIndex}][images]" accept="image/*" multiple />
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="sportsAchievements[achievements][${sportsAchievementIndex}][isActive]" value="true" checked />
+            <label class="form-check-label">Active</label>
+          </div>
+          <button type="button" class="btn btn-sm btn-danger remove-achievement" data-index="${sportsAchievementIndex}">
+            <i class="fas fa-trash me-1"></i>Remove
+          </button>
+        </div>
+      </div>
+    `;
+    
+    container.appendChild(itemDiv);
+    sportsAchievementIndex++;
+  }
+
+  function addCoCurricularAchievement() {
+    const container = document.getElementById('coCurricularAchievements');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'achievement-item card mb-3';
+    itemDiv.setAttribute('data-index', coCurricularAchievementIndex);
+    
+    itemDiv.innerHTML = `
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="coCurricularAchievements[achievements][${coCurricularAchievementIndex}][title]" required />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="coCurricularAchievements[achievements][${coCurricularAchievementIndex}][description]" rows="2" required></textarea>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Category</label>
+            <select class="form-control" name="coCurricularAchievements[achievements][${coCurricularAchievementIndex}][category]">
+              <option value="cultural">Cultural</option>
+              <option value="academic">Academic</option>
+              <option value="other">Other</option>
+              <option value="sports">Sports</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="coCurricularAchievements[achievements][${coCurricularAchievementIndex}][date]" value="${new Date().toISOString().split('T')[0]}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Images</label>
+            <input type="file" class="form-control" name="coCurricularAchievements[achievements][${coCurricularAchievementIndex}][images]" accept="image/*" multiple />
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="coCurricularAchievements[achievements][${coCurricularAchievementIndex}][isActive]" value="true" checked />
+            <label class="form-check-label">Active</label>
+          </div>
+          <button type="button" class="btn btn-sm btn-danger remove-co-curricular-achievement" data-index="${coCurricularAchievementIndex}">
+            <i class="fas fa-trash me-1"></i>Remove
+          </button>
+        </div>
+      </div>
+    `;
+    
+    container.appendChild(itemDiv);
+    coCurricularAchievementIndex++;
+  }
+
+  function addAchiever() {
+    const container = document.getElementById('achievers');
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'achiever-item card mb-3';
+    itemDiv.setAttribute('data-index', achieverIndex);
+    
+    itemDiv.innerHTML = `
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="achievers[achievers][${achieverIndex}][name]" required />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Achievement</label>
+            <textarea class="form-control" name="achievers[achievers][${achieverIndex}][achievement]" rows="2" required></textarea>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Category</label>
+            <select class="form-control" name="achievers[achievers][${achieverIndex}][category]">
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="alumni">Alumni</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Year</label>
+            <input type="text" class="form-control" name="achievers[achievers][${achieverIndex}][year]" placeholder="2024" />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Images</label>
+            <input type="file" class="form-control" name="achievers[achievers][${achieverIndex}][images]" accept="image/*" multiple />
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-1">
+            <label class="form-label">Order</label>
+            <input type="number" class="form-control" name="achievers[achievers][${achieverIndex}][order]" value="${achieverIndex}" min="0" />
+          </div>
+          <div class="col-md-11">
+            <div class="form-check mt-4">
+              <input class="form-check-input" type="checkbox" name="achievers[achievers][${achieverIndex}][isActive]" value="true" checked />
+              <label class="form-check-label">Active</label>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger remove-achiever" data-index="${achieverIndex}">
+              <i class="fas fa-trash me-1"></i>Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    container.appendChild(itemDiv);
+    achieverIndex++;
+  }
+
+  // Remove functionality for all sections
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-announcement') || e.target.closest('.remove-announcement')) {
+      const button = e.target.classList.contains('remove-announcement') ? e.target : e.target.closest('.remove-announcement');
+      const item = button.closest('.announcement-item');
+      item.remove();
+    }
+    
+    if (e.target.classList.contains('remove-achievement') || e.target.closest('.remove-achievement')) {
+      const button = e.target.classList.contains('remove-achievement') ? e.target : e.target.closest('.remove-achievement');
+      const item = button.closest('.achievement-item');
+      item.remove();
+    }
+    
+    if (e.target.classList.contains('remove-co-curricular-achievement') || e.target.closest('.remove-co-curricular-achievement')) {
+      const button = e.target.classList.contains('remove-co-curricular-achievement') ? e.target : e.target.closest('.remove-co-curricular-achievement');
+      const item = button.closest('.achievement-item');
+      item.remove();
+    }
+    
+    if (e.target.classList.contains('remove-achiever') || e.target.closest('.remove-achiever')) {
+      const button = e.target.classList.contains('remove-achiever') ? e.target : e.target.closest('.remove-achiever');
+      const item = button.closest('.achiever-item');
+      item.remove();
+    }
+  });
+
+  // Existing functionality for banner slides and featured sections
+  function addBannerSlide() {
+    const container = document.getElementById('bannerSlides');
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'banner-slide mb-3';
+    slideDiv.innerHTML = `
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Image</label>
+            <input type="file" class="form-control" name="bannerSlides[${bannerSlideIndex}][image]" accept="image/*" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="bannerSlides[${bannerSlideIndex}][title]" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Subtitle</label>
+            <input type="text" class="form-control" name="bannerSlides[${bannerSlideIndex}][subtitle]" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">CTA Text</label>
+            <input type="text" class="form-control" name="bannerSlides[${bannerSlideIndex}][ctaText]" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">CTA Link</label>
+            <input type="text" class="form-control" name="bannerSlides[${bannerSlideIndex}][ctaLink]" />
+          </div>
+          <div class="mb-3">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                name="bannerSlides[${bannerSlideIndex}][isActive]" 
+                value="true" 
+                checked 
+              />
+              <label class="form-check-label">Active</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger btn-sm" onclick="removeBannerSlide(this)">Remove</button>
+    `;
+    container.appendChild(slideDiv);
+    bannerSlideIndex++;
+  }
+
+  function removeBannerSlide(button) {
+    button.parentElement.remove();
+  }
+
+  function addFeaturedSection() {
+    const container = document.getElementById('featuredSections');
+    const sectionDiv = document.createElement('div');
+    sectionDiv.className = 'featured-section mb-3';
+    sectionDiv.innerHTML = `
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="featuredSections[${featuredSectionIndex}][title]" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea class="form-control" name="featuredSections[${featuredSectionIndex}][content]" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Icon</label>
+            <input type="text" class="form-control" name="featuredSections[${featuredSectionIndex}][icon]" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Link</label>
+            <input type="text" class="form-control" name="featuredSections[${featuredSectionIndex}][link]" />
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger btn-sm" onclick="removeFeaturedSection(this)">Remove</button>
+    `;
+    container.appendChild(sectionDiv);
+    featuredSectionIndex++;
+  }
+
+  function removeFeaturedSection(button) {
+    button.parentElement.remove();
+  }
+  
+  // Reset home content function
+  function resetHomeContent() {
+    if (confirm('Are you sure you want to reset all home content? This will delete all banner slides, infrastructure items, achievements, and other content. This action cannot be undone.')) {
+      document.getElementById('resetForm').submit();
+    }
+  }
+
+  // Force page refresh after successful form submission
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action*="/admin/home/update"]');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default submission
+        
+        // Serialize banner slides
+        const bannerSlides = [];
+        const bannerSlideElements = document.querySelectorAll('.banner-slide');
+        bannerSlideElements.forEach((slideElement, index) => {
+          const slide = {
+            title: slideElement.querySelector('input[name*="[title]"]')?.value || '',
+            subtitle: slideElement.querySelector('input[name*="[subtitle]"]')?.value || '',
+            ctaText: slideElement.querySelector('input[name*="[ctaText]"]')?.value || '',
+            ctaLink: slideElement.querySelector('input[name*="[ctaLink]"]')?.value || '',
+            isActive: slideElement.querySelector('input[name*="[isActive]"]')?.checked || false,
+            imageUrl: slideElement.querySelector('input[name*="[imageUrl]"]')?.value || null
+          };
+          bannerSlides.push(slide);
+        });
+        
+        // Serialize featured sections
+        const featuredSections = [];
+        const featuredSectionElements = document.querySelectorAll('.featured-section');
+        featuredSectionElements.forEach((sectionElement, index) => {
+          const section = {
+            title: sectionElement.querySelector('input[name*="[title]"]')?.value || '',
+            content: sectionElement.querySelector('textarea[name*="[content]"]')?.value || '',
+            icon: sectionElement.querySelector('input[name*="[icon]"]')?.value || '',
+            link: sectionElement.querySelector('input[name*="[link]"]')?.value || ''
+          };
+          featuredSections.push(section);
+        });
+
+        // Serialize announcements
+        const announcements = [];
+        const announcementElements = document.querySelectorAll('.announcement-item');
+        announcementElements.forEach((itemElement, index) => {
+          const announcement = {
+            title: itemElement.querySelector('input[name*="[title]"]')?.value || '',
+            content: itemElement.querySelector('textarea[name*="[content]"]')?.value || '',
+            date: itemElement.querySelector('input[name*="[date]"]')?.value || new Date().toISOString().split('T')[0],
+            isActive: itemElement.querySelector('input[name*="[isActive]"]')?.checked || false
+          };
+          announcements.push(announcement);
+        });
+
+        // Serialize sports achievements
+        const sportsAchievements = [];
+        const sportsAchievementElements = document.querySelectorAll('#sportsAchievements .achievement-item');
+        sportsAchievementElements.forEach((itemElement, index) => {
+          const achievement = {
+            title: itemElement.querySelector('input[name*="[title]"]')?.value || '',
+            description: itemElement.querySelector('textarea[name*="[description]"]')?.value || '',
+            category: itemElement.querySelector('select[name*="[category]"]')?.value || 'sports',
+            date: itemElement.querySelector('input[name*="[date]"]')?.value || new Date().toISOString().split('T')[0],
+            isActive: itemElement.querySelector('input[name*="[isActive]"]')?.checked || false,
+            existingImage: itemElement.querySelector('input[name*="[existingImage]"]')?.value || null
+          };
+          sportsAchievements.push(achievement);
+        });
+
+        // Serialize co-curricular achievements
+        const coCurricularAchievements = [];
+        const coCurricularAchievementElements = document.querySelectorAll('#coCurricularAchievements .achievement-item');
+        coCurricularAchievementElements.forEach((itemElement, index) => {
+          const achievement = {
+            title: itemElement.querySelector('input[name*="[title]"]')?.value || '',
+            description: itemElement.querySelector('textarea[name*="[description]"]')?.value || '',
+            category: itemElement.querySelector('select[name*="[category]"]')?.value || 'cultural',
+            date: itemElement.querySelector('input[name*="[date]"]')?.value || new Date().toISOString().split('T')[0],
+            isActive: itemElement.querySelector('input[name*="[isActive]"]')?.checked || false,
+            existingImage: itemElement.querySelector('input[name*="[existingImage]"]')?.value || null
+          };
+          coCurricularAchievements.push(achievement);
+        });
+
+        // Serialize achievers
+        const achievers = [];
+        const achieverElements = document.querySelectorAll('.achiever-item');
+        achieverElements.forEach((itemElement, index) => {
+          const achiever = {
+            name: itemElement.querySelector('input[name*="[name]"]')?.value || '',
+            achievement: itemElement.querySelector('input[name*="[achievement]"]')?.value || '',
+            category: itemElement.querySelector('select[name*="[category]"]')?.value || 'student',
+            year: itemElement.querySelector('input[name*="[year]"]')?.value || '',
+            order: parseInt(itemElement.querySelector('input[name*="[order]"]')?.value) || index,
+            isActive: itemElement.querySelector('input[name*="[isActive]"]')?.checked || false,
+            existingImage: itemElement.querySelector('input[name*="[existingImage]"]')?.value || null
+          };
+          achievers.push(achiever);
+        });
+        
+        // Create hidden inputs for JSON data
+        let bannerSlidesInput = document.getElementById('bannerSlidesJson');
+        if (!bannerSlidesInput) {
+          bannerSlidesInput = document.createElement('input');
+          bannerSlidesInput.type = 'hidden';
+          bannerSlidesInput.id = 'bannerSlidesJson';
+          bannerSlidesInput.name = 'bannerSlides';
+          form.appendChild(bannerSlidesInput);
+        }
+        bannerSlidesInput.value = JSON.stringify(bannerSlides);
+        
+        let featuredSectionsInput = document.getElementById('featuredSectionsJson');
+        if (!featuredSectionsInput) {
+          featuredSectionsInput = document.createElement('input');
+          featuredSectionsInput.type = 'hidden';
+          featuredSectionsInput.id = 'featuredSectionsJson';
+          featuredSectionsInput.name = 'featuredSections';
+          form.appendChild(featuredSectionsInput);
+        }
+        featuredSectionsInput.value = JSON.stringify(featuredSections);
+
+        let announcementsInput = document.getElementById('announcementsJson');
+        if (!announcementsInput) {
+          announcementsInput = document.createElement('input');
+          announcementsInput.type = 'hidden';
+          announcementsInput.id = 'announcementsJson';
+          announcementsInput.name = 'recentAnnouncements[announcements]';
+          form.appendChild(announcementsInput);
+        }
+        announcementsInput.value = JSON.stringify(announcements);
+
+        let sportsAchievementsInput = document.getElementById('sportsAchievementsJson');
+        if (!sportsAchievementsInput) {
+          sportsAchievementsInput = document.createElement('input');
+          sportsAchievementsInput.type = 'hidden';
+          sportsAchievementsInput.id = 'sportsAchievementsJson';
+          sportsAchievementsInput.name = 'sportsAchievements[achievements]';
+          form.appendChild(sportsAchievementsInput);
+        }
+        sportsAchievementsInput.value = JSON.stringify(sportsAchievements);
+
+        let coCurricularAchievementsInput = document.getElementById('coCurricularAchievementsJson');
+        if (!coCurricularAchievementsInput) {
+          coCurricularAchievementsInput = document.createElement('input');
+          coCurricularAchievementsInput.type = 'hidden';
+          coCurricularAchievementsInput.id = 'coCurricularAchievementsJson';
+          coCurricularAchievementsInput.name = 'coCurricularAchievements[achievements]';
+          form.appendChild(coCurricularAchievementsInput);
+        }
+        coCurricularAchievementsInput.value = JSON.stringify(coCurricularAchievements);
+
+        let achieversInput = document.getElementById('achieversJson');
+        if (!achieversInput) {
+          achieversInput = document.createElement('input');
+          achieversInput.type = 'hidden';
+          achieversInput.id = 'achieversJson';
+          achieversInput.name = 'achievers[achievers]';
+          form.appendChild(achieversInput);
+        }
+        achieversInput.value = JSON.stringify(achievers);
+        
+        // Submit the form
+        form.submit();
+      });
+    }
+  });
+
+  // Add cache-busting to image URLs
+  function addCacheBuster(url) {
+    if (!url) return url;
+    const separator = url.includes('?') ? '&' : '?';
+    return url + separator + '_t=' + Date.now();
+  }
+
+  // Update all image src attributes with cache busters
+  document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('img[src*="/uploads/"]');
+    images.forEach(function(img) {
+      img.src = addCacheBuster(img.src);
+    });
+  });
+</script>
+`

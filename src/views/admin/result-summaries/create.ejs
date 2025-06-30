@@ -1,0 +1,320 @@
+<%- include('../layouts/admin', {
+  title: 'Add Result Summary',
+  style: `
+    <style>
+      .dynamic-section { border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; margin-bottom: 1rem; }
+      .remove-btn { margin-top: 0.5rem; }
+    </style>
+  `,
+  script: '',
+  content: `
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Add New Result Summary</h2>
+    <a href="/admin/result-summaries" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST" action="/admin/result-summaries/create">
+        <!-- Basic Information -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Basic Information</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+          </div>
+          <div class="col-md-6">
+            <label for="academicYear" class="form-label">Academic Year *</label>
+            <input type="text" class="form-control" id="academicYear" name="academicYear" placeholder="e.g., 2023-24" required>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="class" class="form-label">Class *</label>
+            <select class="form-select" id="class" name="class" required>
+              <option value="">Select Class</option>
+              <option value="nursery">Nursery</option>
+              <option value="lkg">LKG</option>
+              <option value="ukg">UKG</option>
+              <option value="1">Class 1</option>
+              <option value="2">Class 2</option>
+              <option value="3">Class 3</option>
+              <option value="4">Class 4</option>
+              <option value="5">Class 5</option>
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+              <option value="all">All Classes</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="examType" class="form-label">Exam Type *</label>
+            <select class="form-select" id="examType" name="examType" required>
+              <option value="">Select Exam Type</option>
+              <option value="unit-test">Unit Test</option>
+              <option value="mid-term">Mid Term</option>
+              <option value="final">Final Exam</option>
+              <option value="board">Board Exam</option>
+              <option value="competitive">Competitive Exam</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="examDate" class="form-label">Exam Date *</label>
+            <input type="date" class="form-control" id="examDate" name="examDate" required>
+          </div>
+        </div>
+
+        <!-- Student Statistics -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Student Statistics</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label for="totalStudents" class="form-label">Total Students *</label>
+            <input type="number" class="form-control" id="totalStudents" name="totalStudents" min="0" required>
+          </div>
+          <div class="col-md-3">
+            <label for="appearedStudents" class="form-label">Appeared Students *</label>
+            <input type="number" class="form-control" id="appearedStudents" name="appearedStudents" min="0" required>
+          </div>
+          <div class="col-md-3">
+            <label for="passedStudents" class="form-label">Passed Students *</label>
+            <input type="number" class="form-control" id="passedStudents" name="passedStudents" min="0" required>
+          </div>
+          <div class="col-md-3">
+            <label for="passPercentage" class="form-label">Pass Percentage</label>
+            <input type="text" class="form-control" id="passPercentage" readonly>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label for="distinctionStudents" class="form-label">Distinction Students</label>
+            <input type="number" class="form-control" id="distinctionStudents" name="distinctionStudents" min="0" value="0">
+          </div>
+          <div class="col-md-3">
+            <label for="firstDivisionStudents" class="form-label">First Division</label>
+            <input type="number" class="form-control" id="firstDivisionStudents" name="firstDivisionStudents" min="0" value="0">
+          </div>
+          <div class="col-md-3">
+            <label for="secondDivisionStudents" class="form-label">Second Division</label>
+            <input type="number" class="form-control" id="secondDivisionStudents" name="secondDivisionStudents" min="0" value="0">
+          </div>
+          <div class="col-md-3">
+            <label for="thirdDivisionStudents" class="form-label">Third Division</label>
+            <input type="number" class="form-control" id="thirdDivisionStudents" name="thirdDivisionStudents" min="0" value="0">
+          </div>
+        </div>
+
+        <!-- Score Statistics -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Score Statistics</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="averageScore" class="form-label">Average Score (%)</label>
+            <input type="number" class="form-control" id="averageScore" name="averageScore" min="0" max="100" step="0.01">
+          </div>
+          <div class="col-md-4">
+            <label for="highestScore" class="form-label">Highest Score (%)</label>
+            <input type="number" class="form-control" id="highestScore" name="highestScore" min="0" max="100" step="0.01">
+          </div>
+          <div class="col-md-4">
+            <label for="lowestScore" class="form-label">Lowest Score (%)</label>
+            <input type="number" class="form-control" id="lowestScore" name="lowestScore" min="0" max="100" step="0.01">
+          </div>
+        </div>
+
+        <!-- Subject-wise Results -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Subject-wise Results</h4>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSubject()">
+              <i class="fas fa-plus"></i> Add Subject
+            </button>
+          </div>
+        </div>
+
+        <div id="subjectsContainer">
+          <!-- Subject sections will be added here dynamically -->
+        </div>
+
+        <!-- Top Performers -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Top Performers</h4>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addPerformer()">
+              <i class="fas fa-plus"></i> Add Performer
+            </button>
+          </div>
+        </div>
+
+        <div id="performersContainer">
+          <!-- Performer sections will be added here dynamically -->
+        </div>
+
+        <!-- Additional Information -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Additional Information</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+          </div>
+          <div class="col-md-6">
+            <label for="remarks" class="form-label">Remarks</label>
+            <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="tags" class="form-label">Tags (comma-separated)</label>
+            <input type="text" class="form-control" id="tags" name="tags" placeholder="e.g., board exam, class 10, 2023">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Create Result Summary
+            </button>
+            <a href="/admin/result-summaries" class="btn btn-secondary ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+` }) %>
+
+<script>
+let subjectCount = 0;
+let performerCount = 0;
+
+// Calculate pass percentage automatically
+document.getElementById('appearedStudents').addEventListener('input', calculatePassPercentage);
+document.getElementById('passedStudents').addEventListener('input', calculatePassPercentage);
+
+function calculatePassPercentage() {
+  const appeared = parseInt(document.getElementById('appearedStudents').value) || 0;
+  const passed = parseInt(document.getElementById('passedStudents').value) || 0;
+  
+  if (appeared > 0) {
+    const percentage = Math.round((passed / appeared) * 100);
+    document.getElementById('passPercentage').value = percentage + '%';
+  } else {
+    document.getElementById('passPercentage').value = '';
+  }
+}
+
+function addSubject() {
+  subjectCount++;
+  const container = document.getElementById('subjectsContainer');
+  
+  const subjectHtml = `
+    <div class="dynamic-section" id="subject-${subjectCount}">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="form-label">Subject Name *</label>
+          <input type="text" class="form-control" name="subjects[]" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Average Score (%)</label>
+          <input type="number" class="form-control" name="subjectScores[]" min="0" max="100" step="0.01">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Highest Score (%)</label>
+          <input type="number" class="form-control" name="subjectHighestScores[]" min="0" max="100" step="0.01">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Pass Percentage (%)</label>
+          <input type="number" class="form-control" name="subjectPassPercentages[]" min="0" max="100" step="0.01">
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-danger remove-btn" onclick="removeSubject(${subjectCount})">
+        <i class="fas fa-trash"></i> Remove Subject
+      </button>
+    </div>
+  `;
+  
+  container.insertAdjacentHTML('beforeend', subjectHtml);
+}
+
+function removeSubject(id) {
+  document.getElementById(`subject-${id}`).remove();
+}
+
+function addPerformer() {
+  performerCount++;
+  const container = document.getElementById('performersContainer');
+  
+  const performerHtml = `
+    <div class="dynamic-section" id="performer-${performerCount}">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="form-label">Rank</label>
+          <input type="number" class="form-control" name="performerRanks[]" value="${performerCount}" min="1">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Student Name *</label>
+          <input type="text" class="form-control" name="performerNames[]" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Roll Number *</label>
+          <input type="text" class="form-control" name="performerRollNumbers[]" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Total Score</label>
+          <input type="number" class="form-control" name="performerScores[]" min="0" step="0.01">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Percentage (%)</label>
+          <input type="number" class="form-control" name="performerPercentages[]" min="0" max="100" step="0.01">
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-danger remove-btn" onclick="removePerformer(${performerCount})">
+        <i class="fas fa-trash"></i> Remove Performer
+      </button>
+    </div>
+  `;
+  
+  container.insertAdjacentHTML('beforeend', performerHtml);
+}
+
+function removePerformer(id) {
+  document.getElementById(`performer-${id}`).remove();
+}
+
+// Add initial subject and performer sections
+document.addEventListener('DOMContentLoaded', function() {
+  addSubject();
+  addPerformer();
+});
+</script>
+
+<%- include('../layouts/admin-footer') %> 

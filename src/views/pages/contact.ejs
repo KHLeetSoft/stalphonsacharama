@@ -1,0 +1,202 @@
+<%- include('../partials/header') %>
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Contact Information -->
+    <div class="col-md-4 mb-4">
+      <!-- <div class="card h-100 shadow-sm"> -->
+        <div class="card-body p-4">
+          <h3 class="text-center mb-4">Feel free to contact us</h3>
+          <% if (contactInfo) { %>
+          <div class="card h-20 shadow-sm">
+            <div class="text-center mb-4">
+              <div class="d-inline-block p-3 rounded-circle bg-light mb-3">
+                <i class="fas fa-envelope fa-2x text-primary"></i>
+              </div>
+              <p class="mb-2"><%= contactInfo.email %></p>
+            </div>
+          </div>
+          &nbsp;
+
+          <div class="card h-20 shadow-sm">
+            <div class="text-center mb-4">
+              <div class="d-inline-block p-3 rounded-circle bg-light mb-3">
+                <i class="fas fa-phone fa-2x text-primary"></i>
+              </div>
+              <p class="mb-2">Reception: <%= contactInfo.Reception %></p>
+              <p class="mb-2">Accounts: <%= contactInfo.Accounts %></p>
+              <p class="mb-2">Transport: <%= contactInfo.Transport %></p>
+            </div>
+          </div>
+          &nbsp;
+          <div class="card h-20 shadow-sm">
+            <div class="text-center mb-4">
+              <div class="d-inline-block p-3 rounded-circle bg-light mb-3">
+                <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+              </div>
+              <p class="mb-2"><%= contactInfo.address %></p>
+            </div>
+            <!-- Social Media Icons -->
+            <% } else { %>
+            <p class="text-center">
+              Contact information will be available soon.
+            </p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <!-- </div> -->
+      <!-- Contact Form -->
+      <div class="col-md-8 mb-4">
+        <!-- <div class="card h-100"> -->
+          <div class="card-body">
+            <h3 class="card-title mb-4">Send us a Message</h3>
+            <form id="contactForm">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="subject" class="form-label">Subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="subject"
+                  name="subject"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea
+                  class="form-control"
+                  id="message"
+                  name="message"
+                  rows="5"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Send Message
+              </button>
+            </form>
+          </div>
+        <!-- </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <!-- Map Section -->
+    <!-- <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title mb-4">Our Location</h3>
+          <div
+            id="map"
+            style="height: 400px; width: 100%; border-radius: 8px"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNLrJhOMz6idD05pzfn5lhA-TAw-mAZCU"></script>
+  <script>
+    // Initialize the map
+    // function initMap() {
+    //   // Get school coordinates from contact info
+    //   const schoolLocation = {
+    //     lat: <%= contactInfo ? parseFloat(contactInfo.latitude) : 0 %>,
+    //     lng: <%= contactInfo ? parseFloat(contactInfo.longitude) : 0 %>
+    //   };
+
+    //   const map = new google.maps.Map(document.getElementById("map"), {
+    //     zoom: 15,
+    //     center: schoolLocation,
+    //     mapTypeControl: true,
+    //     fullscreenControl: true,
+    //     streetViewControl: true,
+    //     zoomControl: true,
+    //   });
+
+    //   // Add marker for school location
+    //   const marker = new google.maps.Marker({
+    //     position: schoolLocation,
+    //     map: map,
+    //     title: "Our School",
+    //     animation: google.maps.Animation.DROP,
+    //   });
+
+      // Add info window
+      const infoWindow = new google.maps.InfoWindow({
+        content: '<div style="padding: 10px;">' +
+          '<h5 style="margin: 0 0 5px 0;">Our School</h5>' +
+          '<p style="margin: 0;"><%= contactInfo ? contactInfo.address : "Location will be updated soon" %></p>' +
+        '</div>',
+      });
+
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+      });
+    
+
+    // Call initMap when the page loads
+    window.onload = initMap;
+  </script>
+
+  <script>
+    document
+      .getElementById("contactForm")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          subject: document.getElementById("subject").value,
+          message: document.getElementById("message").value,
+        };
+
+        try {
+          const response = await fetch("/contact/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            alert("Message sent successfully!");
+            e.target.reset();
+          } else {
+            throw new Error("Failed to send message");
+          }
+        } catch (error) {
+          alert("Error sending message. Please try again.");
+          console.error("Error:", error);
+        }
+      });
+  </script>
+
+  <%- include('../partials/footer') %>
+</div>

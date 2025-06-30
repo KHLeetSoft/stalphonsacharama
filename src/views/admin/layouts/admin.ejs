@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <%= locals.title ? title + ' - Admin Panel' : 'Admin Panel' %>
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/admin.css" />
+    <%- typeof style !== 'undefined' ? style : '' %>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <nav id="sidebar" class="bg-dark">
+        <div class="sidebar-header">
+          <h3 class="text-light">Admin Panel</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+          <li class="<%= title === 'Admin Dashboard' ? 'active' : '' %>">
+            <a href="/admin/dashboard">
+              <i class="fas fa-home"></i> Dashboard
+            </a>
+          </li>
+          <li class="<%= title.includes('Home') ? 'active' : '' %>">
+            <a href="/admin/home/edit">
+              <i class="fa-solid fa-house-chimney"></i> Home
+            </a>
+          </li>
+          <li class="<%= title.includes('About') ? 'active' : '' %>">
+            <a
+              href="#aboutSubmenu"
+              data-bs-toggle="collapse"
+              aria-expanded="false"
+            >
+              <i class="fa-solid fa-address-card"></i> About
+            </a>
+            <ul
+              class="collapse list-unstyled <%= title.includes('About') ? 'show' : '' %>"
+              id="aboutSubmenu"
+            >
+              <li><a href="/admin/about/edit">Edit About</a></li>
+              <li><a href="/admin/vision-mission">Vision & Mission</a></li>
+              <li><a href="/admin/about/testimonials">Messages</a></li>
+            </ul>
+          </li>
+          <li class="<%= title.includes('Academic') ? 'active' : '' %>">
+            <a href="/admin/academics">
+              <i class="fas fa-graduation-cap"></i> Academics
+            </a>
+            <!-- <ul class="collapse list-unstyled <%= title.includes('Academic') ? 'show' : '' %>" id="academicSubmenu">
+              <li><a href="/admin/academics">Programs</a></li>
+              <li><a href="/admin/academics/sections">Sections</a></li>
+              <li><a href="/admin/academics/faculty">Faculty</a></li>
+            </ul> -->
+          </li>
+          <li class="<%= title.includes('Activity') ? 'active' : '' %>">
+            <a href="/admin/activities">
+              <i class="fa-solid fa-chart-line"></i> Activity
+            </a>
+          </li>
+          <li class="<%= title.includes('Admission') ? 'active' : '' %>">
+            <a href="/admin/admissions">
+              <i class="fas fa-user-plus"></i> Admissions
+            </a>
+          </li>
+          <li class="<%= title.includes('Teacher') ? 'active' : '' %>">
+            <a href="/admin/teachers">
+              <i class="fas fa-chalkboard-teacher"></i> Teachers
+            </a>
+          </li>
+          <li class="<%= title.includes('Facility') ? 'active' : '' %>">
+            <a href="/admin/facilities">
+              <i class="fas fa-building"></i> Facilities
+            </a>
+          </li>
+          <!-- <li class="<%= title.includes('Student') ? 'active' : '' %>">
+            <a href="/admin/students">
+              <i class="fas fa-user-graduate"></i> Students
+            </a>
+          </li> -->
+          <!-- <li class="<%= title.includes('Event') ? 'active' : '' %>">
+            <a href="/admin/events">
+              <i class="fas fa-calendar-alt"></i> Events
+            </a>
+          </li> -->
+          <li class="<%= title.includes('Gallery') ? 'active' : '' %>">
+            <a href="/admin/gallery"> <i class="fas fa-images"></i> Gallery </a>
+          </li>
+          <li class="<%= title.includes('Document') ? 'active' : '' %>">
+            <a href="/admin/documents">
+              <i class="fas fa-bullhorn"></i> Documents
+            </a>
+          </li>
+          <li class="<%= title.includes('Annual Report') ? 'active' : '' %>">
+            <a href="/admin/annual-reports">
+              <i class="fas fa-file-pdf"></i> Annual Reports
+            </a>
+          </li>
+          <li class="<%= title.includes('Result Summary') ? 'active' : '' %>">
+            <a href="/admin/result-summaries">
+              <i class="fas fa-chart-bar"></i> Result Summaries
+            </a>
+          </li>
+          <li class="<%= title.includes('News') ? 'active' : '' %>">
+            <a href="/admin/news">
+              <i class="fas fa-newspaper"></i> News
+            </a>
+          </li>
+          <li class="<%= title.includes('Book List') ? 'active' : '' %>">
+            <a href="/admin/book-lists">
+              <i class="fas fa-book"></i> Book List
+            </a>
+          </li>
+          <li class="<%= title.includes('Fee Structure') ? 'active' : '' %>">
+            <a href="/admin/fee-structures">
+              <i class="fas fa-money-bill-wave"></i> Fee Structure
+            </a>
+          </li>
+          <li class="<%= title.includes('School Management') ? 'active' : '' %>">
+            <a href="/admin/school-management">
+              <i class="fas fa-bullhorn"></i> School Management
+            </a>
+          </li>
+          <li class="<%= title.includes('Contact') ? 'active' : '' %>">
+            <a href="/admin/contact/manage">
+              <i class="fas fa-bullhorn"></i> Contact
+            </a>
+          </li>
+          <li class="<%= title.includes('Logo') ? 'active' : '' %>">
+            <a href="/admin/logo"> <i class="fas fa-image"></i> Logo </a>
+          </li>
+          <li
+            class="<%= title.includes('Manage Administrators') ? 'active' : '' %>"
+          >
+            <a href="/admin/manage-admins">
+              <i class="fas fa-users-cog"></i> Manage Administrators
+            </a>
+          </li>
+          <li class="<%= title.includes('Setting') ? 'active' : '' %>">
+            <a
+              href="#settingsSubmenu"
+              data-bs-toggle="collapse"
+              aria-expanded="false"
+            >
+              <i class="fas fa-cog"></i> Settings
+            </a>
+            <ul
+              class="collapse list-unstyled <%= title.includes('Setting') ? 'show' : '' %>"
+              id="settingsSubmenu"
+            >
+              <!-- <li><a href="/admin/settings/general">General</a></li>
+              <li><a href="/admin/settings/profile">Profile</a></li>
+              <li><a href="/admin/settings/appearance">Appearance</a></li> -->
+              <li><a href="/logout">Logout</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="/admin/transport/index">Manage Transport</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Page Content -->
+      <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <button type="button" id="sidebarCollapse" class="btn btn-dark">
+              <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                  <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-user"></i> Admin
+                  </a>
+                  <ul
+                    class="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="navbarDropdown"
+                  >
+                    <li>
+                      <a class="dropdown-item" href="/admin/profile">Profile</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="/admin/settings"
+                        >Settings</a
+                      >
+                    </li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main><%- content %></main>
+      </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+      $(document).ready(function () {
+        $("#sidebarCollapse").on("click", function () {
+          $("#sidebar").toggleClass("active");
+        });
+      });
+    </script>
+    <%- typeof script !== 'undefined' ? script : '' %>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<%- include('../layouts/admin', { 
+    title: 'Logo Management',
+    style: '',
+    script: '',
+    content: `
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Logo Management</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Logo Management</li>
+    </ol>
+
+    ${typeof success !== 'undefined' && success ? `
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ${success}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    ` : ''}
+
+    ${typeof error !== 'undefined' && error ? `
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        ${error}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    ` : ''}
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="card-title mb-0">Update Logo</h3>
+        </div>
+        <div class="card-body">
+            <form action="/admin/logo/update" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="logo" class="form-label">Upload Logo</label>
+                    <input type="file" class="form-control" id="logo" name="logo" accept="image/*" />
+                    <div class="form-text">Recommended size: 200x50 pixels. Supported formats: JPG, PNG, GIF</div>
+                </div>
+
+                ${logo && logo.logoUrl ? `
+                <div class="mb-3">
+                    <label class="form-label">Current Logo</label>
+                    <div class="current-logo">
+                        <img src="${logo.logoUrl}" alt="Current Logo" class="img-fluid" style="max-height: 100px;" />
+                    </div>
+                </div>
+                ` : ''}
+
+                <button type="submit" class="btn btn-primary">Update Logo</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preview image before upload
+    document.getElementById('logo').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.querySelector('.current-logo');
+                if (!preview) {
+                    const newPreview = document.createElement('div');
+                    newPreview.className = 'current-logo mt-2';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-fluid';
+                    img.style.maxHeight = '100px';
+                    newPreview.appendChild(img);
+                    document.getElementById('logo').parentElement.appendChild(newPreview);
+                } else {
+                    const img = preview.querySelector('img') || document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-fluid';
+                    img.style.maxHeight = '100px';
+                    if (!preview.contains(img)) {
+                        preview.appendChild(img);
+                    }
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+` }) %> 

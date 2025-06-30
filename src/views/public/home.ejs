@@ -1,0 +1,7 @@
+<%- include('../partials/header') %>
+
+<h1><%= content.title %></h1>
+<p><%= content.description %></p>
+<% if (content.image) { %>
+<img src="<%= content.image %>" alt="Home Image" width="300" />
+<% } %> <%- include('../partials/footer') %>

@@ -1,0 +1,100 @@
+<%- include('layouts/main', { 
+  title: 'Academics',
+  style: '',
+  script: '',
+  content: `
+    <div class="container-fluid py-5">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">${title || 'Our Academics'}</h3>
+            </div>
+            <div class="card-body">
+              <!-- Main Content Section -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <h4>${title || 'Our Academics'}</h4>
+                        <p>${description || ''}</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <div class="current-image-container">
+                          ${image ? `
+                            <img src="${image}" alt="Academics Image" class="img-fluid rounded" style="max-height: 300px;">
+                          ` : `
+                            <div class="alert alert-info">
+                              <i class="fas fa-info-circle me-2"></i>No image available
+                            </div>
+                          `}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Programs Section -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h4>Academic Programs</h4>
+                </div>
+                <div class="card-body">
+                  <div id="programs-container">
+                    ${programs ? programs.map((program, index) => `
+                      <div class="program-item card mb-3">
+                        <div class="card-body">
+                          <h5 class="card-title">${program.title || `Program ${index + 1}`}</h5>
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <p>${program.description || ''}</p>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <p><strong>Duration:</strong> ${program.duration || 'Not specified'}</p>
+                                <p><strong>Requirements:</strong> ${program.requirements || 'Not specified'}</p>
+                                <p><strong>Curriculum:</strong> ${program.curriculum || 'Not specified'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    `).join('') : `
+                      <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No programs available yet
+                      </div>
+                    `}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}) %>
+
+<script>
+// Update the image display when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  const currentImage = document.querySelector('.current-image-container img');
+  if (currentImage) {
+    currentImage.onerror = function() {
+      this.parentElement.innerHTML = `
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle me-2"></i>Image not found
+        </div>
+      `;
+    };
+  }
+});
+</script>
+
+<%- include('layouts/footer') %> 

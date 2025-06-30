@@ -1,0 +1,229 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold text-primary mb-3">News & Updates</h1>
+        <p class="lead text-muted">Stay updated with the latest news, events, and announcements from our school.</p>
+      </div>
+    </div>
+
+    <!-- Featured News Section -->
+    <% if (featuredNews && featuredNews.length > 0) { %>
+      <div class="row mb-5">
+        <div class="col-12">
+          <h3 class="border-bottom pb-2 mb-4">
+            <i class="fas fa-star text-warning"></i> Featured News
+          </h3>
+        </div>
+        <% featuredNews.forEach(article => { %>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm hover-shadow featured-card">
+              <% if (article.image) { %>
+                <img src="<%= article.image %>" class="card-img-top" alt="<%= article.title %>" style="height: 200px; object-fit: cover;">
+              <% } else { %>
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                  <i class="fas fa-newspaper fa-3x text-muted"></i>
+                </div>
+              <% } %>
+              <div class="card-body">
+                <div class="mb-2">
+                  <span class="badge bg-warning me-2">Featured</span>
+                  <span class="badge bg-info"><%= article.categoryName %></span>
+                </div>
+                <h5 class="card-title"><%= article.title %></h5>
+                <p class="card-text text-muted"><%= article.excerpt || article.content.substring(0, 100) + '...' %></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fas fa-user"></i> <%= article.author ? article.author.name : 'Admin' %> | 
+                    <i class="fas fa-calendar"></i> <%= new Date(article.publishedDate).toLocaleDateString() %>
+                  </small>
+                  <a href="/news/<%= article.slug %>" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <!-- Search and Filters -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <form method="GET" action="/news" class="row g-3">
+              <div class="col-md-4">
+                <label for="search" class="form-label">Search</label>
+                <input type="text" class="form-control" id="search" name="search" value="<%= currentFilters.search || '' %>" placeholder="Search news...">
+              </div>
+              <div class="col-md-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                  <option value="">All Categories</option>
+                  <% categories.forEach(cat => { %>
+                    <option value="<%= cat %>" <%= currentFilters.category === cat ? 'selected' : '' %>>
+                      <%= cat.charAt(0).toUpperCase() + cat.slice(1) %>
+                    </option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                  <a href="/news" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Clear
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- News Grid -->
+    <div class="row">
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="col-12">
+          <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle"></i> <%= error %>
+          </div>
+        </div>
+      <% } %>
+
+      <% if (news && news.length > 0) { %>
+        <% news.forEach(article => { %>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+              <% if (article.image) { %>
+                <img src="<%= article.image %>" class="card-img-top" alt="<%= article.title %>" style="height: 200px; object-fit: cover;">
+              <% } else { %>
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                  <i class="fas fa-newspaper fa-3x text-muted"></i>
+                </div>
+              <% } %>
+              <div class="card-body">
+                <div class="mb-2">
+                  <span class="badge bg-info"><%= article.categoryName %></span>
+                  <% if (article.featured) { %>
+                    <span class="badge bg-warning ms-1">Featured</span>
+                  <% } %>
+                </div>
+                <h5 class="card-title"><%= article.title %></h5>
+                <p class="card-text text-muted"><%= article.excerpt || article.content.substring(0, 120) + '...' %></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fas fa-user"></i> <%= article.author ? article.author.name : 'Admin' %> | 
+                    <i class="fas fa-calendar"></i> <%= new Date(article.publishedDate).toLocaleDateString() %>
+                  </small>
+                  <a href="/news/<%= article.slug %>" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent">
+                <small class="text-muted">
+                  <i class="fas fa-eye"></i> <%= article.viewCount %> views
+                  <% if (article.tags && article.tags.length > 0) { %>
+                    | <i class="fas fa-tags"></i> <%= article.tags.slice(0, 2).join(', ') %>
+                  <% } %>
+                </small>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="text-center py-5">
+            <i class="fas fa-newspaper fa-4x text-muted mb-4"></i>
+            <h4 class="text-muted">No News Articles Found</h4>
+            <p class="text-muted">Try adjusting your search criteria or check back later for new articles.</p>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+      <div class="row mt-5">
+        <div class="col-12">
+          <nav aria-label="News pagination">
+            <ul class="pagination justify-content-center">
+              <% if (currentPage > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/news?page=<%= currentPage - 1 %><%= currentFilters.category ? '&category=' + currentFilters.category : '' %><%= currentFilters.search ? '&search=' + currentFilters.search : '' %>">Previous</a>
+                </li>
+              <% } %>
+              
+              <% for (let page = 1; page <= totalPages; page++) { %>
+                <li class="page-item <%= page === currentPage ? 'active' : '' %>">
+                  <a class="page-link" href="/news?page=<%= page %><%= currentFilters.category ? '&category=' + currentFilters.category : '' %><%= currentFilters.search ? '&search=' + currentFilters.search : '' %>"><%= page %></a>
+                </li>
+              <% } %>
+              
+              <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/news?page=<%= currentPage + 1 %><%= currentFilters.category ? '&category=' + currentFilters.category : '' %><%= currentFilters.search ? '&search=' + currentFilters.search : '' %>">Next</a>
+                </li>
+              <% } %>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Category Quick Links -->
+    <% if (categories && categories.length > 0) { %>
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="card bg-light">
+            <div class="card-body text-center">
+              <h5 class="mb-3">Browse by Category</h5>
+              <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="/news" class="btn btn-outline-primary btn-sm">All News</a>
+                <% categories.forEach(cat => { %>
+                  <a href="/news?category=<%= cat %>" class="btn btn-outline-secondary btn-sm"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></a>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<style>
+.hover-shadow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.3s ease;
+}
+
+.featured-card {
+  border: 2px solid #ffc107;
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05);
+}
+</style>
+
+<%- include('../partials/footer') %> 

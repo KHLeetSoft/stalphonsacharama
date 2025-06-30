@@ -1,0 +1,246 @@
+<%- include('../layouts/admin', {
+  title: 'School Management',
+  style: `
+    <style>
+      .priority-select { width: 80px; }
+      .table img { width: 60px; height: 40px; object-fit: cover; }
+    </style>
+  `,
+  script: `
+    <script>
+      function getCategoryColor(category) {
+        const colors = {
+          'community': 'primary',
+          'announcement': 'warning',
+          'event': 'success',
+          'news': 'info',
+          'achievement': 'danger'
+        };
+        return colors[category] || 'secondary';
+      }
+
+      function toggleStatus(entryId) {
+        if (confirm('Are you sure you want to change the status?')) {
+          fetch('/admin/school-management/toggle-status/' + entryId, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
+            } else {
+              alert('Error: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the status.');
+          });
+        }
+      }
+
+      function updatePriority(entryId, priority) {
+        fetch('/admin/school-management/update-priority/' + entryId, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ priority: priority })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'alert alert-success position-fixed';
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
+            toast.textContent = data.message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while updating priority.');
+        });
+      }
+
+      function deleteEntry(entryId) {
+        if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/admin/school-management/delete/' + entryId;
+          document.body.appendChild(form);
+          form.submit();
+        }
+      }
+    </script>
+  `,
+  content: `
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>School Management</h2>
+    <a href="/admin/school-management/create" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Add New Entry
+    </a>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-3">
+        <div class="col-md-3">
+          <label for="category" class="form-label">Category</label>
+          <select class="form-select" id="category" name="category">
+            <option value="all" ${filters && filters.category === 'all' || !filters.category ? 'selected' : ''}>All Categories</option>
+            <option value="community" ${filters && filters.category === 'community' ? 'selected' : ''}>Community</option>
+            <option value="announcement" ${filters && filters.category === 'announcement' ? 'selected' : ''}>Announcement</option>
+            <option value="event" ${filters && filters.category === 'event' ? 'selected' : ''}>Event</option>
+            <option value="news" ${filters && filters.category === 'news' ? 'selected' : ''}>News</option>
+            <option value="achievement" ${filters && filters.category === 'achievement' ? 'selected' : ''}>Achievement</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="status" class="form-label">Status</label>
+          <select class="form-select" id="status" name="status">
+            <option value="all" ${filters && filters.status === 'all' || !filters.status ? 'selected' : ''}>All Status</option>
+            <option value="active" ${filters && filters.status === 'active' ? 'selected' : ''}>Active</option>
+            <option value="inactive" ${filters && filters.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="search" class="form-label">Search</label>
+          <input type="text" class="form-control" id="search" name="search" 
+                 placeholder="Search by title, description, or tags..." 
+                 value="${filters && filters.search ? filters.search : ''}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">&nbsp;</label>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-outline-primary">
+              <i class="fas fa-search"></i> Filter
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  ${typeof error !== 'undefined' && error ? `
+    <div class="alert alert-danger">${error}</div>
+  ` : ''}
+
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Photo</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Views</th>
+              <!-- <th>Author</th> -->
+              <th>Published</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${typeof entries !== 'undefined' && entries && entries.length > 0 ? entries.map(entry => `
+              <tr>
+                <td>
+                  ${entry.photo ? `
+                    <img src="${entry.photo}" alt="Photo" class="rounded">
+                  ` : `
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 60px; height: 40px;">
+                      <i class="fas fa-image"></i>
+                    </div>
+                  `}
+                </td>
+                <td>
+                  <strong>${entry.title}</strong>
+                  <br>
+                  <small class="text-muted">${entry.description ? entry.description.substring(0, 50) + '...' : 'No description'}</small>
+                  ${entry.tags && entry.tags.length > 0 ? `
+                    <br>
+                    <div class="mt-1">
+                      ${entry.tags.slice(0, 2).map(tag => `
+                        <span class="badge bg-light text-dark me-1">${tag}</span>
+                      `).join('')}
+                      ${entry.tags.length > 2 ? `
+                        <span class="badge bg-light text-dark">+${entry.tags.length - 2}</span>
+                      ` : ''}
+                    </div>
+                  ` : ''}
+                </td>
+                <td>
+                  <span class="badge bg-${
+                    entry.category === 'community' ? 'primary' :
+                    entry.category === 'announcement' ? 'warning' :
+                    entry.category === 'event' ? 'success' :
+                    entry.category === 'news' ? 'info' :
+                    entry.category === 'achievement' ? 'danger' : 'secondary'
+                  }">${entry.category}</span>
+                </td>
+                <td>
+                  ${entry.isActive ? `
+                    <span class="badge bg-success">Active</span>
+                  ` : `
+                    <span class="badge bg-secondary">Inactive</span>
+                  `}
+                </td>
+                <td>
+                  <select class="form-select form-select-sm priority-select" 
+                          onchange="updatePriority('${entry._id}', this.value)">
+                    ${[1,2,3,4,5,6,7,8,9,10].map(num => `
+                      <option value="${num}" ${entry.priority === num ? 'selected' : ''}>${num}</option>
+                    `).join('')}
+                  </select>
+                </td>
+                <td>
+                  <span class="badge bg-info">${entry.viewCount || 0}</span>
+                </td>
+                <!-- <td>${entry.author ? entry.author.name : 'Unknown'}</td> -->
+                <td>${entry.publishedDate ? new Date(entry.publishedDate).toLocaleDateString() : 'N/A'}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <a href="/admin/school-management/edit/${entry._id}" class="btn btn-sm btn-outline-warning" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-outline-${entry.isActive ? 'secondary' : 'success'}" 
+                            onclick="toggleStatus('${entry._id}')" title="${entry.isActive ? 'Deactivate' : 'Activate'}">
+                      <i class="fas fa-${entry.isActive ? 'eye-slash' : 'eye'}"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                            onclick="deleteEntry('${entry._id}')" title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `).join('') : `
+              <tr>
+                <td colspan="9" class="text-center py-4">
+                  <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">No school management entries found.</p>
+                  <a href="/admin/school-management/create" class="btn btn-primary">Create First Entry</a>
+                </td>
+              </tr>
+             `} 
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+  `
+}) %>
+
+<%- include('../layouts/admin-footer') %> 

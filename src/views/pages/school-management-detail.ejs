@@ -1,0 +1,235 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/school-community">School Community</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= entry.title %></li>
+        </ol>
+      </nav>
+
+      <!-- Main Content Card -->
+      <div class="card shadow">
+        <% if (entry.photo) { %>
+          <img src="<%= entry.photo %>" class="card-img-top" alt="<%= entry.title %>" style="height: 300px; object-fit: cover;">
+        <% } %>
+        
+        <div class="card-body">
+          <!-- Header -->
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <span class="badge bg-<%= getCategoryColor(entry.category) %> mb-2"><%= entry.category %></span>
+              <h1 class="card-title h2"><%= entry.title %></h1>
+            </div>
+            <div class="text-end">
+              <small class="text-muted d-block">
+                <i class="fas fa-eye"></i> <%= entry.viewCount %> views
+              </small>
+            </div>
+          </div>
+
+          <!-- Meta Information -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <small class="text-muted">
+                <i class="fas fa-calendar"></i> Published: <%= new Date(entry.publishedDate).toLocaleDateString() %>
+              </small>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <% if (entry.author) { %>
+                <small class="text-muted">
+                  <i class="fas fa-user"></i> By: <%= entry.author.name %>
+                </small>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <h5>Description</h5>
+            <p class="text-muted"><%= entry.description %></p>
+          </div>
+
+          <!-- Community Message -->
+          <div class="mb-4">
+            <h5>Community Message</h5>
+            <div class="bg-light p-3 rounded">
+              <p class="mb-0"><%= entry.message %></p>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <% if (entry.tags && entry.tags.length > 0) { %>
+            <div class="mb-4">
+              <h6>Tags:</h6>
+              <div class="d-flex flex-wrap gap-2">
+                <% entry.tags.forEach(function(tag) { %>
+                  <span class="badge bg-light text-dark"><%= tag %></span>
+                <% }); %>
+              </div>
+            </div>
+          <% } %>
+
+          <!-- Expiry Information -->
+          <% if (entry.expiryDate) { %>
+            <div class="alert alert-info mb-4">
+              <i class="fas fa-clock"></i>
+              <strong>Note:</strong> This message will expire on <%= new Date(entry.expiryDate).toLocaleDateString() %>
+            </div>
+          <% } %>
+
+          <!-- Action Buttons -->
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="/school-community" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left"></i> Back to Community
+            </a>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-primary" onclick="shareContent()">
+                <i class="fas fa-share"></i> Share
+              </button>
+              <button type="button" class="btn btn-outline-success" onclick="printContent()">
+                <i class="fas fa-print"></i> Print
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Entries -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-link"></i> Related Community Messages
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted">More community messages will appear here as they are added.</p>
+          <a href="/school-community" class="btn btn-primary">
+            <i class="fas fa-list"></i> View All Messages
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Category Navigation -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="fas fa-filter"></i> Categories</h6>
+        </div>
+        <div class="card-body">
+          <div class="list-group list-group-flush">
+            <a href="/school-community" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              All Categories
+              <span class="badge bg-primary rounded-pill">All</span>
+            </a>
+            <a href="/school-community?category=community" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              <i class="fas fa-users me-2"></i> Community
+              <span class="badge bg-primary rounded-pill">Community</span>
+            </a>
+            <a href="/school-community?category=announcement" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              <i class="fas fa-bullhorn me-2"></i> Announcements
+              <span class="badge bg-warning rounded-pill">Announcement</span>
+            </a>
+            <a href="/school-community?category=event" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              <i class="fas fa-calendar me-2"></i> Events
+              <span class="badge bg-success rounded-pill">Event</span>
+            </a>
+            <a href="/school-community?category=news" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              <i class="fas fa-newspaper me-2"></i> News
+              <span class="badge bg-info rounded-pill">News</span>
+            </a>
+            <a href="/school-community?category=achievement" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+              <i class="fas fa-trophy me-2"></i> Achievements
+              <span class="badge bg-danger rounded-pill">Achievement</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Message Statistics</h6>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Views:</span>
+            <strong><%= entry.viewCount %></strong>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Category:</span>
+            <span class="badge bg-<%= getCategoryColor(entry.category) %>"><%= entry.category %></span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Priority:</span>
+            <strong><%= entry.priority %></strong>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Published:</span>
+            <small><%= new Date(entry.publishedDate).toLocaleDateString() %></small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.card {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.75rem 0;
+}
+</style>
+
+<script>
+function getCategoryColor(category) {
+  const colors = {
+    'community': 'primary',
+    'announcement': 'warning',
+    'event': 'success',
+    'news': 'info',
+    'achievement': 'danger'
+  };
+  return colors[category] || 'secondary';
+}
+
+function shareContent() {
+  if (navigator.share) {
+    navigator.share({
+      title: '<%= entry.title %>',
+      text: '<%= entry.description %>',
+      url: window.location.href
+    });
+  } else {
+    // Fallback: copy to clipboard
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert('Link copied to clipboard!');
+    });
+  }
+}
+
+function printContent() {
+  window.print();
+}
+</script>
+
+<%- include('../partials/footer') %> 

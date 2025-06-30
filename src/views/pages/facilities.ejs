@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<div class="container mt-5">
+  <h2 class="mb-4">Our Facilities</h2>
+  <div class="row">
+    <% facilities.forEach(facility => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <% if (facility.imageUrl) { %>
+            <img src="<%= facility.imageUrl %>" class="card-img-top" alt="Facility Image" style="height:200px;object-fit:cover;">
+          <% } %>
+          <div class="card-body">
+            <h5 class="card-title"><%= facility.title %></h5>
+            <p class="card-text"><%= facility.description %></p>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+<%- include('../partials/footer') %> 

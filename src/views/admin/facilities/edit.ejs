@@ -1,0 +1,30 @@
+
+<%- include('../layouts/admin', { title: 'Edit Facilities Content', style: '',
+script: '', content: `
+<div class="container mt-4">
+  <h2>Edit Facility</h2>
+  <form action="/admin/facilities/edit/${facility._id}" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" name="title" value="${facility.title}" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" name="description" rows="3"
+        required>${facility.description}</textarea>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Image (optional)</label>
+      ${facility.imageUrl ? `
+      <div class="mb-2">
+        <img src="${facility.imageUrl}" alt="Image" style="height:50px;">
+      </div>
+      ` : ''}
+      <input type="file" class="form-control" id="image" name="image" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-success">Update Facility</button>
+    <a href="/admin/facilities" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+`
+}) %>

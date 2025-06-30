@@ -1,0 +1,136 @@
+<%- include('./layouts/admin', { 
+  title: 'Admin Dashboard', 
+  style: '', 
+  script: '', 
+  content: `
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Admin Dashboard</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Print</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <span data-feather="calendar"></span>
+          This week
+        </button>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card text-white bg-primary">
+          <div class="card-body">
+            <h5 class="card-title">Total Teachers</h5>
+            <h2 class="card-text">${teachers ? teachers.length : 0}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-success">
+          <div class="card-body">
+            <h5 class="card-title">Total Programs</h5>
+            <h2 class="card-text">${programs ? programs.length : 0}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-warning">
+          <div class="card-body">
+            <h5 class="card-title">Activities</h5>
+            <h2 class="card-text">${activities ? activities.length : 0}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-info">
+          <div class="card-body">
+            <h5 class="card-title">Vision & Mission</h5>
+            <h2 class="card-text">
+              ${about && about.vision && about.mission ? '✓ Configured' : '⚠ Needs Setup'}
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Recent Activities</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Activity</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${activities && activities.length > 0 ? activities.map(activity => `
+                    <tr>
+                      <td>${activity.title}</td>
+                      <td>${new Date(activity.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        ${activity.isActive ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>'}
+                      </td>
+                    </tr>
+                  `).join('') : `
+                    <tr>
+                      <td colspan="3" class="text-center">No activities found</td>
+                    </tr>
+                  `}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group">
+              <a href="/admin/admissions" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">Manage Admissions</h6>
+                  <small class="text-muted">→</small>
+                </div>
+              </a>
+              <a href="/admin/teachers" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">Manage Teachers</h6>
+                  <small class="text-muted">→</small>
+                </div>
+              </a>
+              <a href="/admin/programs" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">Manage Programs</h6>
+                  <small class="text-muted">→</small>
+                </div>
+              </a>
+              <a href="/admin/vision-mission" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">Vision & Mission</h6>
+                  <small class="text-muted">→</small>
+                </div>
+              </a>
+              <a href="/admin/about/edit" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">About Content</h6>
+                  <small class="text-muted">→</small>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}) %>

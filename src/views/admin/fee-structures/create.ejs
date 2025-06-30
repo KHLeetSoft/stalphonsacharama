@@ -1,0 +1,328 @@
+<%- include('../layouts/admin', { title: 'Add Fee Structure', style: '', script:
+'', content: `
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-plus"></i> Add New Fee Structure
+          </h4>
+        </div>
+        <div class="card-body">
+          ${typeof error !== 'undefined' && error ? `
+          <div class="alert alert-danger">${error}</div>
+          ` : ''}
+
+          <form method="POST" id="feeStructureForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="class" class="form-label">Class *</label>
+                  <select class="form-select" id="class" name="class" required>
+                    <option value="">Select Class</option>
+                    <option value="nursery">Nursery</option>
+                    <option value="lkg">LKG</option>
+                    <option value="ukg">UKG</option>
+                    <option value="1">Class 1</option>
+                    <option value="2">Class 2</option>
+                    <option value="3">Class 3</option>
+                    <option value="4">Class 4</option>
+                    <option value="5">Class 5</option>
+                    <option value="6">Class 6</option>
+                    <option value="7">Class 7</option>
+                    <option value="8">Class 8</option>
+                    <option value="9">Class 9</option>
+                    <option value="10">Class 10</option>
+                    <option value="11">Class 11</option>
+                    <option value="12">Class 12</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="academicYear" class="form-label"
+                    >Academic Year *</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="academicYear"
+                    name="academicYear"
+                    placeholder="e.g., 2024-25"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="paymentSchedule" class="form-label"
+                    >Payment Schedule</label
+                  >
+                  <select
+                    class="form-select"
+                    id="paymentSchedule"
+                    name="paymentSchedule"
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="half-yearly">Half Yearly</option>
+                    <option value="annually">Annually</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="dueDate" class="form-label"
+                    >Due Date (Day of Month)</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="dueDate"
+                    name="dueDate"
+                    min="1"
+                    max="31"
+                    value="5"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="lateFee" class="form-label">Late Fee (₹)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="lateFee"
+                    name="lateFee"
+                    min="0"
+                    step="0.01"
+                    value="0"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="discount" class="form-label">Discount (%)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="discount"
+                    name="discount"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="notes" class="form-label">Notes</label>
+                  <textarea
+                    class="form-control"
+                    id="notes"
+                    name="notes"
+                    rows="2"
+                    placeholder="Additional notes about the fee structure..."
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+              <div class="col-12">
+                <h5>Fee Components</h5>
+                <div id="feeComponents">
+                  <div class="fee-component border rounded p-3 mb-3">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <label class="form-label">Category *</label>
+                        <select
+                          class="form-select"
+                          name="fees[0][category]"
+                          required
+                        >
+                          <option value="">Select Category</option>
+                          <option value="tuition">Tuition Fee</option>
+                          <option value="transport">Transport Fee</option>
+                          <option value="library">Library Fee</option>
+                          <option value="laboratory">Laboratory Fee</option>
+                          <option value="sports">Sports Fee</option>
+                          <option value="computer">Computer Fee</option>
+                          <option value="examination">Examination Fee</option>
+                          <option value="development">Development Fee</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Name *</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="fees[0][name]"
+                          placeholder="Fee name"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-2">
+                        <label class="form-label">Amount (₹) *</label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="fees[0][amount]"
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-2">
+                        <label class="form-label">Frequency *</label>
+                        <select
+                          class="form-select"
+                          name="fees[0][frequency]"
+                          required
+                        >
+                          <option value="">Select</option>
+                          <option value="monthly">Monthly</option>
+                          <option value="quarterly">Quarterly</option>
+                          <option value="half-yearly">Half Yearly</option>
+                          <option value="annually">Annually</option>
+                          <option value="one-time">One Time</option>
+                        </select>
+                      </div>
+                      <div class="col-md-2">
+                        <label class="form-label">Required</label>
+                        <select class="form-select" name="fees[0][isRequired]">
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-12">
+                        <label class="form-label">Description</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="fees[0][description]"
+                          placeholder="Optional description"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  onclick="addFeeComponent()"
+                >
+                  <i class="fas fa-plus"></i> Add Fee Component
+                </button>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-between">
+              <a href="/admin/fee-structures" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Create Fee Structure
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+` }) %>
+<script>
+  let feeComponentCount = 1;
+
+function addFeeComponent() {
+  const container = document.getElementById('feeComponents');
+  const newComponent = document.createElement('div');
+  newComponent.className = 'fee-component border rounded p-3 mb-3';
+  newComponent.innerHTML = `
+    <div class="row">
+      <div class="col-md-3">
+        <label class="form-label">Category *</label>
+        <select class="form-select" name="fees[${feeComponentCount}][category]" required>
+          <option value="">Select Category</option>
+          <option value="tuition">Tuition Fee</option>
+          <option value="transport">Transport Fee</option>
+          <option value="library">Library Fee</option>
+          <option value="laboratory">Laboratory Fee</option>
+          <option value="sports">Sports Fee</option>
+          <option value="computer">Computer Fee</option>
+          <option value="examination">Examination Fee</option>
+          <option value="development">Development Fee</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-control" name="fees[${feeComponentCount}][name]" 
+               placeholder="Fee name" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Amount (₹) *</label>
+        <input type="number" class="form-control" name="fees[${feeComponentCount}][amount]" 
+               min="0" step="0.01" placeholder="0.00" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Frequency *</label>
+        <select class="form-select" name="fees[${feeComponentCount}][frequency]" required>
+          <option value="">Select</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="half-yearly">Half Yearly</option>
+          <option value="annually">Annually</option>
+          <option value="one-time">One Time</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Required</label>
+        <select class="form-select" name="fees[${feeComponentCount}][isRequired]">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-11">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-control" name="fees[${feeComponentCount}][description]" 
+               placeholder="Optional description">
+      </div>
+      <div class="col-1">
+        <label class="form-label">&nbsp;</label>
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeFeeComponent(this)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  container.appendChild(newComponent);
+  feeComponentCount++;
+}
+
+  function removeFeeComponent(button) {
+    button.closest(".fee-component").remove();
+  }
+</script>
+
+<%- include('../layouts/admin-footer') %> 

@@ -1,0 +1,246 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/news">News</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= news.title %></li>
+      </ol>
+    </nav>
+
+    <!-- Article Header -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="card bg-gradient-primary text-white">
+          <div class="card-body py-5">
+            <div class="row">
+              <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3"><%= news.title %></h1>
+                <div class="mb-3">
+                  <span class="badge bg-light text-dark me-2"><%= news.categoryName %></span>
+                  <% if (news.featured) { %>
+                    <span class="badge bg-warning me-2">Featured</span>
+                  <% } %>
+                </div>
+                <p class="lead mb-4"><%= news.excerpt || 'Latest news and updates from our school.' %></p>
+                <div class="d-flex align-items-center">
+                  <div class="me-4">
+                    <i class="fas fa-user"></i> By <%= news.author ? news.author.name : 'Admin' %>
+                  </div>
+                  <div class="me-4">
+                    <i class="fas fa-calendar"></i> <%= new Date(news.publishedDate).toLocaleDateString() %>
+                  </div>
+                  <div class="me-4">
+                    <i class="fas fa-eye"></i> <%= news.viewCount %> views
+                  </div>
+                  <div>
+                    <i class="fas fa-clock"></i> <%= Math.ceil((new Date() - new Date(news.publishedDate)) / (1000 * 60 * 60 * 24)) %> days ago
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-center">
+                <% if (news.image) { %>
+                  <img src="<%= news.image %>" alt="<%= news.title %>" class="img-fluid rounded shadow" style="max-height: 300px; object-fit: cover;">
+                <% } else { %>
+                  <div class="bg-light text-dark p-4 rounded">
+                    <i class="fas fa-newspaper fa-4x text-muted"></i>
+                    <p class="mt-2">No Image</p>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Content -->
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="article-content">
+              <%- news.content %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <% if (news.tags && news.tags.length > 0) { %>
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5><i class="fas fa-tags"></i> Tags</h5>
+              <div class="d-flex flex-wrap gap-2">
+                <% news.tags.forEach(tag => { %>
+                  <span class="badge bg-light text-dark"><%= tag %></span>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- Share Buttons -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5><i class="fas fa-share-alt"></i> Share This Article</h5>
+            <div class="d-flex gap-2">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:5000/news/' + news.slug) %>" 
+                 target="_blank" class="btn btn-primary btn-sm">
+                <i class="fab fa-facebook-f"></i> Facebook
+              </a>
+              <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent('http://localhost:5000/news/' + news.slug) %>&text=<%= encodeURIComponent(news.title) %>" 
+                 target="_blank" class="btn btn-info btn-sm">
+                <i class="fab fa-twitter"></i> Twitter
+              </a>
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent('http://localhost:5000/news/' + news.slug) %>" 
+                 target="_blank" class="btn btn-secondary btn-sm">
+                <i class="fab fa-linkedin-in"></i> LinkedIn
+              </a>
+              <a href="mailto:?subject=<%= encodeURIComponent(news.title) %>&body=<%= encodeURIComponent('http://localhost:5000/news/' + news.slug) %>" 
+                 class="btn btn-success btn-sm">
+                <i class="fas fa-envelope"></i> Email
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- Related Articles -->
+        <% if (relatedNews && relatedNews.length > 0) { %>
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0"><i class="fas fa-newspaper"></i> Related Articles</h5>
+            </div>
+            <div class="card-body">
+              <% relatedNews.forEach(article => { %>
+                <div class="d-flex mb-3">
+                  <% if (article.image) { %>
+                    <img src="<%= article.image %>" alt="<%= article.title %>" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                  <% } else { %>
+                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                      <i class="fas fa-newspaper text-muted"></i>
+                    </div>
+                  <% } %>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">
+                      <a href="/news/<%= article.slug %>" class="text-decoration-none"><%= article.title %></a>
+                    </h6>
+                    <small class="text-muted">
+                      <%= new Date(article.publishedDate).toLocaleDateString() %>
+                    </small>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- Article Stats -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Article Statistics</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-6">
+                <h4 class="text-primary"><%= news.viewCount %></h4>
+                <small class="text-muted">Views</small>
+              </div>
+              <div class="col-6">
+                <h4 class="text-success"><%= news.featured ? 'Yes' : 'No' %></h4>
+                <small class="text-muted">Featured</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Info -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-folder"></i> Category</h5>
+          </div>
+          <div class="card-body">
+            <span class="badge bg-info fs-6"><%= news.categoryName %></span>
+            <p class="mt-2 mb-0 text-muted">
+              This article is categorized under <%= news.categoryName.toLowerCase() %> news.
+            </p>
+          </div>
+        </div>
+
+        <!-- Author Info -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-user"></i> Author</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                <i class="fas fa-user"></i>
+              </div>
+              <div>
+                <h6 class="mb-1"><%= news.author ? news.author.name : 'Admin' %></h6>
+                <small class="text-muted">School Administrator</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to News -->
+    <div class="row mt-5">
+      <div class="col-12 text-center">
+        <a href="/news" class="btn btn-primary btn-lg">
+          <i class="fas fa-arrow-left"></i> Back to All News
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.article-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.article-content h1, .article-content h2, .article-content h3 {
+  color: #333;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.article-content p {
+  margin-bottom: 1.5rem;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.article-content blockquote {
+  border-left: 4px solid #007bff;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #666;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+</style>
+
+<%- include('../partials/footer') %> 

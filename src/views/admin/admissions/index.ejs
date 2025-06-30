@@ -1,0 +1,61 @@
+<%- include('../../partials/admin/header') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Manage Admissions</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Deadline</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (admissions && admissions.length > 0) { %> <%
+                admissions.forEach(admission => { %>
+                <tr>
+                  <td><%= admission.title %></td>
+                  <td><%= admission.description.substring(0, 100) %>...</td>
+                  <td>
+                    <%= new Date(admission.deadline).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <span
+                      class="badge badge-<%= admission.status === 'open' ? 'success' : 'danger' %>"
+                    >
+                      <%= admission.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <a
+                      href="/admin/admissions/<%= admission._id %>"
+                      class="btn btn-primary btn-sm"
+                    >
+                      <i class="fas fa-eye"></i> View
+                    </a>
+                  </td>
+                </tr>
+                <% }); %> <% } else { %>
+                <tr>
+                  <td colspan="5" class="text-center">No admissions found</td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/admin/footer') %>

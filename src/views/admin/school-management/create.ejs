@@ -1,0 +1,163 @@
+<%- include('../layouts/admin', {
+  title: 'Add School Management Entry',
+  style: '',
+  script: '',
+  content: `
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-plus"></i> Add New School Management Entry
+          </h4>
+        </div>
+        <div class="card-body">
+          ${typeof error !== 'undefined' && error ? `
+            <div class="alert alert-danger">${error}</div>
+          ` : ''}
+
+          <form action="/admin/school-management/create" method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <label for="title" class="form-label">Title *</label>
+                  <input type="text" class="form-control" id="title" name="title" 
+                         value="${typeof formData !== 'undefined' ? formData.title : ''}" required>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="category" class="form-label">Category *</label>
+                  <select class="form-select" id="category" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="community" ${typeof formData !== 'undefined' && formData.category === 'community' ? 'selected' : ''}>Community</option>
+                    <option value="announcement" ${typeof formData !== 'undefined' && formData.category === 'announcement' ? 'selected' : ''}>Announcement</option>
+                    <option value="event" ${typeof formData !== 'undefined' && formData.category === 'event' ? 'selected' : ''}>Event</option>
+                    <option value="news" ${typeof formData !== 'undefined' && formData.category === 'news' ? 'selected' : ''}>News</option>
+                    <option value="achievement" ${typeof formData !== 'undefined' && formData.category === 'achievement' ? 'selected' : ''}>Achievement</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description *</label>
+              <textarea class="form-control" id="description" name="description" rows="3" required>${typeof formData !== 'undefined' ? formData.description : ''}</textarea>
+              <small class="form-text text-muted">Brief description of the entry (max 200 characters)</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="message" class="form-label">Community Message *</label>
+              <textarea class="form-control" id="message" name="message" rows="6" required>${typeof formData !== 'undefined' ? formData.message : ''}</textarea>
+              <small class="form-text text-muted">Detailed message for the school community</small>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="priority" class="form-label">Priority</label>
+                  <select class="form-select" id="priority" name="priority">
+                    <option value="1" ${typeof formData !== 'undefined' && formData.priority === '1' ? 'selected' : ''}>1 - Low</option>
+                    <option value="2" ${typeof formData !== 'undefined' && formData.priority === '2' ? 'selected' : ''}>2</option>
+                    <option value="3" ${typeof formData !== 'undefined' && formData.priority === '3' ? 'selected' : ''}>3</option>
+                    <option value="4" ${typeof formData !== 'undefined' && formData.priority === '4' ? 'selected' : ''}>4</option>
+                    <option value="5" ${typeof formData !== 'undefined' && formData.priority === '5' ? 'selected' : ''}>5 - Medium</option>
+                    <option value="6" ${typeof formData !== 'undefined' && formData.priority === '6' ? 'selected' : ''}>6</option>
+                    <option value="7" ${typeof formData !== 'undefined' && formData.priority === '7' ? 'selected' : ''}>7</option>
+                    <option value="8" ${typeof formData !== 'undefined' && formData.priority === '8' ? 'selected' : ''}>8</option>
+                    <option value="9" ${typeof formData !== 'undefined' && formData.priority === '9' ? 'selected' : ''}>9</option>
+                    <option value="10" ${typeof formData !== 'undefined' && formData.priority === '10' ? 'selected' : ''}>10 - High</option>
+                  </select>
+                  <small class="form-text text-muted">Higher priority entries appear first</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="expiryDate" class="form-label">Expiry Date (Optional)</label>
+                  <input type="datetime-local" class="form-control" id="expiryDate" name="expiryDate" 
+                         value="${typeof formData !== 'undefined' ? formData.expiryDate : ''}">
+                  <small class="form-text text-muted">Leave empty for no expiry</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="tags" class="form-label">Tags</label>
+              <input type="text" class="form-control" id="tags" name="tags" 
+                     placeholder="Enter tags separated by commas (e.g., important, school, community)"
+                     value="${typeof formData !== 'undefined' ? formData.tags : ''}">
+              <small class="form-text text-muted">Tags help in categorizing and searching entries</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="photo" class="form-label">Photo</label>
+              <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+              <small class="form-text text-muted">Upload a photo for this entry (optional)</small>
+              <div id="photoPreview" class="mt-2" style="display: none;">
+                <img id="previewImage" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px;">
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="/admin/school-management" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Management
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Create Entry
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`
+}) %>
+
+<script>
+// Photo preview functionality
+document.getElementById('photo')?.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  const preview = document.getElementById('photoPreview');
+  const previewImage = document.getElementById('previewImage');
+  
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      previewImage.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    preview.style.display = 'none';
+  }
+});
+
+// Character counter for description
+document.getElementById('description')?.addEventListener('input', function(e) {
+  const maxLength = 200;
+  const currentLength = e.target.value.length;
+  const remaining = maxLength - currentLength;
+  
+  if (remaining < 0) {
+    e.target.value = e.target.value.substring(0, maxLength);
+  }
+});
+
+// Validate file size
+document.getElementById('photo')?.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  
+  if (file && file.size > maxSize) {
+    alert('File size should be less than 5MB');
+    this.value = '';
+    document.getElementById('photoPreview').style.display = 'none';
+  }
+});
+</script>
+  
+
+<%- include('../layouts/admin-footer') %> 

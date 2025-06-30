@@ -1,0 +1,111 @@
+<%- include('../layouts/admin', {
+  title: 'Add Annual Report',
+  style: '',
+  script: '',
+  content: `
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-plus"></i> Add New Annual Report
+          </h4>
+        </div>
+        <div class="card-body">
+          ${typeof error !== 'undefined' && error ? `
+            <div class="alert alert-danger">${error}</div>
+          ` : ''}
+
+          <form action="/admin/annual-reports/create" method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="title" class="form-label">Report Title *</label>
+                  <input type="text" class="form-control" id="title" name="title" 
+                         value="${typeof formData !== 'undefined' ? formData.title : ''}" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="academicYear" class="form-label">Academic Year *</label>
+                  <input type="text" class="form-control" id="academicYear" name="academicYear" 
+                         placeholder="e.g., 2023-2024" 
+                         value="${typeof formData !== 'undefined' ? formData.academicYear : ''}" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description *</label>
+              <textarea class="form-control" id="description" name="description" rows="4" required>${typeof formData !== 'undefined' ? formData.description : ''}</textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="tags" class="form-label">Tags</label>
+              <input type="text" class="form-control" id="tags" name="tags" 
+                     placeholder="Enter tags separated by commas (e.g., academic, performance, achievements)"
+                     value="${typeof formData !== 'undefined' ? formData.tags : ''}">
+              <small class="form-text text-muted">Tags help in categorizing and searching reports.</small>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="reportFile" class="form-label">Report File (PDF) *</label>
+                  <input type="file" class="form-control" id="reportFile" name="reportFile" 
+                         accept=".pdf" required>
+                  <small class="form-text text-muted">Upload the annual report in PDF format.</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="coverImage" class="form-label">Cover Image</label>
+                  <input type="file" class="form-control" id="coverImage" name="coverImage" 
+                         accept="image/*">
+                  <small class="form-text text-muted">Upload a cover image for the report (optional).</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="/admin/annual-reports" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Reports
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Create Report
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+` }) %>
+
+<script>
+  // Preview cover image (placeholder for future use)
+  document.getElementById('coverImage')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Preview code (optional)
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Validate PDF file size (max 10MB)
+  document.getElementById('reportFile')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file && file.size > maxSize) {
+      alert('File size should be less than 10MB');
+      this.value = '';
+    }
+  });
+</script>
+
+<%- include('../layouts/admin-footer') %>

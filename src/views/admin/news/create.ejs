@@ -1,0 +1,115 @@
+<%- include('../layouts/admin', {
+  title: 'Add News',
+  style: `
+    <style>
+      .image-preview { max-width: 200px; max-height: 150px; object-fit: cover; }
+      .error-message { color: #dc3545; margin-top: 5px; }
+    </style>
+  `,
+  script: ``,
+  content: `
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Add New Article</h2>
+    <a href="/admin/news" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST" action="/admin/news/create" enctype="multipart/form-data">
+        <!-- Basic Information -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Basic Information</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+          </div>
+          <div class="col-md-4">
+            <label for="category" class="form-label">Category *</label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="">Select Category</option>
+              <option value="academic">Academic</option>
+              <option value="events">Events</option>
+              <option value="achievements">Achievements</option>
+              <option value="announcements">Announcements</option>
+              <option value="sports">Sports</option>
+              <option value="cultural">Cultural</option>
+              <option value="general">General</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="image" class="form-label">Featured Image</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+            <div id="imagePreview" class="mt-2" style="display: none;">
+              <img id="previewImg" class="image-preview rounded" alt="Preview">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Options</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="featured" name="featured">
+              <label class="form-check-label" for="featured">
+                Mark as Featured Article
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h4 class="border-bottom pb-2">Content</h4>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12">
+            <label for="content" class="form-label">Content *</label>
+            <textarea class="form-control" id="content" name="content" rows="10" required placeholder="Enter your article content here..."></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Create Article
+            </button>
+            <a href="/admin/news" class="btn btn-secondary ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+` }) %>
+
+<%- include('../layouts/admin-footer') %>
+
+<script>
+// Simple image preview
+function previewImage(input) {
+  const preview = document.getElementById('imagePreview');
+  const previewImg = document.getElementById('previewImg');
+  
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      previewImg.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  } else {
+    preview.style.display = 'none';
+  }
+}
+</script> 

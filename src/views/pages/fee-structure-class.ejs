@@ -1,0 +1,233 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary"><%= className %> Fee Structure</h1>
+        <p class="lead text-muted">Complete fee details for <%= className %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <form method="GET" class="row g-3">
+            <div class="col-md-6">
+              <label for="academicYear" class="form-label">Academic Year</label>
+              <input type="text" class="form-control" id="academicYear" name="academicYear" 
+                     value="<%= academicYear %>" placeholder="e.g., 2024-25">
+            </div>
+            <div class="col-md-6">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Filter
+              </button>
+              <a href="/fee-structure/<%= classValue %>" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear Filters
+              </a>
+              <a href="/fee-structure" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to All Classes
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fee Structures Display Section -->
+  <div class="row">
+    <% if (feeStructures && feeStructures.length > 0) { %>
+      <% feeStructures.forEach(function(feeStructure) { %>
+        <div class="col-12 mb-5">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">
+                Academic Year: <%= feeStructure.academicYear %>
+                <span class="badge bg-light text-dark ms-2">
+                  <%= feeStructure.paymentSchedule.charAt(0).toUpperCase() + feeStructure.paymentSchedule.slice(1) %> Payment
+                </span>
+              </h3>
+            </div>
+            <div class="card-body">
+              <!-- Fee Summary -->
+              <div class="row mb-4">
+                <div class="col-md-12">
+                  <div class="card border-0 bg-light">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary">Fee Summary</h5>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <div class="text-center p-3 border rounded bg-white">
+                            <h4 class="text-success mb-1">₹<%= feeStructure.totalAnnualFee.toLocaleString() %></h4>
+                            <p class="mb-0 text-muted">Annual Total</p>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="text-center p-3 border rounded bg-white">
+                            <h4 class="text-success mb-1">₹<%= feeStructure.totalMonthlyFee.toLocaleString() %></h4>
+                            <p class="mb-0 text-muted">Monthly Total</p>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="text-center p-3 border rounded bg-white">
+                            <h4 class="text-info mb-1"><%= feeStructure.dueDate %><sup><%= getOrdinalSuffix(feeStructure.dueDate) %></sup></h4>
+                            <p class="mb-0 text-muted">Due Date</p>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="text-center p-3 border rounded bg-white">
+                            <h4 class="text-<%= feeStructure.lateFee > 0 ? 'danger' : 'muted' %> mb-1">
+                              ₹<%= feeStructure.lateFee.toLocaleString() %>
+                            </h4>
+                            <p class="mb-0 text-muted">Late Fee</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <% if (feeStructure.discount > 0) { %>
+                        <div class="row mt-3">
+                          <div class="col-md-12">
+                            <div class="alert alert-success">
+                              <i class="fas fa-percentage"></i>
+                              <strong>Discount Available:</strong> <%= feeStructure.discount %>% off on total fees
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detailed Fee Breakdown -->
+              <div class="row">
+                <div class="col-md-12">
+                  <h5 class="text-primary mb-3">Detailed Fee Breakdown</h5>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Fee Component</th>
+                          <th>Category</th>
+                          <th>Amount (₹)</th>
+                          <th>Frequency</th>
+                          <th>Required</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% feeStructure.fees.forEach(function(fee) { %>
+                          <tr>
+                            <td>
+                              <strong><%= fee.name %></strong>
+                            </td>
+                            <td>
+                              <span class="badge bg-<%= getCategoryColor(fee.category) %>">
+                                <%= fee.category.charAt(0).toUpperCase() + fee.category.slice(1).replace('-', ' ') %>
+                              </span>
+                            </td>
+                            <td>
+                              <strong>₹<%= fee.amount.toLocaleString() %></strong>
+                            </td>
+                            <td>
+                              <span class="badge bg-<%= getFrequencyColor(fee.frequency) %>">
+                                <%= fee.frequency.charAt(0).toUpperCase() + fee.frequency.slice(1).replace('-', ' ') %>
+                              </span>
+                            </td>
+                            <td>
+                              <% if (fee.isRequired) { %>
+                                <span class="badge bg-success">Required</span>
+                              <% } else { %>
+                                <span class="badge bg-warning">Optional</span>
+                              <% } %>
+                            </td>
+                            <td>
+                              <small class="text-muted"><%= fee.description || '-' %></small>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Information -->
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <div class="card border-0 bg-light">
+                    <div class="card-body">
+                      <h6 class="card-title">Payment Information</h6>
+                      <ul class="list-unstyled">
+                        <li><i class="fas fa-calendar-alt text-primary"></i> <strong>Payment Schedule:</strong> <%= feeStructure.paymentSchedule.charAt(0).toUpperCase() + feeStructure.paymentSchedule.slice(1) %></li>
+                        <li><i class="fas fa-clock text-primary"></i> <strong>Due Date:</strong> <%= feeStructure.dueDate %><sup><%= getOrdinalSuffix(feeStructure.dueDate) %></sup> of each month</li>
+                        <% if (feeStructure.lateFee > 0) { %>
+                          <li><i class="fas fa-exclamation-triangle text-danger"></i> <strong>Late Fee:</strong> ₹<%= feeStructure.lateFee.toLocaleString() %> per month</li>
+                        <% } %>
+                        <% if (feeStructure.discount > 0) { %>
+                          <li><i class="fas fa-percentage text-success"></i> <strong>Discount:</strong> <%= feeStructure.discount %>% available</li>
+                        <% } %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="card border-0 bg-light">
+                    <div class="card-body">
+                      <h6 class="card-title">Important Notes</h6>
+                      <% if (feeStructure.notes) { %>
+                        <p class="text-muted"><%= feeStructure.notes %></p>
+                      <% } else { %>
+                        <ul class="list-unstyled text-muted">
+                          <li><i class="fas fa-info-circle"></i> All fees are payable in advance</li>
+                          <li><i class="fas fa-info-circle"></i> Late fees apply after the due date</li>
+                          <li><i class="fas fa-info-circle"></i> Optional fees can be paid as needed</li>
+                          <li><i class="fas fa-info-circle"></i> Contact the office for payment methods</li>
+                        </ul>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="col-12">
+        <div class="text-center py-5">
+          <i class="fas fa-money-bill-wave fa-4x text-muted mb-3"></i>
+          <h3 class="text-muted">No fee structure found for <%= className %></h3>
+          <p class="text-muted">Please contact the school office for fee information.</p>
+          <a href="/fee-structure" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to All Classes
+          </a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function getOrdinalSuffix(num) {
+  const j = num % 10;
+  const k = num % 100;
+  if (j == 1 && k != 11) {
+    return "st";
+  }
+  if (j == 2 && k != 12) {
+    return "nd";
+  }
+  if (j == 3 && k != 13) {
+    return "rd";
+  }
+  return "th";
+}
+</script>
+
+<%- include('../partials/footer') %> 

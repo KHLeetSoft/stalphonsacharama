@@ -1,0 +1,54 @@
+</main>
+<footer class="bg-dark py-4 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <h5 class="text-light">Contact Us</h5>
+        <% if (typeof contactInfo !== 'undefined' && contactInfo) { %>
+          <p class="mb-1 text-light"><i class="bi bi-geo-alt"></i> <%= contactInfo.address %></p>
+          <p class="mb-1 text-light"><i class="bi bi-telephone"></i>  Reception: <%= contactInfo.Reception %></p>
+          <p class="mb-1 text-light"><i class="bi bi-telephone"></i>   Transport: <%= contactInfo.Transport %></p>
+          <p class="mb-1 text-light"><i class="bi bi-telephone"></i>   Accounts: <%= contactInfo.Accounts %></p>
+          <p class="mb-1 text-light"><i class="bi bi-envelope"></i> <%= contactInfo.email %></p>
+        <% } else { %>
+          <p class="mb-1 text-light"><i class="bi bi-geo-alt"></i> Address will be updated soon</p>
+          <p class="mb-1 text-light"><i class="bi bi-telephone"></i> Phone will be updated soon</p>
+          <p class="mb-1 text-light"><i class="bi bi-envelope"></i> Email will be updated soon</p>
+        <% } %>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5 class="text-light">Quick Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="/" class="text-decoration-none text-light">Home</a></li>
+          <li><a href="/about" class="text-decoration-none text-light">About</a></li>
+          <li><a href="/teachers" class="text-decoration-none text-light">Teachers</a></li>
+          <li><a href="/contact" class="text-decoration-none text-light">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <h5 class="text-light">Follow Us</h5>
+        <div class="d-flex gap-3">
+          <% if (contactInfo?.socialLinks?.facebook) { %>
+            <a href="<%= contactInfo.socialLinks.facebook %>" class="text-light" target="_blank"><i class="bi bi-facebook fs-5"></i></a>
+          <% } %>
+          <% if (contactInfo?.socialLinks?.twitter) { %>
+            <a href="<%= contactInfo.socialLinks.twitter %>" class="text-light" target="_blank"><i class="bi bi-twitter fs-5"></i></a>
+          <% } %>
+          <% if (contactInfo?.socialLinks?.instagram) { %>
+            <a href="<%= contactInfo.socialLinks.instagram %>" class="text-light" target="_blank"><i class="bi bi-instagram fs-5"></i></a>
+          <% } %>
+          <% if (contactInfo?.socialLinks?.linkedin) { %>
+            <a href="<%= contactInfo.socialLinks.linkedin %>" class="text-light" target="_blank"><i class="bi bi-linkedin fs-5"></i></a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <hr class="my-3 border-light">
+    <div class="text-center">
+      <p class="mb-0 text-light">&copy; <%= new Date().getFullYear() %> Chavara High School. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Fee Structure</h1>
+        <p class="lead text-muted">Complete fee details for all classes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <form method="GET" class="row g-3">
+            <div class="col-md-4">
+              <label for="class" class="form-label">Class</label>
+              <select class="form-select" id="class" name="class">
+                <option value="all" <%= classFilter === 'all' ? 'selected' : '' %>>All Classes</option>
+                <option value="nursery" <%= classFilter === 'nursery' ? 'selected' : '' %>>Nursery</option>
+                <option value="lkg" <%= classFilter === 'lkg' ? 'selected' : '' %>>LKG</option>
+                <option value="ukg" <%= classFilter === 'ukg' ? 'selected' : '' %>>UKG</option>
+                <option value="1" <%= classFilter === '1' ? 'selected' : '' %>>Class 1</option>
+                <option value="2" <%= classFilter === '2' ? 'selected' : '' %>>Class 2</option>
+                <option value="3" <%= classFilter === '3' ? 'selected' : '' %>>Class 3</option>
+                <option value="4" <%= classFilter === '4' ? 'selected' : '' %>>Class 4</option>
+                <option value="5" <%= classFilter === '5' ? 'selected' : '' %>>Class 5</option>
+                <option value="6" <%= classFilter === '6' ? 'selected' : '' %>>Class 6</option>
+                <option value="7" <%= classFilter === '7' ? 'selected' : '' %>>Class 7</option>
+                <option value="8" <%= classFilter === '8' ? 'selected' : '' %>>Class 8</option>
+                <option value="9" <%= classFilter === '9' ? 'selected' : '' %>>Class 9</option>
+                <option value="10" <%= classFilter === '10' ? 'selected' : '' %>>Class 10</option>
+                <option value="11" <%= classFilter === '11' ? 'selected' : '' %>>Class 11</option>
+                <option value="12" <%= classFilter === '12' ? 'selected' : '' %>>Class 12</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="academicYear" class="form-label">Academic Year</label>
+              <input type="text" class="form-control" id="academicYear" name="academicYear" 
+                     value="<%= academicYear %>" placeholder="e.g., 2024-25">
+            </div>
+            <div class="col-md-4">
+              <label for="search" class="form-label">Search</label>
+              <input type="text" class="form-control" id="search" name="search" 
+                     value="<%= search %>" placeholder="Search...">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Filter
+              </button>
+              <a href="/fee-structure" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear Filters
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fee Structures Display Section -->
+  <div class="row">
+    <% if (feeStructures && feeStructures.length > 0) { %>
+      <% Object.keys(feeStructuresByClass).sort().forEach(function(classValue) { %>
+        <div class="col-12 mb-5">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">
+                <% if (classValue === 'nursery') { %>
+                  Nursery
+                <% } else if (classValue === 'lkg') { %>
+                  LKG
+                <% } else if (classValue === 'ukg') { %>
+                  UKG
+                <% } else { %>
+                  Class <%= classValue %>
+                <% } %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <% feeStructuresByClass[classValue].forEach(function(feeStructure) { %>
+                <div class="row mb-4">
+                  <div class="col-12">
+                    <h5 class="text-primary mb-3">
+                      Academic Year: <%= feeStructure.academicYear %>
+                      <span class="badge bg-<%= getFrequencyColor(feeStructure.paymentSchedule) %> ms-2">
+                        <%= feeStructure.paymentSchedule.charAt(0).toUpperCase() + feeStructure.paymentSchedule.slice(1) %> Payment
+                      </span>
+                    </h5>
+                    
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                          <div class="card-body">
+                            <h6 class="card-title">Fee Summary</h6>
+                            <div class="row">
+                              <div class="col-6">
+                                <p class="mb-1"><strong>Annual Total:</strong></p>
+                                <p class="mb-1"><strong>Monthly Total:</strong></p>
+                                <p class="mb-1"><strong>Due Date:</strong></p>
+                                <% if (feeStructure.lateFee > 0) { %>
+                                  <p class="mb-1"><strong>Late Fee:</strong></p>
+                                <% } %>
+                                <% if (feeStructure.discount > 0) { %>
+                                  <p class="mb-1"><strong>Discount:</strong></p>
+                                <% } %>
+                              </div>
+                              <div class="col-6">
+                                <p class="mb-1 text-success">₹<%= feeStructure.totalAnnualFee.toLocaleString() %></p>
+                                <p class="mb-1 text-success">₹<%= feeStructure.totalMonthlyFee.toLocaleString() %></p>
+                                <p class="mb-1"><%= feeStructure.dueDate %><sup><%= getOrdinalSuffix(feeStructure.dueDate) %></sup> of each month</p>
+                                <% if (feeStructure.lateFee > 0) { %>
+                                  <p class="mb-1 text-danger">₹<%= feeStructure.lateFee.toLocaleString() %></p>
+                                <% } %>
+                                <% if (feeStructure.discount > 0) { %>
+                                  <p class="mb-1 text-success"><%= feeStructure.discount %>%</p>
+                                <% } %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                          <div class="card-body">
+                            <h6 class="card-title">Fee Breakdown</h6>
+                            <div class="table-responsive">
+                              <table class="table table-sm">
+                                <thead>
+                                  <tr>
+                                    <th>Component</th>
+                                    <th>Amount</th>
+                                    <th>Frequency</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <% feeStructure.fees.forEach(function(fee) { %>
+                                    <tr>
+                                      <td>
+                                        <%= fee.name %>
+                                        <% if (!fee.isRequired) { %>
+                                          <span class="badge bg-warning">Optional</span>
+                                        <% } %>
+                                      </td>
+                                      <td>₹<%= fee.amount.toLocaleString() %></td>
+                                      <td>
+                                        <span class="badge bg-<%= getFrequencyColor(fee.frequency) %>">
+                                          <%= fee.frequency.charAt(0).toUpperCase() + fee.frequency.slice(1) %>
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  <% }); %>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <% if (feeStructure.notes) { %>
+                      <div class="mt-3">
+                        <h6>Notes:</h6>
+                        <p class="text-muted"><%= feeStructure.notes %></p>
+                      </div>
+                    <% } %>
+                    
+                    <div class="mt-3">
+                      <a href="/fee-structure/<%= classValue %>" class="btn btn-outline-primary">
+                        View Detailed Fee Structure
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="col-12">
+        <div class="text-center py-5">
+          <i class="fas fa-money-bill-wave fa-4x text-muted mb-3"></i>
+          <h3 class="text-muted">No fee structures found</h3>
+          <p class="text-muted">Try adjusting your search criteria or filters.</p>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function getOrdinalSuffix(num) {
+  const j = num % 10;
+  const k = num % 100;
+  if (j == 1 && k != 11) {
+    return "st";
+  }
+  if (j == 2 && k != 12) {
+    return "nd";
+  }
+  if (j == 3 && k != 13) {
+    return "rd";
+  }
+  return "th";
+}
+</script>
+
+<%- include('../partials/footer') %> 

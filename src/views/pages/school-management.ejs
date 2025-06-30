@@ -1,0 +1,166 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">School Community</h1>
+        <p class="lead text-muted">Stay updated with the latest news, announcements, and community messages from our school.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a href="/school-community" class="btn btn-outline-primary <%= category === 'all' ? 'active' : '' %>">
+              All Categories
+            </a>
+            <a href="/school-community?category=community" class="btn btn-outline-primary <%= category === 'community' ? 'active' : '' %>">
+              <i class="fas fa-users"></i> Community
+            </a>
+            <a href="/school-community?category=announcement" class="btn btn-outline-warning <%= category === 'announcement' ? 'active' : '' %>">
+              <i class="fas fa-bullhorn"></i> Announcements
+            </a>
+            <a href="/school-community?category=event" class="btn btn-outline-success <%= category === 'event' ? 'active' : '' %>">
+              <i class="fas fa-calendar"></i> Events
+            </a>
+            <a href="/school-community?category=news" class="btn btn-outline-info <%= category === 'news' ? 'active' : '' %>">
+              <i class="fas fa-newspaper"></i> News
+            </a>
+            <a href="/school-community?category=achievement" class="btn btn-outline-danger <%= category === 'achievement' ? 'active' : '' %>">
+              <i class="fas fa-trophy"></i> Achievements
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if (typeof entries !== 'undefined' && entries.length > 0) { %>
+    <div class="row">
+      <% entries.forEach(function(entry) { %>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card h-100 shadow-sm school-community-card">
+            <% if (entry.photo) { %>
+              <img src="<%= entry.photo %>" class="card-img-top" alt="<%= entry.title %>" style="height: 200px; object-fit: cover;">
+            <% } else { %>
+              <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="fas fa-bullhorn fa-4x text-muted"></i>
+              </div>
+            <% } %>
+            
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge bg-<%= getCategoryColor(entry.category) %>"><%= entry.category %></span>
+                <small class="text-muted">
+                  <i class="fas fa-eye"></i> <%= entry.viewCount %> views
+                </small>
+              </div>
+              
+              <h5 class="card-title"><%= entry.title %></h5>
+              <p class="card-text text-muted"><%= entry.description %></p>
+              
+              <% if (entry.tags && entry.tags.length > 0) { %>
+                <div class="mb-3">
+                  <% entry.tags.slice(0, 3).forEach(function(tag) { %>
+                    <span class="badge bg-light text-dark me-1"><%= tag %></span>
+                  <% }); %>
+                  <% if (entry.tags.length > 3) { %>
+                    <span class="badge bg-light text-dark">+<%= entry.tags.length - 3 %> more</span>
+                  <% } %>
+                </div>
+              <% } %>
+              
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <small class="text-muted">
+                    <i class="fas fa-calendar"></i> <%= new Date(entry.publishedDate).toLocaleDateString() %>
+                  </small>
+                  <% if (entry.author) { %>
+                    <small class="text-muted">
+                      <i class="fas fa-user"></i> <%= entry.author.name %>
+                    </small>
+                  <% } %>
+                </div>
+                
+                <a href="/school-community/<%= entry._id %>" class="btn btn-primary btn-sm w-100">
+                  <i class="fas fa-eye"></i> Read More
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <div class="card">
+          <div class="card-body py-5">
+            <i class="fas fa-bullhorn fa-4x text-muted mb-4"></i>
+            <h4 class="text-muted">No Community Messages Available</h4>
+            <p class="text-muted">We are currently preparing community messages. Please check back later.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<style>
+.school-community-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.school-community-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+}
+
+.card-img-top {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+.btn-outline-primary.active,
+.btn-outline-warning.active,
+.btn-outline-success.active,
+.btn-outline-info.active,
+.btn-outline-danger.active {
+  color: white;
+}
+
+.btn-outline-primary.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-warning.active {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.btn-outline-success.active {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+.btn-outline-info.active {
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+}
+
+.btn-outline-danger.active {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+</style>
+
+<%- include('../partials/footer') %> 

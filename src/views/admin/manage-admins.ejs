@@ -1,0 +1,148 @@
+<%- include('./layouts/admin', {
+  title: 'Manage Administrators',
+  style: '',
+  script: '',
+  content: `
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Manage Administrators</h1>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAdminModal">
+        Add New Administrator
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Last Login</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${admins.map(adminUser => `
+            <tr>
+              <td>${adminUser.username}</td>
+              <td>${adminUser.email}</td>
+              <td>${adminUser.role}</td>
+              <td>
+                <span class="badge ${adminUser.isActive ? 'bg-success' : 'bg-danger'}">
+                  ${adminUser.isActive ? 'Active' : 'Inactive'}
+                </span>
+              </td>
+              <td>${adminUser.lastLogin ? new Date(adminUser.lastLogin).toLocaleString() : 'Never'}</td>
+              <td>
+                <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editAdminModal${adminUser._id}">
+                  Edit
+                </button>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAdminModal${adminUser._id}">
+                  Delete
+                </button>
+              </td>
+            </tr>
+
+            <!-- Delete Admin Modal -->
+            <div class="modal fade" id="deleteAdminModal${adminUser._id}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Delete Administrator</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to delete administrator ${adminUser.username}?</p>
+                    <p class="text-danger">This action cannot be undone.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="/admin/delete-admin/${adminUser._id}" method="POST" class="d-inline">
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Admin Modal -->
+            <div class="modal fade" id="editAdminModal${adminUser._id}" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit Administrator</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form action="/admin/update-admin/${adminUser._id}" method="POST">
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select name="role" class="form-select" required>
+                          <option value="editor" ${adminUser.role === 'editor' ? 'selected' : ''}>Editor</option>
+                          <option value="admin" ${adminUser.role === 'admin' ? 'selected' : ''}>Admin</option>
+                          <option value="super_admin" ${adminUser.role === 'super_admin' ? 'selected' : ''}>Super Admin</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="isActive" class="form-select" required>
+                          <option value="true" ${adminUser.isActive ? 'selected' : ''}>Active</option>
+                          <option value="false" ${!adminUser.isActive ? 'selected' : ''}>Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Create Admin Modal -->
+    <div class="modal fade" id="createAdminModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create New Administrator</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form action="/admin/create-admin" method="POST">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select name="role" class="form-select" required>
+                  <option value="editor">Editor</option>
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Create Administrator</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `
+}) %>

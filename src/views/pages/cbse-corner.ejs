@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../partials/header') %>
+    <style>
+      .document-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        height: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .document-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .document-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      .document-date {
+        font-size: 0.9rem;
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2 class="text-center mb-4">CBSE Corner</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <% documents?.forEach(function(doc) { %>
+        <div class="col">
+          <a
+            href="<%= doc.fileUrl %>"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card document-card h-100 text-decoration-none"
+          >
+            <div class="card-body text-center">
+              <% if (doc?.fileType === '.pdf') { %>
+              <i class="bi bi-file-pdf text-danger document-icon"></i>
+              <% } else if (['.doc', '.docx']?.includes(doc.fileType)) { %>
+              <i class="bi bi-file-word text-primary document-icon"></i>
+              <% } else if (['.xls', '.xlsx']?.includes(doc.fileType)) { %>
+              <i class="bi bi-file-excel text-success document-icon"></i>
+              <% } else { %>
+              <i class="bi bi-file-text document-icon"></i>
+              <% } %>
+              <h5 class="card-title"><%= doc.title %></h5>
+              <p class="card-text text-muted"><%= doc.description %></p>
+              <p class="document-date">
+                Added: <%= doc.uploadDate.toLocaleDateString() %>
+              </p>
+            </div>
+          </a>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <script>
+      function copyShareLink(button) {
+        const input = button.parentElement.querySelector("input");
+        input.select();
+        document.execCommand("copy");
+
+        // Show feedback
+        const originalIcon = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i>';
+        setTimeout(() => {
+          button.innerHTML = originalIcon;
+        }, 2000);
+      }
+
+      function copyDocumentUrl(button) {
+        const input = button.parentElement.querySelector("input");
+        input.select();
+        document.execCommand("copy");
+
+        // Show feedback
+        const originalIcon = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i>';
+        setTimeout(() => {
+          button.innerHTML = originalIcon;
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
+<%- include('../partials/footer') %>

@@ -1,0 +1,84 @@
+<%- include('../layouts/admin') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="mt-4">Principal Management</h1>
+
+      <% if (messages.error) { %>
+      <div class="alert alert-danger"><%= messages.error %></div>
+      <% } %> <% if (messages.success) { %>
+      <div class="alert alert-success"><%= messages.success %></div>
+      <% } %>
+
+      <form
+        method="POST"
+        action="/admin/principal/update"
+        enctype="multipart/form-data"
+      >
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Principal Information</h4>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Current Image</label>
+                  <% if (principal && principal.image) { %>
+                  <img
+                    src="<%= principal.image %>"
+                    class="img-fluid mb-2"
+                    style="max-height: 200px"
+                  />
+                  <% } else { %>
+                  <p>No image uploaded</p>
+                  <% } %>
+                  <input type="file" name="image" class="form-control-file" />
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    value="<%= principal ? principal.name : '' %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    class="form-control"
+                    value="<%= principal ? principal.title : '' %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Message</label>
+                  <textarea
+                    name="message"
+                    class="form-control"
+                    rows="5"
+                    required
+                  >
+                    <%= principal ? principal.message : '' %>
+                  </textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

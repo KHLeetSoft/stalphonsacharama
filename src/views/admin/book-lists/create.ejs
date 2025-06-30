@@ -1,0 +1,132 @@
+<%- include('../layouts/admin', {
+  title: 'Add Book to List',
+  style: '',
+  script: '',
+  content: `
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-plus"></i> Add New Book to List
+          </h4>
+        </div>
+        <div class="card-body">
+          ${typeof error !== 'undefined' && error ? `
+            <div class="alert alert-danger">${error}</div>
+          ` : ''}
+
+          <form method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="title" class="form-label">Book Title *</label>
+                  <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="author" class="form-label">Author *</label>
+                  <input type="text" class="form-control" id="author" name="author" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="class" class="form-label">Class *</label>
+                  <select class="form-select" id="class" name="class" required>
+                    <option value="">Select Class</option>
+                    ${['nursery', 'lkg', 'ukg', '1','2','3','4','5','6','7','8','9','10','11','12'].map(c => `<option value="${c}">${c === 'lkg' ? 'LKG' : c === 'ukg' ? 'UKG' : c === 'nursery' ? 'Nursery' : 'Class ' + c}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="subject" class="form-label">Subject *</label>
+                  <select class="form-select" id="subject" name="subject" required>
+                    <option value="">Select Subject</option>
+                    ${['english','hindi','mathematics','science','social-studies','computer','art','music','physical-education','general-knowledge','other'].map(s => `<option value="${s}">${s.replace(/-/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase())}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="bookType" class="form-label">Book Type *</label>
+                  <select class="form-select" id="bookType" name="bookType" required>
+                    <option value="">Select Type</option>
+                    ${['textbook','workbook','reference','storybook','activity-book','other'].map(t => `<option value="${t}">${t.replace(/-/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase())}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="publisher" class="form-label">Publisher</label>
+                  <input type="text" class="form-control" id="publisher" name="publisher">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="academicYear" class="form-label">Academic Year *</label>
+                  <input type="text" class="form-control" id="academicYear" name="academicYear" placeholder="e.g., 2024-25" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="price" class="form-label">Price (₹)</label>
+                  <input type="number" class="form-control" id="price" name="price" step="0.01" min="0">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="isRequired" class="form-label">Required/Optional</label>
+                  <select class="form-select" id="isRequired" name="isRequired">
+                    <option value="true">Required</option>
+                    <option value="false">Optional</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3" placeholder="Brief description of the book..."></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="tags" class="form-label">Tags</label>
+              <input type="text" class="form-control" id="tags" name="tags" placeholder="Enter tags separated by commas (e.g., cbse, ncert, reference)">
+              <small class="form-text text-muted">Tags help in searching and categorizing books.</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="coverImage" class="form-label">Cover Image</label>
+              <input type="file" class="form-control" id="coverImage" name="coverImage" accept="image/*">
+              <small class="form-text text-muted">Upload a cover image for the book (optional).</small>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="/admin/book-lists" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Add Book
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+` }) %>
+
+<%- include('../layouts/admin-footer') %>

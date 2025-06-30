@@ -1,0 +1,198 @@
+<%- include('../../partials/header') %>
+
+<div class="container mt-4">
+  <h2>Create New Admission</h2>
+  <form
+    action="/admin/admissions/create"
+    method="POST"
+    class="needs-validation"
+    novalidate
+  >
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        id="description"
+        name="description"
+        rows="3"
+        required
+      ></textarea>
+    </div>
+
+    <div class="mb-3" id="requirementsContainer">
+      <label class="form-label">Requirements</label>
+      <div class="requirement-item mb-2">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            name="requirements[]"
+            required
+          />
+          <button type="button" class="btn btn-success add-requirement">
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="deadline" class="form-label">Application Deadline</label>
+      <input
+        type="date"
+        class="form-control"
+        id="deadline"
+        name="deadline"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="fees" class="form-label">Application Fees ($)</label>
+      <input
+        type="number"
+        class="form-control"
+        id="fees"
+        name="fees"
+        step="0.01"
+        required
+      />
+    </div>
+
+    <div class="mb-3" id="applicationProcessContainer">
+      <label class="form-label">Application Process</label>
+      <div class="process-step mb-2">
+        <div class="row">
+          <div class="col-md-4">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Step Title"
+              name="process_step[]"
+              required
+            />
+          </div>
+          <div class="col-md-7">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Step Description"
+              name="process_description[]"
+              required
+            />
+          </div>
+          <div class="col-md-1">
+            <button type="button" class="btn btn-success add-step">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select class="form-select" id="status" name="status" required>
+        <option value="open">Open</option>
+        <option value="closed">Closed</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Create Admission</button>
+      <a href="/admin/admissions" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Add requirement field
+    document
+      .querySelector(".add-requirement")
+      .addEventListener("click", function () {
+        const container = document.getElementById("requirementsContainer");
+        const newItem = document.createElement("div");
+        newItem.className = "requirement-item mb-2";
+        newItem.innerHTML = `
+      <div class="input-group">
+        <input type="text" class="form-control" name="requirements[]" required>
+        <button type="button" class="btn btn-danger remove-item">-</button>
+      </div>
+    `;
+        container.appendChild(newItem);
+      });
+
+    // Add process step
+    document.querySelector(".add-step").addEventListener("click", function () {
+      const container = document.getElementById("applicationProcessContainer");
+      const newStep = document.createElement("div");
+      newStep.className = "process-step mb-2";
+      newStep.innerHTML = `
+      <div class="row">
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Step Title" name="process_step[]" required>
+        </div>
+        <div class="col-md-7">
+          <input type="text" class="form-control" placeholder="Step Description" name="process_description[]" required>
+        </div>
+        <div class="col-md-1">
+          <button type="button" class="btn btn-danger remove-step">-</button>
+        </div>
+      </div>
+    `;
+      container.appendChild(newStep);
+    });
+
+    // Remove items
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("remove-item")) {
+        e.target.closest(".requirement-item").remove();
+      }
+      if (e.target.classList.contains("remove-step")) {
+        e.target.closest(".process-step").remove();
+      }
+    });
+
+    // Form validation
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        // Prepare application process data
+        const steps = [];
+        const stepTitles = document.getElementsByName("process_step[]");
+        const stepDescriptions = document.getElementsByName(
+          "process_description[]"
+        );
+
+        for (let i = 0; i < stepTitles.length; i++) {
+          steps.push({
+            step: stepTitles[i].value,
+            description: stepDescriptions[i].value,
+          });
+        }
+
+        const processInput = document.createElement("input");
+        processInput.type = "hidden";
+        processInput.name = "applicationProcess";
+        processInput.value = JSON.stringify(steps);
+        form.appendChild(processInput);
+      }
+      form.classList.add("was-validated");
+    });
+  });
+</script>
+
+<%- include('../../partials/footer') %>

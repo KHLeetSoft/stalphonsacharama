@@ -1,0 +1,60 @@
+/* Fix sidebar position and remove scroll */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+/* Make nav items container scrollable instead of whole sidebar */
+.sidebar nav {
+  height: calc(100vh - 80px); /* Adjust based on your sidebar header height */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Ensure main content is properly offset and scrollable */
+.main-content {
+  margin-left: 280px;
+  min-height: 100vh;
+  overflow-y: auto;
+  width: calc(100% - 280px);
+}
+
+/* Custom scrollbar for nav */
+.sidebar nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar nav::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 767.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}

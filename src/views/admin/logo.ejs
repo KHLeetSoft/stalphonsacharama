@@ -1,0 +1,63 @@
+<%- include('../partials/admin/header') %>
+
+<div class="container-fluid">
+    <div class="row">
+        <%- include('../partials/admin/sidebar') %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Logo Management</h1>
+            </div>
+
+            <% if (success && success.length > 0) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <% if (error && error.length > 0) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Current Logo</h5>
+                        </div>
+                        <div class="card-body">
+                            <% if (logo && logo.logoUrl) { %>
+                                <img src="<%= logo.logoUrl %>" alt="Current Logo" class="img-fluid mb-3" style="max-height: 100px;">
+                                <p class="text-muted">Last updated: <%= logo.updatedAt.toLocaleDateString() %></p>
+                            <% } else { %>
+                                <p class="text-muted">No logo uploaded yet</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Update Logo</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/admin/logo" method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="logo" class="form-label">Select New Logo</label>
+                                    <input type="file" class="form-control" id="logo" name="logo" accept="image/*" required>
+                                    <div class="form-text">Recommended size: 200x50 pixels. Supported formats: PNG, JPG, JPEG.</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Upload New Logo</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<%- include('../partials/admin/footer') %> 

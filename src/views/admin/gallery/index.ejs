@@ -1,0 +1,84 @@
+<%- include('../layouts/admin', {
+  title: 'Manage Gallery',
+  style: '',
+  script: '',
+  content: `
+
+<div class="container mt-4">
+  <h2>Gallery Management</h2>
+  
+  <!-- Add New Image Form -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Add New Image</h5>
+    </div>
+    <div class="card-body">
+      <form action="/admin/gallery/create" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="image" class="form-label">Image</label>
+          <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Image</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Gallery Images List -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Gallery Images</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        ${images.map(image => `
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img src="${image.image}" class="card-img-top" alt="${image.title}" style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+              <h5 class="card-title">${image.title}</h5>
+              <p class="card-text">${image.description}</p>
+              <p class="card-text"><small class="text-muted">Status: ${image.isActive ? 'Active' : 'Inactive'}</small></p>
+              
+              <!-- Edit Form -->
+              <form action="/admin/gallery/update/${image._id}" method="POST" enctype="multipart/form-data" class="mb-2">
+                <div class="mb-2">
+                  <input type="text" class="form-control" name="title" value="${image.title}" required>
+                </div>
+                <div class="mb-2">
+                  <textarea class="form-control" name="description" rows="2">${image.description}</textarea>
+                </div>
+                <div class="mb-2">
+                  <input type="file" class="form-control" name="image" accept="image/*">
+                </div>
+                <div class="mb-2">
+                  <select class="form-control" name="isActive">
+                    <option value="true" ${image.isActive ? 'selected' : ''}>Active</option>
+                    <option value="false" ${!image.isActive ? 'selected' : ''}>Inactive</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-warning btn-sm">Update</button>
+              </form>
+              
+              <!-- Delete Form -->
+              <form action="/admin/gallery/delete/${image._id}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this image?')">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+</div>
+
+` }) %>
+

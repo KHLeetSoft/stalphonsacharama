@@ -1,0 +1,99 @@
+<%- include('../../admin/layouts/admin', { title: 'Add New User', style: '', script: '' }) %>
+
+<div class="container-fluid px-4">
+  <h1 class="mt-4">Add New User</h1>
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/admin/users">Users</a></li>
+    <li class="breadcrumb-item active">Add New User</li>
+  </ol>
+
+  <div class="row">
+    <div class="col-xl-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-user-plus me-1"></i>
+          User Details
+        </div>
+        <div class="card-body">
+          <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger" role="alert">
+            <%= error %>
+          </div>
+          <% } %>
+
+          <form action="/admin/users/add" method="POST">
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                value="<%= typeof formData !== 'undefined' ? formData.name : '' %>"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                value="<%= typeof formData !== 'undefined' ? formData.username : '' %>"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="<%= typeof formData !== 'undefined' ? formData.email : '' %>"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="role" class="form-label">Role</label>
+              <select class="form-select" id="role" name="role" required>
+                <option value="" selected disabled>Select a role</option>
+                <option value="editor" <%= typeof formData !== 'undefined' && formData.role === 'editor' ? 'selected' : '' %>>
+                  Editor
+                </option>
+                <option value="viewer" <%= typeof formData !== 'undefined' && formData.role === 'viewer' ? 'selected' : '' %>>
+                  Viewer
+                </option>
+              </select>
+            </div>
+
+            <div class="mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> Save User
+              </button>
+              <a href="/admin/users" class="btn btn-secondary">
+                <i class="fas fa-times me-1"></i> Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

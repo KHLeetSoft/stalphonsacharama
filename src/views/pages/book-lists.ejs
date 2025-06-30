@@ -1,0 +1,174 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Book Lists</h1>
+        <p class="lead text-muted">Find the required books for each class and subject</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <form method="GET" class="row g-3">
+            <div class="col-md-3">
+              <label for="class" class="form-label">Class</label>
+              <select class="form-select" id="class" name="class">
+                <option value="all" <%= classFilter === 'all' ? 'selected' : '' %>>All Classes</option>
+                <option value="nursery" <%= classFilter === 'nursery' ? 'selected' : '' %>>Nursery</option>
+                <option value="lkg" <%= classFilter === 'lkg' ? 'selected' : '' %>>LKG</option>
+                <option value="ukg" <%= classFilter === 'ukg' ? 'selected' : '' %>>UKG</option>
+                <option value="1" <%= classFilter === '1' ? 'selected' : '' %>>Class 1</option>
+                <option value="2" <%= classFilter === '2' ? 'selected' : '' %>>Class 2</option>
+                <option value="3" <%= classFilter === '3' ? 'selected' : '' %>>Class 3</option>
+                <option value="4" <%= classFilter === '4' ? 'selected' : '' %>>Class 4</option>
+                <option value="5" <%= classFilter === '5' ? 'selected' : '' %>>Class 5</option>
+                <option value="6" <%= classFilter === '6' ? 'selected' : '' %>>Class 6</option>
+                <option value="7" <%= classFilter === '7' ? 'selected' : '' %>>Class 7</option>
+                <option value="8" <%= classFilter === '8' ? 'selected' : '' %>>Class 8</option>
+                <option value="9" <%= classFilter === '9' ? 'selected' : '' %>>Class 9</option>
+                <option value="10" <%= classFilter === '10' ? 'selected' : '' %>>Class 10</option>
+                <option value="11" <%= classFilter === '11' ? 'selected' : '' %>>Class 11</option>
+                <option value="12" <%= classFilter === '12' ? 'selected' : '' %>>Class 12</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="subject" class="form-label">Subject</label>
+              <select class="form-select" id="subject" name="subject">
+                <option value="all" <%= subject === 'all' ? 'selected' : '' %>>All Subjects</option>
+                <option value="english" <%= subject === 'english' ? 'selected' : '' %>>English</option>
+                <option value="hindi" <%= subject === 'hindi' ? 'selected' : '' %>>Hindi</option>
+                <option value="mathematics" <%= subject === 'mathematics' ? 'selected' : '' %>>Mathematics</option>
+                <option value="science" <%= subject === 'science' ? 'selected' : '' %>>Science</option>
+                <option value="social-studies" <%= subject === 'social-studies' ? 'selected' : '' %>>Social Studies</option>
+                <option value="computer" <%= subject === 'computer' ? 'selected' : '' %>>Computer</option>
+                <option value="art" <%= subject === 'art' ? 'selected' : '' %>>Art</option>
+                <option value="music" <%= subject === 'music' ? 'selected' : '' %>>Music</option>
+                <option value="physical-education" <%= subject === 'physical-education' ? 'selected' : '' %>>Physical Education</option>
+                <option value="general-knowledge" <%= subject === 'general-knowledge' ? 'selected' : '' %>>General Knowledge</option>
+                <option value="other" <%= subject === 'other' ? 'selected' : '' %>>Other</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="bookType" class="form-label">Book Type</label>
+              <select class="form-select" id="bookType" name="bookType">
+                <option value="all" <%= bookType === 'all' ? 'selected' : '' %>>All Types</option>
+                <option value="textbook" <%= bookType === 'textbook' ? 'selected' : '' %>>Textbook</option>
+                <option value="workbook" <%= bookType === 'workbook' ? 'selected' : '' %>>Workbook</option>
+                <option value="reference" <%= bookType === 'reference' ? 'selected' : '' %>>Reference</option>
+                <option value="storybook" <%= bookType === 'storybook' ? 'selected' : '' %>>Storybook</option>
+                <option value="activity-book" <%= bookType === 'activity-book' ? 'selected' : '' %>>Activity Book</option>
+                <option value="other" <%= bookType === 'other' ? 'selected' : '' %>>Other</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="search" class="form-label">Search</label>
+              <input type="text" class="form-control" id="search" name="search" value="<%= search %>" placeholder="Search books...">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Filter Books
+              </button>
+              <a href="/book-lists" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear Filters
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Books Display Section -->
+  <div class="row">
+    <% if (books && books.length > 0) { %>
+      <% Object.keys(booksByClass).sort().forEach(function(classValue) { %>
+        <div class="col-12 mb-5">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">
+                <% if (classValue === 'nursery') { %>
+                  Nursery
+                <% } else if (classValue === 'lkg') { %>
+                  LKG
+                <% } else if (classValue === 'ukg') { %>
+                  UKG
+                <% } else { %>
+                  Class <%= classValue %>
+                <% } %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <% booksByClass[classValue]?.forEach(function(book) { %>
+                  <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                      <% if (book?.coverImage) { %>
+                        <img src="<%= book.coverImage %>" class="card-img-top" alt="<%= book.title %>" style="height: 200px; object-fit: cover;">
+                      <% } else { %>
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                          <i class="fas fa-book fa-3x text-muted"></i>
+                        </div>
+                      <% } %>
+                      <div class="card-body">
+                        <h5 class="card-title text-primary"><%= book?.title %></h5>
+                        <p class="card-text text-muted">by <%= book?.author %></p>
+                        
+                        <div class="mb-2">
+                          <span class="badge bg-<%= getSubjectColor(book.subject) %> me-1">
+                            <%= book?.subject?.charAt(0)?.toUpperCase() + book?.subject?.slice(1)?.replace('-', ' ') %>
+                          </span>
+                          <span class="badge bg-<%= getBookTypeColor(book.bookType) %>">
+                            <%= book?.bookType?.charAt(0)?.toUpperCase() + book?.bookType?.slice(1)?.replace('-', ' ') %>
+                          </span>
+                        </div>
+                        
+                        <% if (book?.publisher) { %>
+                          <p class="card-text"><small class="text-muted">Publisher: <%= book?.publisher %></small></p>
+                        <% } %>
+                        
+                        <% if (book?.isbn) { %>
+                          <p class="card-text"><small class="text-muted">ISBN: <%= book?.isbn %></small></p>
+                        <% } %>
+                        
+                        <% if (book?.price && book?.price > 0) { %>
+                          <p class="card-text"><strong class="text-success">₹<%= book?.price %></strong></p>
+                        <% } %>
+                        
+                        <% if (book?.isRequired) { %>
+                          <span class="badge bg-danger">Required</span>
+                        <% } else { %>
+                          <span class="badge bg-warning">Optional</span>
+                        <% } %>
+                      </div>
+                      <div class="card-footer bg-transparent">
+                        <a href="/book-lists/<%= classValue %>" class="btn btn-outline-primary btn-sm">
+                          View Class Books
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="col-12">
+        <div class="text-center py-5">
+          <i class="fas fa-book fa-4x text-muted mb-3"></i>
+          <h3 class="text-muted">No books found</h3>
+          <p class="text-muted">Try adjusting your search criteria or filters.</p>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %> 

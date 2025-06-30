@@ -1,0 +1,194 @@
+<%- include('../partials/header') %>
+
+<!-- Academic Sections -->
+<div class="container py-5">
+  <h1 class="text-center mb-5">academics?</h1>
+
+  <!-- Display Academic content? -->
+  <% if (academics && academics?.length > 0) { %> <% academics?.forEach((content?,
+  index) => { %>
+  <div
+    class="row align-items-center mb-5 <%= index % 2 !== 0 ? 'flex-lg-row-reverse' : '' %>"
+  >
+    <div class="col-lg-8" style="font-family: Arial, Helvetica, sans-serif">
+      <h2 class="mb-4"><%= content?.title %></h2>
+      <p class="lead"><%= content?.description %></p>
+    </div>
+    <div class="col-lg-4">
+      <% if (content?.image) { %>
+      <div
+        class="image-container"
+        style="
+          max-height: 200px;
+          max-width: 400px;
+          /* border: 1px solid red; */
+          background-color: #eee;
+        "
+      >
+        <img
+          src="<%= content?.image %>"
+          alt="<%= content?.title %>"
+          class="img-fluid rounded shadow"
+        />
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <% }); %> <% } %>
+
+  <!-- Academic program?s? Section -->
+  <% if (programs && programs?.length > 0) { %>
+  <div class="row mb-5">
+    <div class="col-12">
+      <h2 class="text-center mb-5">Our Academic program?s</h2>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <% programs?.forEach(program => { %>
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 shadow-sm hover-shadow transition-300">
+        <div class="card-img-container">
+          <% if (program?.image) { %>
+          <img
+            src="<%= program?.image %>"
+            class="card-img-top"
+            alt="<%= program?.title %>"
+          />
+          <% } else { %>
+          <div class="card-img-top bg-light text-center py-5">
+            <i class="fas fa-graduation-cap fa-4x text-muted"></i>
+          </div>
+          <% } %>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title"><%= program?.title %></h5>
+          <p class="card-text text-muted">
+            <% if (program?.duration) { %>
+            <small
+              ><i class="fas fa-clock me-1"></i> Duration: <%= program?.duration
+              %></small
+            ><br />
+            <% } %>
+          </p>
+          <p class="card-text">
+            <%= program?.description ? program?.description.substring(0, 150) +
+            '...' : '' %>
+          </p>
+          <a href="/academics?/<%= program?._id %>" class="btn btn-primary"
+            >Learn More</a
+          >
+        </div>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+  <% } %> <% if (!academics?.length && !programs?.length) { %>
+  <div class="alert alert-info text-center">
+    No academic content? available at the moment.
+  </div>
+  <% } %>
+</div>
+
+<!-- Custom CSS -->
+<style>
+  .row {
+    margin-bottom: 4rem;
+  }
+
+  h2 {
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  .lead {
+    color: #34495e;
+    line-height: 1.8;
+  }
+
+  /* Image container styles */
+  .image-container {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Fixed height for consistent sizing */
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This ensures the image covers the container without distortion */
+    object-position: center;
+    transition: transform 0.3s ease;
+  }
+
+  .image-container:hover img {
+    transform: scale(1.05);
+  }
+
+  /* program? card image styles */
+  .card-img-container {
+    position: relative;
+    width: 100%;
+    height: 250px; /* Fixed height for program? images */
+    overflow: hidden;
+  }
+
+  .card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hover-shadow {
+    transition: box-shadow 0.3s ease;
+  }
+
+  .hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .transition-300 {
+    transition: all 0.3s ease;
+  }
+
+  .card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .card-title {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 991.98px) {
+    .row {
+      text-align: center;
+    }
+
+    .col-lg-6 {
+      margin-bottom: 2rem;
+    }
+
+    .image-container {
+      height: 300px; /* Slightly smaller height on mobile */
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .image-container {
+      height: 250px; /* Even smaller height on smaller devices */
+    }
+  }
+</style>
+
+<%- include('../partials/footer') %>

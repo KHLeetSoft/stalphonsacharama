@@ -1,0 +1,53 @@
+<%- include('../layouts/admin', { title: 'List Facilities Content', style: '',
+script: '', content: `
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Facilities</h2>
+    <a href="/admin/facilities/create" class="btn btn-primary">Add Facility</a>
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${ facilities.map(facility => `
+      <tr>
+        <td>
+          ${ facility.imageUrl ? `<img
+            src="${facility.imageUrl}"
+            alt="Image"
+            style="height: 50px"
+          />` : '' }
+        </td>
+        <td>${facility.title}</td>
+        <td>${facility.description}</td>
+        <td>
+          <a
+            href="/admin/facilities/edit/${facility._id}"
+            class="btn btn-sm btn-warning"
+            >Edit</a
+          >
+          <form
+            action="/admin/facilities/delete/${facility._id}"
+            method="POST"
+            style="display: inline"
+          >
+            <button
+              type="submit"
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Delete this facility?')"
+            >
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+      `).join('') }
+    </tbody>
+  </table>
+</div>` }) %>

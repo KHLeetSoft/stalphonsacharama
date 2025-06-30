@@ -1,0 +1,239 @@
+<%- include('../layouts/admin', { title: 'Edit Activity', style: '', script:
+'edit-activity-script', content: `
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Edit Activity</h6>
+        </div>
+        <div class="card-body">
+          <form
+            action="/admin/activities/update/${_id}"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="title">Title*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="${title || ''}"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="category">Category*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="category"
+                    name="category"
+                    value="${category || ''}"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description*</label>
+              <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="3"
+                required
+              >
+${description || ''}</textarea
+              >
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="schedule">Schedule*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="schedule"
+                    name="schedule"
+                    value="${schedule || ''}"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="location">Location*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="location"
+                    name="location"
+                    value="${location || ''}"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="participants">Participants*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="participants"
+                    name="participants"
+                    value="${participants || ''}"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="maxParticipants">Max Participants</label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    id="maxParticipants"
+                    name="maxParticipants"
+                    value="${maxParticipants || ''}"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="instructor">Instructor</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="instructor"
+                    name="instructor"
+                    value="${instructor || ''}"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="image">Image</label>
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                  />
+                  ${image ? `
+                  <div class="mt-2">
+                    <img
+                      src="${image}"
+                      alt="Current Activity Image"
+                      class="img-fluid rounded"
+                      style="max-height: 100px"
+                    />
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button type="submit" class="btn btn-primary">
+                Update Activity
+              </button>
+              <a href="/admin/activities" class="btn btn-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.innerHTML =
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...';
+
+    const formData = new FormData(this);
+    const requiredFields = [
+      "title",
+      "category",
+      "description",
+      "schedule",
+      "location",
+      "participants",
+    ];
+    let hasError = false;
+
+    requiredFields.forEach((field) => {
+      const input = this.querySelector('[name="' + field + '"]');
+      const feedbackDiv =
+        input.parentElement.querySelector(".invalid-feedback") ||
+        document.createElement("div");
+      feedbackDiv.className = "invalid-feedback";
+
+      if (!input.value.trim()) {
+        hasError = true;
+        input.classList.add("is-invalid");
+        feedbackDiv.textContent =
+          field.charAt(0).toUpperCase() + field.slice(1) + " is required";
+        if (!input.parentElement.querySelector(".invalid-feedback")) {
+          input.parentElement.appendChild(feedbackDiv);
+        }
+      } else {
+        input.classList.remove("is-invalid");
+        feedbackDiv.remove();
+      }
+    });
+
+    if (hasError) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = "Update Activity";
+      return;
+    }
+
+    fetch(this.action, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            try {
+              return JSON.parse(text);
+            } catch {
+              throw new Error(text || "Failed to update activity");
+            }
+          });
+        }
+        window.location.href = "/admin/activities";
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        const alertDiv = document.createElement("div");
+        alertDiv.className = "alert alert-danger alert-dismissible fade show";
+        alertDiv.innerHTML =
+          (error.message || "Failed to update activity") +
+          '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        this.insertBefore(alertDiv, this.firstChild);
+        submitButton.disabled = false;
+        submitButton.innerHTML = "Update Activity";
+      });
+  });
+</script>
+`}) %>

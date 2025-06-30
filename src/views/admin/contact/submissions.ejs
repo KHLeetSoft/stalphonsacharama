@@ -1,0 +1,146 @@
+<%- include('../layouts/admin', { title: 'Contact Submissions', style: '',
+script: '', content: `
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header" style="background-color: white; color: black">
+          <h3 class="card-title mb-0">Contact Form Submissions</h3>
+        </div>
+        <div class="card-body">
+          <form
+            action="/admin/contact/submissions/add"
+            method="POST"
+            class="mb-4"
+          >
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  required
+                />
+              </div>
+              <div class="col-md-12 mb-3">
+                <label for="subject" class="form-label">Subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="subject"
+                  name="subject"
+                  required
+                />
+              </div>
+              <div class="col-md-12 mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea
+                  class="form-control"
+                  id="message"
+                  name="message"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn bg-gradient-primary">
+                <i class="fas fa-plus me-2"></i>Add Submission
+              </button>
+            </div>
+          </form>
+          ${submissions && submissions.length > 0 ? `
+          <div class="table-responsive">
+            <table
+              class="table table-striped table-hover align-items-center mb-0"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    Date
+                  </th>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    Name
+                  </th>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    Email
+                  </th>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    Subject
+                  </th>
+                  <th
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                  >
+                    Message
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                ${submissions.sort((a, b) => new Date(b.createdAt) - new
+                Date(a.createdAt)).map(submission => `
+                <tr>
+                  <td class="ps-3">
+                    <p class="text-xs font-weight-bold mb-0">
+                      ${new Date(submission.createdAt).toLocaleDateString()}
+                    </p>
+                    <p class="text-xs text-secondary mb-0">
+                      ${new Date(submission.createdAt).toLocaleTimeString()}
+                    </p>
+                  </td>
+                  <td class="ps-3">
+                    <p class="text-xs font-weight-bold mb-0">
+                      ${submission.name}
+                    </p>
+                  </td>
+                  <td class="ps-3">
+                    <p class="text-xs font-weight-bold mb-0">
+                      ${submission.email}
+                    </p>
+                  </td>
+                  <td class="ps-3">
+                    <p class="text-xs font-weight-bold mb-0">
+                      ${submission.subject}
+                    </p>
+                  </td>
+                  <td class="ps-3">
+                    <p class="text-xs font-weight-bold mb-0">
+                      ${submission.message}
+                    </p>
+                  </td>
+                </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          ` : `
+          <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            <div>No form submissions yet.</div>
+          </div>
+          `}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`}) %>

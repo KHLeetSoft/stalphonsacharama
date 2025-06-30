@@ -1,0 +1,222 @@
+<%- include('../layouts/admin', { title: 'Create Activity', style: '', content:
+`
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Create New Activity</h6>
+        </div>
+        <div class="card-body">
+          <form
+            action="/admin/activities"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="title">Title*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="category">Category*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="category"
+                    name="category"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description*</label>
+              <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="schedule">Schedule*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="schedule"
+                    name="schedule"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="location">Location*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="location"
+                    name="location"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="participants">Participants*</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="participants"
+                    name="participants"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="maxParticipants">Max Participants</label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    id="maxParticipants"
+                    name="maxParticipants"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="instructor">Instructor</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="instructor"
+                    name="instructor"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="image">Image</label>
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button type="submit" class="btn btn-primary">
+                Create Activity
+              </button>
+              <a href="/admin/activities" class="btn btn-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`, script: `
+<script>
+  document.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.innerHTML =
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...';
+
+    const formData = new FormData(this);
+    const requiredFields = [
+      "title",
+      "category",
+      "description",
+      "schedule",
+      "location",
+      "participants",
+    ];
+    let hasError = false;
+
+    requiredFields.forEach((field) => {
+      const input = this.querySelector(\`[name="\${field}"]\`);
+      const feedbackDiv =
+        input.parentElement.querySelector(".invalid-feedback") ||
+        document.createElement("div");
+      feedbackDiv.className = "invalid-feedback";
+
+      if (!input.value.trim()) {
+        hasError = true;
+        input.classList.add("is-invalid");
+        feedbackDiv.textContent =
+          field.charAt(0).toUpperCase() + field.slice(1) + " is required";
+        if (!input.parentElement.querySelector(".invalid-feedback")) {
+          input.parentElement.appendChild(feedbackDiv);
+        }
+      } else {
+        input.classList.remove("is-invalid");
+        feedbackDiv.remove();
+      }
+    });
+
+    if (hasError) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = "Create Activity";
+      return;
+    }
+
+    fetch("/admin/activities", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            try {
+              return JSON.parse(text);
+            } catch {
+              throw new Error(text || "Failed to create activity");
+            }
+          });
+        }
+        window.location.href = "/admin/activities";
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        const alertDiv = document.createElement("div");
+        alertDiv.className = "alert alert-danger alert-dismissible fade show";
+        alertDiv.innerHTML = \`
+          \${error.message || "Failed to create activity"}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        \`;
+        this.insertBefore(alertDiv, this.firstChild);
+        submitButton.disabled = false;
+        submitButton.innerHTML = "Create Activity";
+      });
+  });
+</script>
+` }) %>

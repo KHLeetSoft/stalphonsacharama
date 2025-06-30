@@ -1,0 +1,227 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Page Header -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary mb-3">Our Vision & Mission</h1>
+        <div class="divider mx-auto" style="width: 150px; height: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+        <p class="lead text-muted mt-3">Guiding principles that shape our educational journey</p>
+      </div>
+
+      <!-- Vision Section -->
+      <div class="row mb-5">
+        <div class="col-lg-6">
+          <div class="card h-100 border-0 shadow-lg vision-card">
+            <div class="card-body p-5 text-center">
+              <div class="vision-icon mb-4">
+                <i class="fas fa-lightbulb fa-4x text-warning"></i>
+              </div>
+              <h2 class="display-6 fw-bold text-primary mb-4">
+                <%= about && about.visionTitle ? about.visionTitle : 'Our Vision' %>
+              </h2>
+              <div class="divider mx-auto mb-4" style="width: 80px; height: 3px; background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);"></div>
+              <div class="vision-content">
+                <p class="lead">
+                  <%= about && about.vision ? about.vision : 'To be a leading educational institution that nurtures excellence, innovation, and character development, preparing students to become responsible global citizens who contribute positively to society.' %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mission Section -->
+        <div class="col-lg-6">
+          <div class="card h-100 border-0 shadow-lg mission-card">
+            <div class="card-body p-5 text-center">
+              <div class="mission-icon mb-4">
+                <i class="fas fa-bullseye fa-4x text-success"></i>
+              </div>
+              <h2 class="display-6 fw-bold text-primary mb-4">
+                <%= about && about.missionTitle ? about.missionTitle : 'Our Mission' %>
+              </h2>
+              <div class="divider mx-auto mb-4" style="width: 80px; height: 3px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);"></div>
+              <div class="mission-content">
+                <p class="lead">
+                  <%= about && about.mission ? about.mission : 'To provide quality education that empowers students to become responsible, creative, and successful global citizens through innovative teaching methods and holistic development.' %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Values Section -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="card border-0 shadow-lg">
+            <div class="card-body p-5">
+              <div class="text-center mb-5">
+                <h2 class="display-6 fw-bold text-primary mb-3">
+                  <%= about && about.coreValuesTitle ? about.coreValuesTitle : 'Our Core Values' %>
+                </h2>
+                <div class="divider mx-auto" style="width: 100px; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+              </div>
+              
+              <div class="row g-4">
+                <% 
+                const coreValues = about && about.coreValues && about.coreValues.length > 0 
+                  ? about.coreValues.sort((a, b) => a.order - b.order)
+                  : [
+                      {
+                        title: "Excellence",
+                        description: "Striving for the highest standards in everything we do",
+                        icon: "fas fa-star",
+                        color: "text-warning",
+                        order: 1,
+                      },
+                      {
+                        title: "Integrity",
+                        description: "Maintaining honesty and ethical behavior in all actions",
+                        icon: "fas fa-heart",
+                        color: "text-danger",
+                        order: 2,
+                      },
+                      {
+                        title: "Respect",
+                        description: "Valuing diversity and treating everyone with dignity",
+                        icon: "fas fa-users",
+                        color: "text-info",
+                        order: 3,
+                      },
+                      {
+                        title: "Innovation",
+                        description: "Embracing creativity and new approaches to learning",
+                        icon: "fas fa-lightbulb",
+                        color: "text-warning",
+                        order: 4,
+                      },
+                      {
+                        title: "Collaboration",
+                        description: "Working together to achieve common goals",
+                        icon: "fas fa-hands-helping",
+                        color: "text-success",
+                        order: 5,
+                      },
+                      {
+                        title: "Growth",
+                        description: "Continuous learning and personal development",
+                        icon: "fas fa-graduation-cap",
+                        color: "text-primary",
+                        order: 6,
+                      },
+                    ];
+                %>
+                
+                <% coreValues.forEach(function(value) { %>
+                <div class="col-md-4">
+                  <div class="value-item text-center">
+                    <div class="value-icon mb-3">
+                      <i class="<%= value.icon %> fa-3x <%= value.color %>"></i>
+                    </div>
+                    <h5 class="fw-bold text-primary"><%= value.title %></h5>
+                    <p class="text-muted"><%= value.description %></p>
+                  </div>
+                </div>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="card border-0 shadow-lg bg-gradient-primary text-white">
+            <div class="card-body p-5 text-center">
+              <h3 class="fw-bold mb-3">Join Us in Our Journey</h3>
+              <p class="lead mb-4">Be part of an educational institution that values excellence, innovation, and character development.</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="/admissions" class="btn btn-light btn-lg px-4">
+                  <i class="fas fa-user-plus me-2"></i>Apply Now
+                </a>
+                <a href="/contact" class="btn btn-outline-light btn-lg px-4">
+                  <i class="fas fa-envelope me-2"></i>Contact Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.vision-card, .mission-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 20px;
+}
+
+.vision-card:hover, .mission-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.vision-icon, .mission-icon {
+  transition: transform 0.3s ease;
+}
+
+.vision-card:hover .vision-icon {
+  transform: scale(1.1);
+}
+
+.mission-card:hover .mission-icon {
+  transform: scale(1.1);
+}
+
+.vision-content, .mission-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+}
+
+.value-item {
+  padding: 2rem 1rem;
+  transition: transform 0.3s ease;
+}
+
+.value-item:hover {
+  transform: translateY(-5px);
+}
+
+.value-icon {
+  transition: transform 0.3s ease;
+}
+
+.value-item:hover .value-icon {
+  transform: scale(1.1);
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.divider {
+  border-radius: 2px;
+}
+
+.card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .vision-content, .mission-content {
+    font-size: 1rem;
+  }
+  
+  .value-item {
+    padding: 1.5rem 0.5rem;
+  }
+}
+</style>
+
+<%- include('../partials/footer') %> 
