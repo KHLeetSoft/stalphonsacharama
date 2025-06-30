@@ -88,7 +88,9 @@ exports.updateContent = async (req, res) => {
       }
 
       return slide;
-    });
+    })
+    // Filter: only keep slides with non-empty title, imageUrl, and isActive true
+    .filter(slide => slide.title && slide.imageUrl && slide.isActive);
 
     // Update basic home content
     homeContent.welcomeTitle = req.body.welcomeTitle || '';

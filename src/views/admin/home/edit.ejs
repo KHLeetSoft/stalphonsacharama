@@ -8,8 +8,10 @@
       <div class="card-header"><h4>Banner Slides</h4></div>
       <div class="card-body">
         <div id="bannerSlides">
-          ${homeContent.bannerSlides && homeContent.bannerSlides.length > 0 ? homeContent.bannerSlides.map((slide,
-          index) => `
+          ${homeContent.bannerSlides && homeContent.bannerSlides.length > 0
+            ? homeContent.bannerSlides
+                .filter(slide => slide.imageUrl && slide.imageUrl.trim() !== '' && slide.isActive)
+                .map((slide, index) => `
           <div class="banner-slide mb-3">
             <div class="row">
               <div class="col-md-6">
@@ -94,7 +96,9 @@
               Remove
             </button>
           </div>
-          `).join('') : ''}
+          `).join('')
+          : ''
+        }
         </div>
         <button
           type="button"

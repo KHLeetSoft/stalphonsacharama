@@ -10,52 +10,55 @@
       class="carousel slide home-banner"
       data-bs-ride="carousel"
     >
+      <% 
+        let slides = (homeContent && homeContent.bannerSlides)
+          ? homeContent.bannerSlides.filter(slide => slide && slide.imageUrl && slide.isActive)
+          : [];
+      %>
+
       <div class="carousel-indicators">
-        <% if (homeContent && homeContent?.bannerSlides && homeContent?.bannerSlides.length > 0) { 
-             homeContent?.bannerSlides?.forEach((slide, index) => { %>
-        <button
-          type="button"
-          data-bs-target="#homeBanner"
-          data-bs-slide-to="<%= index %>"
-          class="<%= index === 0 ? 'active' : '' %>"
-        ></button>
-        <%   }); 
-           } %>
+        <% slides.forEach((slide, index) => { %>
+          <button
+            type="button"
+            data-bs-target="#homeBanner"
+            data-bs-slide-to="<%= index %>"
+            class="<%= index === 0 ? 'active' : '' %>"
+          ></button>
+        <% }) %>
       </div>
 
       <div class="carousel-inner">
-        <% if (homeContent && homeContent?.bannerSlides && homeContent?.bannerSlides?.length > 0) { 
-             homeContent?.bannerSlides?.forEach((slide, index) => { %>
-        <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-          <% if (slide?.contentType === 'video') { %>
-          <video
-            src="<%= slide?.videoUrl %>"
-            class="d-block w-100"
-            autoplay
-            loop
-            muted
-            playsinline
-          ></video>
-          <% } else { %>
-          <img
-            src="<%= slide?.imageUrl %>"
-            class="d-block w-100"
-            alt="<%= slide?.title %>"
-          />
-          <% } %>
-          <div class="carousel-caption">
-            <h3><%= slide?.title %></h3>
-            <% if (slide?.subtitle) { %>
-            <p class="lead"><%= slide?.subtitle %></p>
-            <% } %> <% if (slide?.ctaText) { %>
-            <a href="<%= slide?.ctaLink || '#' %>" class="btn btn-primary mt-3">
-              <%= slide?.ctaText %>
-            </a>
+        <% slides.forEach((slide, index) => { %>
+          <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+            <% if (slide.contentType === 'video') { %>
+              <video
+                src="<%= slide.videoUrl %>"
+                class="d-block w-100"
+                autoplay
+                loop
+                muted
+                playsinline
+              ></video>
+            <% } else { %>
+              <img
+                src="<%= slide.imageUrl %>"
+                class="d-block w-100"
+                alt="<%= slide.title %>"
+              />
             <% } %>
+            <div class="carousel-caption">
+              <h3><%= slide.title %></h3>
+              <% if (slide.subtitle) { %>
+                <p class="lead"><%= slide.subtitle %></p>
+              <% } %>
+              <% if (slide.ctaText) { %>
+                <a href="<%= slide.ctaLink || '#' %>" class="btn btn-primary mt-3">
+                  <%= slide.ctaText %>
+                </a>
+              <% } %>
+            </div>
           </div>
-        </div>
-        <%   }); 
-           } %>
+        <% }) %>
       </div>
 
       <button
