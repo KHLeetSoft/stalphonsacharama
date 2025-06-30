@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
-
+SESSION_SECRET="STALPHONSACHARAMAAAAAAA"
+JWT_SECRET="STALPHONSACHARAMAAAAAAA"
 const auth = async (req, res, next) => {
   try {
     const token =
@@ -9,11 +10,11 @@ const auth = async (req, res, next) => {
       return res.redirect("/admin/login");
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const admin = await Admin.findOne({
       _id: decoded._id,
       "tokens.token": token,
-      isActive: true,
+      isActive: true
     });
 
     if (!admin) {

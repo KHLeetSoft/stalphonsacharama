@@ -37,11 +37,11 @@ const feeStructureRoutes = require("./src/routes/feeStructureRoutes");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
-
+SESSION_SECRET="STALPHONSACHARAMAAAAAAA"
 // Session and flash configuration
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "your-secret-key",
+    secret: SESSION_SECRET || "your-secret-key",
     resave: false,
     saveUninitialized: false,
   })
