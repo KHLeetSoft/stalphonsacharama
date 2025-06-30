@@ -62,6 +62,20 @@ async function seedDemoData() {
       console.log('Seeded admin');
     }
 
+    // Add a second admin with username 'administrator'
+    let admin2 = await models.Admin.findOne({ username: 'administrator' });
+    if (!admin2) {
+      admin2 = new models.Admin({
+        username: 'administrator',
+        password: 'admin@123',
+        email: 'administrator@example.com',
+        role: 'super_admin',
+        isActive: true
+      });
+      await admin2.save();
+      console.log('Seeded admin (administrator)');
+    }
+
     // User
     let user = await models.User.findOne({ username: 'admin' });
     if (!user) {

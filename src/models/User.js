@@ -67,6 +67,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+JWT_SECRET="STALPHONSACHARAMAAAAAAA"
 // Generate auth token
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
