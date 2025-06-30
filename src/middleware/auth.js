@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
-SESSION_SECRET="STALPHONSACHARAMAAAAAAA"
+
 JWT_SECRET="STALPHONSACHARAMAAAAAAA"
 const auth = async (req, res, next) => {
   try {
