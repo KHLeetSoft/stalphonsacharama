@@ -26,7 +26,7 @@ const achievementSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: { type: String, enum: ['sports', 'academic', 'cultural', 'other'], default: 'other' },
   date: { type: Date, default: Date.now },
-  image: { type: String },
+  images: [{ type: String }], // <-- change from image: String
   isActive: { type: Boolean, default: true },
   order: { type: Number, default: 0 },
 });
@@ -36,7 +36,7 @@ const achieverSchema = new mongoose.Schema({
   achievement: { type: String, required: true },
   category: { type: String, enum: ['student', 'teacher', 'alumni', 'other'], default: 'student' },
   year: { type: String },
-  image: { type: String },
+  images: [{ type: String }], // <-- change from image: String
   isActive: { type: Boolean, default: true },
   order: { type: Number, default: 0 },
 });
@@ -45,7 +45,7 @@ const infrastructureItemSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   icon: { type: String },
-  image: { type: String },
+  images: [{ type: String }], // <-- change from image: String
   isActive: { type: Boolean, default: true },
   order: { type: Number, default: 0 },
 });

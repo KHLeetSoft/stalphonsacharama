@@ -83,13 +83,20 @@
 
     <!-- Welcome Section -->
     <section class="welcome-section py-5">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row justify-content-center">
-          <div class="col-lg-8 text-center">
-            <% if (homeContent) { %>
-              <h2 class="display-4 mb-4"><%= homeContent?.welcomeTitle %></h2>
-              <p class="lead"><%= homeContent?.welcomeContent %></p>
-            <% } %>
+          <div class="col-12">
+            <div class="card border-0 shadow-lg animate__animated animate__fadeInUp">
+              <div class="card-body p-5">
+                <% if (homeContent) { %>
+                  <h2 class="display-3 mb-4 text-primary fw-bold">
+                    <i class="fas fa-graduation-cap me-3 text-warning"></i>
+                    <%= homeContent?.welcomeTitle %>
+                  </h2>
+                  <p class="lead text-muted fs-4 fw-light"><%= homeContent?.welcomeContent %></p>
+                <% } %>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -98,11 +105,17 @@
     <!-- History Section -->
     <% if (homeContent?.history && homeContent?.history?.trim()?.length > 0) { %>
     <section class="history-section py-5 bg-light">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row justify-content-center">
-          <div class="col-lg-8 text-center">
-            <h2 class="display-5 mb-4">Our History</h2>
-            <div class="lead"><%= homeContent?.history %></div>
+          <div class="col-12">
+            <div class="card border-0 shadow-lg animate__animated animate__fadeInUp">
+              <div class="card-body p-5">
+                <h2 class="display-4 mb-4 text-primary fw-bold">
+                  <i class="fas fa-history me-3 text-info"></i>Our History
+                </h2>
+                <div class="lead text-muted fs-5 fw-light lh-lg"><%= homeContent?.history %></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -110,23 +123,24 @@
     <% } %>
 
     <!-- Featured Sections -->
-    <% if (homeContent?.featuredSections && homeContent?.featuredSections?.length >
-    0) { %>
+    <% if (homeContent?.featuredSections && homeContent?.featuredSections?.length > 0) { %>
     <section class="container my-5">
       <div class="row">
-        <% homeContent?.featuredSections?.forEach(section => { %>
+        <% homeContent?.featuredSections?.forEach((section, index) => { %>
         <div class="col-md-4 mb-4">
-          <div class="card feature-card h-100">
+          <div class="card feature-card h-100 border-0 shadow-lg animate__animated animate__fadeInUp" style="animation-delay: <%= index * 0.2 %>s;">
             <div class="card-body text-center p-4">
               <% if (section?.icon) { %>
-              <i class="<%= section?.icon %> feature-icon"></i>
+              <div class="feature-icon-wrapper mb-3">
+                <i class="<%= section?.icon %> feature-icon fa-3x text-primary"></i>
+              </div>
               <% } %>
-              <h3 class="h4"><%= section?.title %></h3>
-              <p class="text-muted"><%= section?.content %></p>
+              <h3 class="h4 text-primary mb-3"><%= section?.title %></h3>
+              <p class="text-muted mb-4"><%= section?.content %></p>
               <% if (section?.link) { %>
-              <a href="<%= section?.link %>" class="btn btn-outline-primary"
-                >Learn More</a
-              >
+              <a href="<%= section?.link %>" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-arrow-right me-2"></i>Learn More
+              </a>
               <% } %>
             </div>
           </div>
@@ -141,14 +155,20 @@
     <section class="our-society-section py-5 bg-primary text-white">
       <div class="container">
         <div class="row align-items-center">
-          <div class="col-lg-6">
-            <h2 class="display-5 mb-4"><%= homeContent?.ourSociety?.title %></h2>
-            <div class="lead"><%= homeContent?.ourSociety?.content %></div>
-          </div>
-          <div class="col-lg-6">
+          <div class="col-lg-5">
             <% if (homeContent?.ourSociety?.image) { %>
-            <img src="<%= homeContent?.ourSociety?.image %>" alt="Our Society" class="img-fluid rounded shadow">
+            <div class="animate__animated animate__fadeInLeft">
+              <img src="<%= homeContent?.ourSociety?.image %>" alt="Our Society" class="img-fluid rounded shadow-lg">
+            </div>
             <% } %>
+          </div>
+          <div class="col-lg-7">
+            <div class="animate__animated animate__fadeInRight">
+              <h2 class="display-4 mb-4">
+                <i class="fas fa-users me-3"></i><%= homeContent?.ourSociety?.title %>
+              </h2>
+              <div class="lead"><%= homeContent?.ourSociety?.content %></div>
+            </div>
           </div>
         </div>
       </div>
@@ -156,57 +176,26 @@
     <% } %>
 
     <!-- Who We Are Section -->
-    <% if (homeContent?.whoWeAre && homeContent?.whoWeAre?.isActive && homeContent?.whoWeAre?.content) { %>
+    <% if (homeContent?.whoWeAre && homeContent?.whoWeAre.isActive) { %>
     <section class="who-we-are-section py-5">
       <div class="container">
         <div class="row align-items-center">
-          <div class="col-lg-6">
+          <div class="col-lg-5 mb-4 mb-lg-0">
             <% if (homeContent?.whoWeAre?.image) { %>
-            <img src="<%= homeContent?.whoWeAre?.image %>" alt="Who We Are" class="img-fluid rounded shadow">
+            <div class="animate__animated animate__fadeInLeft">
+              <img src="<%= homeContent?.whoWeAre?.image %>" alt="Who We Are" class="img-fluid rounded shadow-lg">
+            </div>
             <% } %>
           </div>
-          <div class="col-lg-6">
-            <h2 class="display-5 mb-4"><%= homeContent?.whoWeAre?.title %></h2>
-            <div class="lead"><%= homeContent?.whoWeAre?.content %></div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <% } %>
-
-    <!-- Infrastructure Section -->
-    <% if (homeContent?.infrastructure && homeContent?.infrastructure.isActive) { %>
-    <section class="infrastructure-section py-5 bg-light">
-      <div class="container">
-        <div class="text-center mb-5">
-          <h2 class="display-5 mb-3"><%= homeContent?.infrastructure?.title %></h2>
-          <% if (homeContent?.infrastructure?.subtitle) { %>
-          <p class="lead text-muted"><%= homeContent?.infrastructure?.subtitle %></p>
-          <% } %>
-          <% if (homeContent?.infrastructure?.content) { %>
-          <p class="lead"><%= homeContent?.infrastructure?.content %></p>
-          <% } %>
-        </div>
-        
-        <% if (homeContent?.infrastructure?.items && homeContent?.infrastructure?.items?.length > 0) { %>
-        <div class="row">
-          <% homeContent?.infrastructure?.items?.filter(item => item?.isActive)?.forEach(item => { %>
-          <div class="col-md-4 mb-4">
-            <div class="card infrastructure-card h-100 border-0 shadow-sm">
-              <div class="card-body text-center p-4">
-                <% if (item?.image) { %>
-                <img src="<%= item?.image %>" alt="<%= item.title %>" class="img-fluid mb-3 rounded" style="max-height: 150px; object-fit: cover;">
-                <% } else if (item?.icon) { %>
-                <i class="<%= item?.icon %> fa-3x text-primary mb-3"></i>
-                <% } %>
-                <h4 class="h5"><%= item?.title %></h4>
-                <p class="text-muted"><%= item?.description %></p>
-              </div>
+          <div class="col-lg-7">
+            <div class="animate__animated animate__fadeInRight">
+              <h2 class="display-4 mb-4 text-primary">
+                <i class="fas fa-heart me-3"></i><%= homeContent?.whoWeAre?.title %>
+              </h2>
+              <div class="lead text-muted"><%= homeContent?.whoWeAre?.content %></div>
             </div>
           </div>
-          <% }) %>
         </div>
-        <% } %>
       </div>
     </section>
     <% } %>
@@ -241,45 +230,9 @@
     </section>
     <% } %>
 
-    <!-- Sports Achievements Section -->
-    <% if (homeContent.sportsAchievements && homeContent.sportsAchievements.isActive) { %>
-    <section class="sports-achievements-section py-5 bg-success text-white">
-      <div class="container">
-        <div class="text-center mb-5">
-          <h2 class="display-5 mb-3"><%= homeContent.sportsAchievements.title %></h2>
-          <% if (homeContent.sportsAchievements.subtitle) { %>
-          <p class="lead"><%= homeContent.sportsAchievements.subtitle %></p>
-          <% } %>
-          <% if (homeContent.sportsAchievements.content) { %>
-          <p class="lead"><%= homeContent.sportsAchievements.content %></p>
-          <% } %>
-        </div>
-        
-        <% if (homeContent.sportsAchievements.achievements && homeContent.sportsAchievements.achievements.length > 0) { %>
-        <div class="row">
-          <% homeContent.sportsAchievements.achievements.filter(achievement => achievement.isActive && achievement.category === 'sports').slice(0, 6).forEach(achievement => { %>
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card achievement-card h-100 border-0 bg-white text-dark">
-              <div class="card-body p-4 text-center">
-                <% if (achievement.image) { %>
-                <img src="<%= achievement.image %>" alt="<%= achievement.title %>" class="img-fluid mb-3 rounded" style="max-height: 120px; object-fit: cover;">
-                <% } %>
-                <h5 class="card-title"><%= achievement.title %></h5>
-                <p class="card-text text-muted"><%= achievement.description %></p>
-                <small class="text-muted"><%= new Date(achievement.date).toLocaleDateString() %></small>
-              </div>
-            </div>
-          </div>
-          <% }) %>
-        </div>
-        <% } %>
-      </div>
-    </section>
-    <% } %>
-
     <!-- Co-Curricular Achievements Section -->
     <% if (homeContent.coCurricularAchievements && homeContent.coCurricularAchievements.isActive) { %>
-    <section class="co-curricular-achievements-section py-5 bg-info text-white">
+    <!-- <section class="co-curricular-achievements-section py-5 bg-info text-white">
       <div class="container">
         <div class="text-center mb-5">
           <h2 class="display-5 mb-3"><%= homeContent.coCurricularAchievements.title %></h2>
@@ -311,12 +264,12 @@
         </div>
         <% } %>
       </div>
-    </section>
+    </section> -->
     <% } %>
 
     <!-- Achievers Section -->
     <% if (homeContent.achievers && homeContent.achievers.isActive) { %>
-    <section class="achievers-section py-5">
+    <!-- <section class="achievers-section py-5">
       <div class="container">
         <div class="text-center mb-5">
           <h2 class="display-5 mb-3"><%= homeContent.achievers.title %></h2>
@@ -354,7 +307,7 @@
         </div>
         <% } %>
       </div>
-    </section>
+    </section> -->
     <% } %>
 
     <%- include('../partials/footer') %>

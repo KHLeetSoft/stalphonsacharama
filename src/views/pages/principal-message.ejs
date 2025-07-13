@@ -3,14 +3,6 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-lg-10">
-      <!-- Breadcrumb -->
-      <!-- <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Principal's Message</li>
-        </ol>
-      </nav> -->
-
       <!-- Page Header -->
       <div class="text-center mb-5">
         <h1 class="display-4 fw-bold text-primary mb-3">Leadership Messages</h1>
@@ -20,7 +12,7 @@
 
       <!-- Principal Message Section -->
       <% if (principal && principal.message) { %>
-      <div class="card shadow-lg mb-5">
+      <div class="card shadow-lg mb-5 principal-card">
         <div class="card-body p-5">
           <div class="row">
             <!-- Principal Image -->
@@ -29,21 +21,26 @@
                 <img 
                   src="<%= principal.imageUrl %>" 
                   alt="<%= principal.name %>" 
-                  class="img-fluid rounded-circle shadow"
-                  style="width: 250px; height: 250px; object-fit: cover;"
+                  class="img-fluid rounded shadow principal-image"
+                  style="width: 450px; height: 350px; object-fit: cover;"
                 />
               <% } else { %>
-                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center shadow"
-                     style="width: 250px; height: 250px;">
-                  <i class="fas fa-user-tie fa-6x text-muted"></i>
-                </div>
+                <img 
+                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                  alt="School Principal" 
+                  class="img-fluid rounded shadow principal-image"
+                  style="width: 450px; height: 350px; object-fit: cover;"
+                />
               <% } %>
               
               <% if (principal && principal.name) { %>
-                <h4 class="mt-3 mb-1"><%= principal.name %></h4>
+                <h4 class="mt-3 mb-1 principal-name"><%= principal.name %></h4>
                 <% if (principal.title) { %>
-                  <p class="text-muted mb-0"><%= principal.title %></p>
+                  <p class="text-muted mb-0 principal-title"><%= principal.title %></p>
                 <% } %>
+              <% } else { %>
+                <h4 class="mt-3 mb-1 principal-name">Dr. Sarah Johnson</h4>
+                <p class="text-muted mb-0 principal-title">Principal</p>
               <% } %>
             </div>
 
@@ -61,12 +58,57 @@
           </div>
         </div>
       </div>
+      <% } else { %>
+      <!-- Default Principal Message Section -->
+      <div class="card shadow-lg mb-5 principal-card">
+        <div class="card-body p-5">
+          <div class="row">
+            <!-- Principal Image -->
+            <div class="col-lg-4 text-center mb-4 mb-lg-0">
+              <img 
+                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                alt="School Principal" 
+                class="img-fluid rounded shadow principal-image"
+                style="width: 450px; height: 350px; object-fit: cover;"
+              />
+              
+              <h4 class="mt-3 mb-1 principal-name">Dr. Sarah Johnson</h4>
+              <p class="text-muted mb-0 principal-title">Principal</p>
+            </div>
+
+            <!-- Principal Message -->
+            <div class="col-lg-8">
+              <div class="text-center mb-4">
+                <h2 class="display-6 fw-bold text-primary mb-3">Principal's Message</h2>
+                <div class="divider mx-auto" style="width: 100px; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+              </div>
+
+              <div class="message-content">
+                <p>Dear Students, Parents, and Community Members,</p>
+                
+                <p>Welcome to our school community! As the Principal, I am honored to lead this institution dedicated to academic excellence and character development.</p>
+                
+                <p>Our school is committed to providing a nurturing environment where every student can thrive academically, socially, and emotionally. We believe in fostering critical thinking, creativity, and a love for lifelong learning.</p>
+                
+                <p>Our dedicated team of educators works tirelessly to create engaging learning experiences that prepare our students for the challenges of tomorrow. We emphasize not only academic achievement but also the development of strong moral character and leadership skills.</p>
+                
+                <p>I encourage all students to take advantage of the opportunities available here, to dream big, and to work hard towards their goals. Remember, education is the key to unlocking your potential and creating a bright future.</p>
+                
+                <p>Together, we can build a stronger, more inclusive community where every child feels valued and supported.</p>
+                
+                <p><strong>Dr. Sarah Johnson</strong><br>
+                <em>Principal</em></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <% } %>
 
       <!-- Other Leadership Messages -->
       <% if (testimonials && testimonials.length > 0) { %>
         <% testimonials.forEach((testimonial, index) => { %>
-        <div class="card shadow-lg mb-5">
+        <div class="card shadow-lg mb-5 leadership-card">
           <div class="card-body p-5">
             <div class="row">
               <!-- Person Image -->
@@ -75,18 +117,21 @@
                   <img 
                     src="<%= testimonial.image %>" 
                     alt="<%= testimonial.personName %>" 
-                    class="img-fluid rounded-circle shadow"
-                    style="width: 250px; height: 250px; object-fit: cover;"
+                    class="img-fluid rounded shadow leadership-image"
+                    style="width: 450px; height: 350px; object-fit: cover;"
                   />
                 <% } else { %>
-                  <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center shadow"
-                       style="width: 250px; height: 250px;">
-                    <i class="fas fa-user-tie fa-6x text-muted"></i>
-                  </div>
+                  <img 
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                    alt="<%= testimonial.personName %>" 
+                    alt="<%= testimonial.personName %>" 
+                    class="img-fluid rounded shadow leadership-image"
+                    style="width: 450px; height: 350px; object-fit: cover;"
+                  />
                 <% } %>
                 
-                <h4 class="mt-3 mb-1"><%= testimonial.personName %></h4>
-                <p class="text-muted mb-0"><%= testimonial.designation %></p>
+                <h4 class="mt-3 mb-1 leadership-name"><%= testimonial.personName %></h4>
+                <p class="text-muted mb-0 leadership-title"><%= testimonial.designation %></p>
               </div>
 
               <!-- Message Content -->
@@ -128,6 +173,44 @@
   margin-bottom: 1.5rem;
 }
 
+.principal-image, .leadership-image {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 4px solid #fff;
+}
+
+.principal-image:hover, .leadership-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+}
+
+.principal-name, .leadership-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-top: 1rem;
+}
+
+.principal-title, .leadership-title {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.principal-card, .leadership-card {
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.principal-card:hover, .leadership-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+.divider {
+  border-radius: 2px;
+}
+
 .contact-item {
   padding: 1rem;
   transition: transform 0.3s ease;
@@ -135,21 +218,6 @@
 
 .contact-item:hover {
   transform: translateY(-5px);
-}
-
-.divider {
-  border-radius: 2px;
-}
-
-.card {
-  border-radius: 15px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
 }
 
 .feature-icon {
@@ -169,6 +237,11 @@
   
   .contact-item {
     margin-bottom: 1rem;
+  }
+  
+  .principal-image, .leadership-image {
+    width: 350px !important;
+    height: 250px !important;
   }
 }
 </style>

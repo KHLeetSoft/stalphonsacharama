@@ -7,20 +7,22 @@ const AcademicProgram = require("../models/AcademicProgram");
 const About = require("../models/About");
 const Activity = require("../models/Activity");
 
+
 router.get("/", async (req, res) => {
   try {
-    const [content, homeContent, principal] = await Promise.all([
-      Content.findOne(),
-      HomeContent.findOne(),
-      require("../models/Principal").findOne(),
-    ]);
+      const [content, homeContent, principal] = await Promise.all([
+    Content.findOne(),
+    HomeContent.findOne(),
+    require("../models/Principal").findOne(),
+  ]);
 
-    res.render("pages/home", {
-      content,
-      homeContent,
-      principal,
-      title: "Home",
-    });
+  res.render("pages/home", {
+    content,
+    homeContent,
+    principal,
+
+    title: "Home",
+  });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error loading home page");

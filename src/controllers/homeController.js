@@ -1,6 +1,7 @@
 const HomeContent = require("../models/HomeContent");
 const Principal = require("../models/Principal");
 const Logo = require("../models/Logo");
+
 const path = require("path");
 const fs = require("fs").promises;
 
@@ -9,10 +10,14 @@ exports.getHomePage = async (req, res) => {
     const homeContent = (await HomeContent.findOne()) || new HomeContent({});
     const principal = await Principal.findOne();
     const logo = await Logo.findOne();
+    
+
+    
     res.render("pages/home", {
       homeContent,
       principal,
       logo,
+      
       pageTitle: "Home",
       history: homeContent.history || '',
     });
@@ -148,35 +153,7 @@ exports.updateContent = async (req, res) => {
       }
     }
 
-    // Process Infrastructure section
-    if (req.body.infrastructure) {
-      //console.log("=== Infrastructure Processing ===");
-      
-      homeContent.infrastructure = {
-        title: req.body.infrastructure.title || 'Infrastructure',
-        subtitle: req.body.infrastructure.subtitle || 'Our Facilities',
-        content: req.body.infrastructure.content || '',
-        isActive: req.body.infrastructure.isActive === 'true',
-        image: homeContent.infrastructure?.image || null
-      };
-      
-      // Handle image upload for Infrastructure
-      const infrastructureFile = files.find(f => f.fieldname === 'infrastructure[image]');
-      if (infrastructureFile) {
-        if (homeContent.infrastructure.image) {
-          try {
-            fs.unlink(path.join("public", homeContent.infrastructure.image)).catch(console.error);
-          } catch (error) {
-            console.error("Error deleting old infrastructure image:", error);
-          }
-        }
-        homeContent.infrastructure.image = `/uploads/sections/${infrastructureFile.filename}`;
-      } else if (req.body.infrastructure.imageUrl) {
-        homeContent.infrastructure.image = req.body.infrastructure.imageUrl;
-      }
 
-      //console.log(`Processed infrastructure section with image: ${homeContent.infrastructure.image ? 'Yes' : 'No'}`);
-    }
 
     // Process Recent Announcements section
     if (req.body.recentAnnouncements) {
@@ -245,94 +222,6 @@ exports.updateContent = async (req, res) => {
 
       homeContent.recentAnnouncements.announcements = announcements;
       //console.log(`Processed ${homeContent.recentAnnouncements.announcements.length} announcements`);
-    }
-
-    // Process Sports Achievements section
-    if (req.body.sportsAchievements) {
-      //console.log("=== Sports Achievements Processing ===");
-      
-      homeContent.sportsAchievements = {
-        title: req.body.sportsAchievements.title || 'Sports Achievements',
-        subtitle: req.body.sportsAchievements.subtitle || 'Excellence in Sports',
-        content: req.body.sportsAchievements.content || '',
-        isActive: req.body.sportsAchievements.isActive === 'true',
-        achievements: []
-      };
-
-      // Process sports achievements - handle both JSON and individual field formats
-      let achievements = [];
-      
-      // First, try JSON format
-      if (req.body['sportsAchievements[achievements]']) {
-        try {
-          const achievementsData = JSON.parse(req.body['sportsAchievements[achievements]']);
-          //console.log("Parsed sports achievements from JSON:", achievementsData.length, "achievements");
-          
-          achievements = achievementsData.map((achievement, index) => {
-            const achievementItem = {
-              title: achievement.title || '',
-              description: achievement.description || '',
-              category: achievement.category || 'sports',
-              date: achievement.date || new Date().toISOString(),
-              isActive: achievement.isActive === true,
-              images: []
-            };
-
-            // Handle multiple images for achievement
-            const achievementFiles = files.filter(f => f.fieldname === `sportsAchievements[achievements][${index}][images]`);
-            if (achievementFiles.length > 0) {
-              achievementItem.images = achievementFiles.map(file => `/uploads/achievements/${file.filename}`);
-            } else if (achievement.existingImages) {
-              try {
-                achievementItem.images = JSON.parse(achievement.existingImages);
-              } catch (error) {
-                console.error("Error parsing existing images for sports achievement:", error);
-                achievementItem.images = [];
-              }
-            }
-
-            return achievementItem;
-          });
-        } catch (error) {
-          console.error("Error parsing sports achievements JSON:", error);
-        }
-      }
-      
-      // If no achievements found in JSON, try individual field format
-      if (achievements.length === 0) {
-        //console.log("Trying individual field format for sports achievements");
-        let index = 0;
-        while (req.body[`sportsAchievements[achievements][${index}][title]`]) {
-          //console.log(`Found sports achievement ${index} (individual field):`, req.body[`sportsAchievements[achievements][${index}][title]`]);
-          const achievement = {
-            title: req.body[`sportsAchievements[achievements][${index}][title]`] || '',
-            description: req.body[`sportsAchievements[achievements][${index}][description]`] || '',
-            category: req.body[`sportsAchievements[achievements][${index}][category]`] || 'sports',
-            date: req.body[`sportsAchievements[achievements][${index}][date]`] || new Date().toISOString(),
-            isActive: req.body[`sportsAchievements[achievements][${index}][isActive]`] === 'true',
-            images: []
-          };
-
-          // Handle multiple images for achievement
-          const achievementFiles = files.filter(f => f.fieldname === `sportsAchievements[achievements][${index}][images]`);
-          if (achievementFiles.length > 0) {
-            achievement.images = achievementFiles.map(file => `/uploads/achievements/${file.filename}`);
-          } else if (req.body[`sportsAchievements[achievements][${index}][existingImages]`]) {
-            try {
-              achievement.images = JSON.parse(req.body[`sportsAchievements[achievements][${index}][existingImages]`]);
-            } catch (error) {
-              console.error("Error parsing existing images for sports achievement:", error);
-              achievement.images = [];
-            }
-          }
-
-          achievements.push(achievement);
-          index++;
-        }
-      }
-
-      homeContent.sportsAchievements.achievements = achievements;
-      //console.log(`Processed ${homeContent.sportsAchievements.achievements.length} sports achievements`);
     }
 
     // Process Co-Curricular Achievements section

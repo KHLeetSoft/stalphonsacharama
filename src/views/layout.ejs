@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      <%= typeof title !== 'undefined' ? title : 'School Website' %>
-    </title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <%- typeof style !== 'undefined' ? style : '' %>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'School Website' %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">School Name</a>
+      <ul class="nav-links">
+        <li><a href="/about">About</a></li>
+        <li><a href="/activities">Activities</a></li>
+        <li><a href="/admission">Admission</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="container">
     <%- body %>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <%- typeof script !== 'undefined' ? script : '' %>
-  </body>
+  </main>
+  <footer class="footer">
+    <div class="container">&copy; <%= new Date().getFullYear() %> School Name. All rights reserved.</div>
+  </footer>
+</body>
 </html>

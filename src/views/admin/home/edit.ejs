@@ -2,7 +2,7 @@
 <div class="container mt-4">
   <h2>Edit Home Content</h2>
   
-  <form action="/admin/home/update?_t=${Date.now()}" method="POST" enctype="multipart/form-data">
+  <form action="/admin/home/update" method="POST" enctype="multipart/form-data">
     <!-- Banner Slides Section -->
     <div class="card mb-4">
       <div class="card-header"><h4>Banner Slides</h4></div>
@@ -299,6 +299,7 @@ ${section.content}</textarea
             <div class="mb-3">
               <label class="form-label">Image</label>
               <input type="file" class="form-control" name="infrastructure[image]" accept="image/*" />
+<input type="file" name="infrastructure[items][0][image]" multiple />              <input type="file" name="infrastructure[items][0][image]" />
               ${homeContent.infrastructure?.image ? `
               <img src="${homeContent.infrastructure.image}" class="img-thumbnail mt-2" style="max-height: 100px" />
               <input type="hidden" name="infrastructure[imageUrl]" value="${homeContent.infrastructure.image}" />
@@ -467,6 +468,7 @@ ${section.content}</textarea
                   <div class="col-md-2">
                     <label class="form-label">Images</label>
                     <input type="file" class="form-control" name="sportsAchievements[achievements][${index}][images]" accept="image/*" multiple />
+                    <input type="file" name="sportsAchievements[achievements][0][image]" />
                     ${achievement.images && achievement.images.length > 0 ? `
                     <div class="mt-2">
                       ${achievement.images.map(img => `<img src="${img}" class="img-thumbnail me-1" style="max-height: 40px; max-width: 40px;" />`).join('')}
@@ -555,6 +557,7 @@ ${section.content}</textarea
                   <div class="col-md-2">
                     <label class="form-label">Images</label>
                     <input type="file" class="form-control" name="coCurricularAchievements[achievements][${index}][images]" accept="image/*" multiple />
+                    <input type="file" name="coCurricularAchievements[achievements][0][image]" />
                   </div>
                 </div>
                 <div class="mt-2">
@@ -637,6 +640,7 @@ ${section.content}</textarea
                   <div class="col-md-3">
                     <label class="form-label">Images</label>
                     <input type="file" class="form-control" name="achievers[achievers][${index}][images]" accept="image/*" multiple />
+                    <input type="file" name="achievers[achievers][0][image]" />
                     ${achiever.images && achiever.images.length > 0 ? `
                     <div class="mt-2">
                       ${achiever.images.map(img => `<img src="${img}" class="img-thumbnail me-1" style="max-height: 40px; max-width: 40px;" />`).join('')}

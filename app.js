@@ -128,7 +128,7 @@ app.use("/", require("./src/routes/testimonialRoutes"));
 
 // Database connection
 const MONGO_URI =
-  "mongodb+srv://innovationleetsoft:Leethesh@cluster0.xsnknpz.mongodb.net/stalphonsacharama1?retryWrites=true&w=majority&appName=Cluster0";
+  "mongodb+srv://innovationleetsoft:stalphonsacharama@cluster0.m8br7ym.mongodb.net/stalphonsacharama1?retryWrites=true&w=majority&appName=Cluster0"
 mongoose
   .connect(MONGO_URI, {
     // useNewUrlParser: true,
@@ -137,6 +137,10 @@ mongoose
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch((err) => {
     console.error("MongoDB connection error:", err.message);
+    if (err.message.includes("bad auth")) {
+      console.error("Authentication failed. Please check your username and password.");
+      console.error("Current credentials: innovationleetsoft / StAlphonsa2024!");
+    }
     // Don't exit the process, let the app run with database errors
     // process.exit(1);
   });

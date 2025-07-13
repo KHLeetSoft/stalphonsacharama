@@ -168,7 +168,7 @@ router.post("/login", async (req, res) => {
     // //console.log("Request body:", req.body);
     // //console.log("Username:", req.body.username);
     // //console.log("Password provided:", req.body.password ? "YES" : "NO");
-    
+
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -183,7 +183,7 @@ router.post("/login", async (req, res) => {
     // //console.log("Looking for admin with username:", username);
     const admin = await Admin.findOne({ username });
     // //console.log("Admin found:", !!admin);
-    
+
     if (!admin) {
       // //console.log("❌ Admin not found with username:", username);
       res.status(401).render("admin/login", {
@@ -194,11 +194,11 @@ router.post("/login", async (req, res) => {
     }
 
     // //console.log("Admin details:", {
-      // username: admin.username,
-      // email: admin.email,
-      // role: admin.role,
-      // isActive: admin.isActive,
-      // hasPassword: !!admin.password
+    // username: admin.username,
+    // email: admin.email,
+    // role: admin.role,
+    // isActive: admin.isActive,
+    // hasPassword: !!admin.password
     // });
 
     if (!admin.isActive) {
@@ -213,7 +213,7 @@ router.post("/login", async (req, res) => {
     // //console.log("Comparing passwords...");
     const passwordMatch = await bcrypt.compare(password, admin.password);
     // //console.log("Password match result:", passwordMatch);
-    
+
     if (!passwordMatch) {
       // //console.log("❌ Password does not match");
       res.status(401).render("admin/login", {
@@ -324,7 +324,7 @@ router.get("/dashboard", auth, async (req, res) => {
       Teacher.find({ isActive: true }),
       Course.find({ isActive: true }),
       Activity.find().sort({ createdAt: -1 }).limit(5),
-      About.findOne() // Fetch the About document
+      About.findOne(), // Fetch the About document
     ]);
 
     // Prepare the data for the dashboard
@@ -474,16 +474,16 @@ router.get("/home/edit", auth, async (req, res) => {
   try {
     // Set cache-busting headers to prevent 304 responses
     res.set({
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0',
-      'Last-Modified': new Date().toUTCString(),
-      'ETag': `"${Date.now()}"`
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+      "Last-Modified": new Date().toUTCString(),
+      ETag: `"${Date.now()}"`,
     });
 
     // //console.log("=== Loading Home Edit Page ===");
     let homeContent = (await HomeContent.findOne()) || new HomeContent({});
-    
+
     // //console.log("Home content found:", !!homeContent._id);
     // //console.log("Banner slides count:", homeContent.bannerSlides?.length || 0);
     // //console.log("Infrastructure items count:", homeContent.infrastructure?.items?.length || 0);
@@ -491,30 +491,69 @@ router.get("/home/edit", auth, async (req, res) => {
     // //console.log("Sports achievements count:", homeContent.sportsAchievements?.achievements?.length || 0);
     // //console.log("Co-curricular achievements count:", homeContent.coCurricularAchievements?.achievements?.length || 0);
     // //console.log("Achievers count:", homeContent.achievers?.achievers?.length || 0);
-    
+
     // Ensure all sections have default values if they don't exist
     if (!homeContent.ourSociety) {
-      homeContent.ourSociety = { title: "Our Society", content: "", image: "", isActive: true };
+      homeContent.ourSociety = {
+        title: "Our Society",
+        content: "",
+        image: "",
+        isActive: true,
+      };
     }
     if (!homeContent.whoWeAre) {
-      homeContent.whoWeAre = { title: "Who We Are", content: "", image: "", isActive: true };
+      homeContent.whoWeAre = {
+        title: "Who We Are",
+        content: "",
+        image: "",
+        isActive: true,
+      };
     }
     if (!homeContent.infrastructure) {
-      homeContent.infrastructure = { title: "Infrastructure", subtitle: "Our Facilities", content: "", items: [], isActive: true };
+      homeContent.infrastructure = {
+        title: "Infrastructure",
+        subtitle: "Our Facilities",
+        content: "",
+        items: [],
+        isActive: true,
+      };
     }
     if (!homeContent.recentAnnouncements) {
-      homeContent.recentAnnouncements = { title: "Recent Announcements", subtitle: "Stay Updated", announcements: [], isActive: true };
+      homeContent.recentAnnouncements = {
+        title: "Recent Announcements",
+        subtitle: "Stay Updated",
+        announcements: [],
+        isActive: true,
+      };
     }
     if (!homeContent.sportsAchievements) {
-      homeContent.sportsAchievements = { title: "Sports Achievements", subtitle: "Excellence in Sports", content: "", achievements: [], isActive: true };
+      homeContent.sportsAchievements = {
+        title: "Sports Achievements",
+        subtitle: "Excellence in Sports",
+        content: "",
+        achievements: [],
+        isActive: true,
+      };
     }
     if (!homeContent.coCurricularAchievements) {
-      homeContent.coCurricularAchievements = { title: "Co-Curricular Achievements", subtitle: "Excellence Beyond Academics", content: "", achievements: [], isActive: true };
+      homeContent.coCurricularAchievements = {
+        title: "Co-Curricular Achievements",
+        subtitle: "Excellence Beyond Academics",
+        content: "",
+        achievements: [],
+        isActive: true,
+      };
     }
     if (!homeContent.achievers) {
-      homeContent.achievers = { title: "Our Achievers", subtitle: "Celebrating Success", content: "", achievers: [], isActive: true };
+      homeContent.achievers = {
+        title: "Our Achievers",
+        subtitle: "Celebrating Success",
+        content: "",
+        achievers: [],
+        isActive: true,
+      };
     }
-    
+
     res.render("admin/home/edit", {
       homeContent,
       admin: req.admin,
@@ -526,20 +565,61 @@ router.get("/home/edit", auth, async (req, res) => {
     res.status(500).render("admin/home/edit", {
       error:
         "Failed to load home content. Please ensure all required fields are filled and try again.",
-      homeContent: existingContent || new HomeContent({
-        bannerSlides: req.body.bannerSlides || [],
-        welcomeTitle: req.body.welcomeTitle || "",
-        welcomeContent: req.body.welcomeContent || "",
-        featuredSections: req.body.featuredSections || [],
-        history: req.body.history || "",
-        ourSociety: req.body.ourSociety || { title: "Our Society", content: "", image: "", isActive: true },
-        whoWeAre: req.body.whoWeAre || { title: "Who We Are", content: "", image: "", isActive: true },
-        infrastructure: req.body.infrastructure || { title: "Infrastructure", subtitle: "Our Facilities", content: "", items: [], isActive: true },
-        recentAnnouncements: req.body.recentAnnouncements || { title: "Recent Announcements", subtitle: "Stay Updated", announcements: [], isActive: true },
-        sportsAchievements: req.body.sportsAchievements || { title: "Sports Achievements", subtitle: "Excellence in Sports", content: "", achievements: [], isActive: true },
-        coCurricularAchievements: req.body.coCurricularAchievements || { title: "Co-Curricular Achievements", subtitle: "Excellence Beyond Academics", content: "", achievements: [], isActive: true },
-        achievers: req.body.achievers || { title: "Our Achievers", subtitle: "Celebrating Success", content: "", achievers: [], isActive: true }
-      }),
+      homeContent:
+        existingContent ||
+        new HomeContent({
+          bannerSlides: req.body.bannerSlides || [],
+          welcomeTitle: req.body.welcomeTitle || "",
+          welcomeContent: req.body.welcomeContent || "",
+          featuredSections: req.body.featuredSections || [],
+          history: req.body.history || "",
+          ourSociety: req.body.ourSociety || {
+            title: "Our Society",
+            content: "",
+            image: "",
+            isActive: true,
+          },
+          whoWeAre: req.body.whoWeAre || {
+            title: "Who We Are",
+            content: "",
+            image: "",
+            isActive: true,
+          },
+          infrastructure: req.body.infrastructure || {
+            title: "Infrastructure",
+            subtitle: "Our Facilities",
+            content: "",
+            items: [],
+            isActive: true,
+          },
+          recentAnnouncements: req.body.recentAnnouncements || {
+            title: "Recent Announcements",
+            subtitle: "Stay Updated",
+            announcements: [],
+            isActive: true,
+          },
+          sportsAchievements: req.body.sportsAchievements || {
+            title: "Sports Achievements",
+            subtitle: "Excellence in Sports",
+            content: "",
+            achievements: [],
+            isActive: true,
+          },
+          coCurricularAchievements: req.body.coCurricularAchievements || {
+            title: "Co-Curricular Achievements",
+            subtitle: "Excellence Beyond Academics",
+            content: "",
+            achievements: [],
+            isActive: true,
+          },
+          achievers: req.body.achievers || {
+            title: "Our Achievers",
+            subtitle: "Celebrating Success",
+            content: "",
+            achievers: [],
+            isActive: true,
+          },
+        }),
       admin: req.admin,
       title: "Edit Home Content",
     });
@@ -551,9 +631,9 @@ router.post(
   "/home/update",
   auth,
   (req, res, next) => {
-    // //console.log("This is the Line no 552",req.body)
+    //console.log("this is the line no 554", req.body);
     homeContentUpload(req, res, (err) => {
-      //console.log("this is the line no 556", req.body)
+      console.log("this is after multer", req.body);
       if (err instanceof multer.MulterError) {
         console.error("Multer error:", err);
         return res.status(400).render("admin/home/edit", {
@@ -563,14 +643,53 @@ router.post(
             welcomeTitle: req.body.welcomeTitle || "",
             welcomeContent: req.body.welcomeContent || "",
             featuredSections: [],
-            history: req.body.history || '',
-            ourSociety: { title: "Our Society", content: "", image: "", isActive: true },
-            whoWeAre: { title: "Who We Are", content: "", image: "", isActive: true },
-            infrastructure: { title: "Infrastructure", subtitle: "Our Facilities", content: "", items: [], isActive: true },
-            recentAnnouncements: { title: "Recent Announcements", subtitle: "Stay Updated", announcements: [], isActive: true },
-            sportsAchievements: { title: "Sports Achievements", subtitle: "Excellence in Sports", content: "", achievements: [], isActive: true },
-            coCurricularAchievements: { title: "Co-Curricular Achievements", subtitle: "Excellence Beyond Academics", content: "", achievements: [], isActive: true },
-            achievers: { title: "Our Achievers", subtitle: "Celebrating Success", content: "", achievers: [], isActive: true }
+            history: req.body.history || "",
+            ourSociety: {
+              title: "Our Society",
+              content: "",
+              image: "",
+              isActive: true,
+            },
+            whoWeAre: {
+              title: "Who We Are",
+              content: "",
+              image: "",
+              isActive: true,
+            },
+            infrastructure: {
+              title: "Infrastructure",
+              subtitle: "Our Facilities",
+              content: "",
+              items: [],
+              isActive: true,
+            },
+            recentAnnouncements: {
+              title: "Recent Announcements",
+              subtitle: "Stay Updated",
+              announcements: [],
+              isActive: true,
+            },
+            sportsAchievements: {
+              title: "Sports Achievements",
+              subtitle: "Excellence in Sports",
+              content: "",
+              achievements: [],
+              isActive: true,
+            },
+            coCurricularAchievements: {
+              title: "Co-Curricular Achievements",
+              subtitle: "Excellence Beyond Academics",
+              content: "",
+              achievements: [],
+              isActive: true,
+            },
+            achievers: {
+              title: "Our Achievers",
+              subtitle: "Celebrating Success",
+              content: "",
+              achievers: [],
+              isActive: true,
+            },
           },
           admin: req.admin,
           title: "Edit Home Content",
@@ -584,14 +703,53 @@ router.post(
             welcomeTitle: req.body.welcomeTitle || "",
             welcomeContent: req.body.welcomeContent || "",
             featuredSections: [],
-            history: req.body.history || '',
-            ourSociety: { title: "Our Society", content: "", image: "", isActive: true },
-            whoWeAre: { title: "Who We Are", content: "", image: "", isActive: true },
-            infrastructure: { title: "Infrastructure", subtitle: "Our Facilities", content: "", items: [], isActive: true },
-            recentAnnouncements: { title: "Recent Announcements", subtitle: "Stay Updated", announcements: [], isActive: true },
-            sportsAchievements: { title: "Sports Achievements", subtitle: "Excellence in Sports", content: "", achievements: [], isActive: true },
-            coCurricularAchievements: { title: "Co-Curricular Achievements", subtitle: "Excellence Beyond Academics", content: "", achievements: [], isActive: true },
-            achievers: { title: "Our Achievers", subtitle: "Celebrating Success", content: "", achievers: [], isActive: true }
+            history: req.body.history || "",
+            ourSociety: {
+              title: "Our Society",
+              content: "",
+              image: "",
+              isActive: true,
+            },
+            whoWeAre: {
+              title: "Who We Are",
+              content: "",
+              image: "",
+              isActive: true,
+            },
+            infrastructure: {
+              title: "Infrastructure",
+              subtitle: "Our Facilities",
+              content: "",
+              items: [],
+              isActive: true,
+            },
+            recentAnnouncements: {
+              title: "Recent Announcements",
+              subtitle: "Stay Updated",
+              announcements: [],
+              isActive: true,
+            },
+            sportsAchievements: {
+              title: "Sports Achievements",
+              subtitle: "Excellence in Sports",
+              content: "",
+              achievements: [],
+              isActive: true,
+            },
+            coCurricularAchievements: {
+              title: "Co-Curricular Achievements",
+              subtitle: "Excellence Beyond Academics",
+              content: "",
+              achievements: [],
+              isActive: true,
+            },
+            achievers: {
+              title: "Our Achievers",
+              subtitle: "Celebrating Success",
+              content: "",
+              achievers: [],
+              isActive: true,
+            },
           },
           admin: req.admin,
           title: "Edit Home Content",
@@ -605,14 +763,19 @@ router.post(
       // //console.log("=== Home Content Update Started ===");
       // //console.log("Request body keys:", Object.keys(req.body));
       // //console.log("Uploaded files:", req.files ? Object.keys(req.files) : 'No files');
-      
+
       // Check database connection first
-      const mongoose = require('mongoose');
+      const mongoose = require("mongoose");
       if (mongoose.connection.readyState !== 1) {
-        console.error("Database not connected. ReadyState:", mongoose.connection.readyState);
-        throw new Error("Database connection is not available. Please ensure MongoDB is running.");
+        console.error(
+          "Database not connected. ReadyState:",
+          mongoose.connection.readyState
+        );
+        throw new Error(
+          "Database connection is not available. Please ensure MongoDB is running."
+        );
       }
-      
+
       let homeContent = (await HomeContent.findOne()) || new HomeContent({});
       // //console.log("Existing home content found:", !!homeContent._id);
 
@@ -621,16 +784,20 @@ router.post(
         try {
           const result = [];
           let index = 0;
-          
+
           // Debug: Log all keys that start with the prefix
-          const matchingKeys = Object.keys(req.body).filter(key => key.startsWith(prefix));
+          const matchingKeys = Object.keys(req.body).filter((key) =>
+            key.startsWith(prefix)
+          );
           // //console.log(`Keys matching ${prefix}:`, matchingKeys);
-          
+
           while (req.body[`${prefix}[${index}][title]`] !== undefined) {
             const item = {};
-            Object.keys(req.body).forEach(key => {
+            Object.keys(req.body).forEach((key) => {
               if (key.startsWith(`${prefix}[${index}]`)) {
-                const fieldName = key.replace(`${prefix}[${index}][`, '').replace(']', '');
+                const fieldName = key
+                  .replace(`${prefix}[${index}][`, "")
+                  .replace("]", "");
                 item[fieldName] = req.body[key];
               }
             });
@@ -647,9 +814,10 @@ router.post(
 
       // Update welcome section
       try {
-        homeContent.welcomeTitle = req.body.welcomeTitle || "Welcome to Our School";
+        homeContent.welcomeTitle =
+          req.body.welcomeTitle || "Welcome to Our School";
         homeContent.welcomeContent = req.body.welcomeContent || "";
-        homeContent.history = req.body.history || '';
+        homeContent.history = req.body.history || "";
         // //console.log("Updated welcome section");
       } catch (error) {
         console.error("Error updating welcome section:", error);
@@ -659,15 +827,17 @@ router.post(
       try {
         // //console.log("=== Banner Slides Processing ===");
         // //console.log("Uploaded files:", req.files ? req.files.map(f => ({ fieldname: f.fieldname, filename: f.filename })) : 'No files');
-        
+
         const processedSlides = [];
-        const bannerSlideFiles = req.files ? req.files.filter(file => file.fieldname.includes('bannerSlides')) : [];
-        
+        const bannerSlideFiles = req.files
+          ? req.files.filter((file) => file.fieldname.includes("bannerSlides"))
+          : [];
+
         // Try to parse banner slides from JSON first
         let bannerSlidesData = [];
         if (req.body.bannerSlides) {
           try {
-            if (typeof req.body.bannerSlides === 'string') {
+            if (typeof req.body.bannerSlides === "string") {
               bannerSlidesData = JSON.parse(req.body.bannerSlides);
             } else if (Array.isArray(req.body.bannerSlides)) {
               bannerSlidesData = req.body.bannerSlides;
@@ -678,11 +848,11 @@ router.post(
             bannerSlidesData = [];
           }
         }
-        
+
         // If no JSON data, try individual form fields
         if (bannerSlidesData.length === 0) {
           const bannerSlideData = {};
-          Object.keys(req.body).forEach(key => {
+          Object.keys(req.body).forEach((key) => {
             const match = key.match(/bannerSlides\[(\d+)\]\[(\w+)\]/);
             if (match) {
               const index = match[1];
@@ -691,71 +861,78 @@ router.post(
               bannerSlideData[index][field] = req.body[key];
             }
           });
-          
+
           // Convert individual fields to array format
-          Object.keys(bannerSlideData).forEach(index => {
+          Object.keys(bannerSlideData).forEach((index) => {
             bannerSlidesData.push(bannerSlideData[index]);
           });
           // //console.log("Banner slides from individual fields:", bannerSlidesData.length, "slides");
         }
-        
+
         // Process each banner slide
         bannerSlidesData.forEach((slideData, index) => {
           // //console.log(`Processing slide ${index}:`, slideData);
-          
+
           // Find the uploaded image for this slide
-          const slideImage = bannerSlideFiles.find(file => file.fieldname === `bannerSlides[${index}][image]`);
-          
+          const slideImage = bannerSlideFiles.find(
+            (file) => file.fieldname === `bannerSlides[${index}][image]`
+          );
+
           // Determine image URL - preserve existing image if no new image uploaded
-          let imageUrl = '';
+          let imageUrl = "";
           if (slideImage) {
             // New image uploaded
             imageUrl = `/uploads/${slideImage.filename}`;
             // //console.log(`Slide ${index}: New image uploaded - ${imageUrl}`);
-          } else if (slideData.imageUrl && slideData.imageUrl.trim() !== '') {
+          } else if (slideData.imageUrl && slideData.imageUrl.trim() !== "") {
             // Keep existing image - this is the key fix
             imageUrl = slideData.imageUrl;
             // //console.log(`Slide ${index}: Keeping existing image - ${imageUrl}`);
           } else {
             // No image at all
-            imageUrl = '';
+            imageUrl = "";
             // //console.log(`Slide ${index}: No image`);
           }
-          
+
           // Create slide object
           const slide = {
             title: slideData.title || `Banner Slide ${index + 1}`,
-            subtitle: slideData.subtitle || '',
-            ctaText: slideData.ctaText || '',
-            ctaLink: slideData.ctaLink || '',
+            subtitle: slideData.subtitle || "",
+            ctaText: slideData.ctaText || "",
+            ctaLink: slideData.ctaLink || "",
             imageUrl: imageUrl,
-            isActive: slideData.isActive === 'true' || slideData.isActive === 'on' || slideData.isActive === true,
-            order: parseInt(slideData.order) || index
+            isActive:
+              slideData.isActive === "true" ||
+              slideData.isActive === "on" ||
+              slideData.isActive === true,
+            order: parseInt(slideData.order) || index,
           };
-          
+
           // //console.log(`Slide ${index} processed:`, slide);
           processedSlides.push(slide);
         });
-        
+
         // If no slides were processed but files were uploaded, create slides from files
         if (processedSlides.length === 0 && bannerSlideFiles.length > 0) {
           // //console.log("No slide data found, creating slides from uploaded files");
           bannerSlideFiles.forEach((file, index) => {
-            const slideIndex = parseInt(file.fieldname.match(/bannerSlides\[(\d+)\]\[image\]/)?.[1] || '0');
+            const slideIndex = parseInt(
+              file.fieldname.match(/bannerSlides\[(\d+)\]\[image\]/)?.[1] || "0"
+            );
             const slide = {
               imageUrl: `/uploads/${file.filename}`,
               title: `Banner Slide ${slideIndex + 1}`,
-              subtitle: '',
-              ctaText: '',
-              ctaLink: '',
+              subtitle: "",
+              ctaText: "",
+              ctaLink: "",
               isActive: true,
-              order: slideIndex
+              order: slideIndex,
             };
             processedSlides.push(slide);
             // //console.log(`Created slide from file ${index}:`, slide);
           });
         }
-        
+
         // Only update banner slides if we have processed data or existing slides
         if (processedSlides.length > 0 || homeContent.bannerSlides.length > 0) {
           homeContent.bannerSlides = processedSlides;
@@ -763,7 +940,6 @@ router.post(
         } else {
           // //console.log("No banner slides data to update, keeping existing slides");
         }
-        
       } catch (error) {
         console.error("Error updating banner slides:", error);
         console.error("Error stack:", error.stack);
@@ -774,22 +950,22 @@ router.post(
       if (req.body.featuredSections) {
         try {
           let featuredSectionsData;
-          
+
           // Check if it's a JSON string or already an array
-          if (typeof req.body.featuredSections === 'string') {
+          if (typeof req.body.featuredSections === "string") {
             featuredSectionsData = JSON.parse(req.body.featuredSections);
           } else if (Array.isArray(req.body.featuredSections)) {
             featuredSectionsData = req.body.featuredSections;
           } else {
             featuredSectionsData = [];
           }
-          
+
           homeContent.featuredSections = featuredSectionsData.map(
             (section) => ({
-              title: section.title || '',
-              content: section.content || '',
-              icon: section.icon || '',
-              link: section.link || '',
+              title: section.title || "",
+              content: section.content || "",
+              icon: section.icon || "",
+              link: section.link || "",
             })
           );
           // //console.log("Updated featured sections:", homeContent.featuredSections.length, "sections");
@@ -802,13 +978,19 @@ router.post(
       // Update Our Society section
       try {
         if (req.body.ourSociety) {
-          const ourSocietyImage = req.files ? req.files.find(file => file.fieldname === 'ourSociety[image]') : null;
-          
+          const ourSocietyImage = req.files
+            ? req.files.find((file) => file.fieldname === "ourSociety[image]")
+            : null;
+
           homeContent.ourSociety = {
-            title: req.body.ourSociety.title || 'Our Society',
-            content: req.body.ourSociety.content || '',
-            image: ourSocietyImage ? `/uploads/${ourSocietyImage.filename}` : cleanImageUrl(req.body.ourSociety.imageUrl || ''),
-            isActive: req.body.ourSociety.isActive === 'true' || req.body.ourSociety.isActive === 'on'
+            title: req.body.ourSociety.title || "Our Society",
+            content: req.body.ourSociety.content || "",
+            image: ourSocietyImage
+              ? `/uploads/${ourSocietyImage.filename}`
+              : cleanImageUrl(req.body.ourSociety.imageUrl || ""),
+            isActive:
+              req.body.ourSociety.isActive === "true" ||
+              req.body.ourSociety.isActive === "on",
           };
           // //console.log("Updated Our Society section");
         }
@@ -819,13 +1001,19 @@ router.post(
       // Update Who We Are section
       try {
         if (req.body.whoWeAre) {
-          const whoWeAreImage = req.files ? req.files.find(file => file.fieldname === 'whoWeAre[image]') : null;
-          
+          const whoWeAreImage = req.files
+            ? req.files.find((file) => file.fieldname === "whoWeAre[image]")
+            : null;
+
           homeContent.whoWeAre = {
-            title: req.body.whoWeAre.title || 'Who We Are',
-            content: req.body.whoWeAre.content || '',
-            image: whoWeAreImage ? `/uploads/${whoWeAreImage.filename}` : cleanImageUrl(req.body.whoWeAre.imageUrl || ''),
-            isActive: req.body.whoWeAre.isActive === 'true' || req.body.whoWeAre.isActive === 'on'
+            title: req.body.whoWeAre.title || "Who We Are",
+            content: req.body.whoWeAre.content || "",
+            image: whoWeAreImage
+              ? `/uploads/${whoWeAreImage.filename}`
+              : cleanImageUrl(req.body.whoWeAre.imageUrl || ""),
+            isActive:
+              req.body.whoWeAre.isActive === "true" ||
+              req.body.whoWeAre.isActive === "on",
           };
           // //console.log("Updated Who We Are section");
         }
@@ -837,43 +1025,53 @@ router.post(
       try {
         if (req.body.infrastructure) {
           const infrastructureItems = [];
-          const infrastructureData = parseArrayData('infrastructure[items]');
-          
+          const infrastructureData = parseArrayData("infrastructure[items]");
+
           if (infrastructureData.length > 0) {
             for (let i = 0; i < infrastructureData.length; i++) {
               const item = infrastructureData[i];
-              const itemImage = req.files ? req.files.find(file => file.fieldname === `infrastructure[items][${i}][image]`) : null;
-              
+              const itemImage = req.files
+                ? req.files.find(
+                    (file) =>
+                      file.fieldname === `infrastructure[items][${i}][image]`
+                  )
+                : null;
+
               // Determine image URL - preserve existing image if no new image uploaded
-              let imageUrl = '';
+              let imageUrl = "";
               if (itemImage) {
                 // New image uploaded
                 imageUrl = `/uploads/${itemImage.filename}`;
-              } else if (item.existingImage && item.existingImage.trim() !== '') {
+              } else if (
+                item.existingImage &&
+                item.existingImage.trim() !== ""
+              ) {
                 // Keep existing image
                 imageUrl = item.existingImage;
-              } else if (item.image && item.image.trim() !== '') {
+              } else if (item.image && item.image.trim() !== "") {
                 // Keep existing image from image field
                 imageUrl = item.image;
               }
-              
+
               infrastructureItems.push({
                 title: item.title,
                 description: item.description,
-                icon: item.icon || '',
+                icon: item.icon || "",
                 image: imageUrl,
                 order: parseInt(item.order) || i,
-                isActive: item.isActive === 'true' || item.isActive === 'on'
+                isActive: item.isActive === "true" || item.isActive === "on",
               });
             }
           }
-          
+
           homeContent.infrastructure = {
-            title: req.body.infrastructure.title || 'Infrastructure',
-            subtitle: req.body.infrastructure.subtitle || 'Our Facilities',
-            content: req.body.infrastructure.content || '',
+            title: req.body.infrastructure.title || "Infrastructure",
+            subtitle: req.body.infrastructure.subtitle || "Our Facilities",
+            content: req.body.infrastructure.content || "",
             items: infrastructureItems,
-            isActive: req.body.infrastructure.isActive === 'true' || req.body.infrastructure.isActive === 'on'
+            isActive:
+              req.body.infrastructure.isActive === "true" ||
+              req.body.infrastructure.isActive === "on",
           };
           // //console.log("Updated Infrastructure section:", infrastructureItems.length, "items");
         }
@@ -885,26 +1083,34 @@ router.post(
       try {
         if (req.body.recentAnnouncements) {
           const announcements = [];
-          const announcementsData = parseArrayData('recentAnnouncements[announcements]');
-          
+          const announcementsData = parseArrayData(
+            "recentAnnouncements[announcements]"
+          );
+
           if (announcementsData.length > 0) {
             for (let i = 0; i < announcementsData.length; i++) {
               const announcement = announcementsData[i];
-              
+
               announcements.push({
                 title: announcement.title,
                 content: announcement.content,
-                date: announcement.date ? new Date(announcement.date) : new Date(),
-                isActive: announcement.isActive === 'true' || announcement.isActive === 'on'
+                date: announcement.date
+                  ? new Date(announcement.date)
+                  : new Date(),
+                isActive:
+                  announcement.isActive === "true" ||
+                  announcement.isActive === "on",
               });
             }
           }
-          
+
           homeContent.recentAnnouncements = {
-            title: req.body.recentAnnouncements.title || 'Recent Announcements',
-            subtitle: req.body.recentAnnouncements.subtitle || 'Stay Updated',
+            title: req.body.recentAnnouncements.title || "Recent Announcements",
+            subtitle: req.body.recentAnnouncements.subtitle || "Stay Updated",
             announcements: announcements,
-            isActive: req.body.recentAnnouncements.isActive === 'true' || req.body.recentAnnouncements.isActive === 'on'
+            isActive:
+              req.body.recentAnnouncements.isActive === "true" ||
+              req.body.recentAnnouncements.isActive === "on",
           };
           // //console.log("Updated Recent Announcements section:", announcements.length, "announcements");
         }
@@ -916,43 +1122,61 @@ router.post(
       try {
         if (req.body.sportsAchievements) {
           const achievements = [];
-          const achievementsData = parseArrayData('sportsAchievements[achievements]');
-          
+          const achievementsData = parseArrayData(
+            "sportsAchievements[achievements]"
+          );
+
           if (achievementsData.length > 0) {
             for (let i = 0; i < achievementsData.length; i++) {
               const achievement = achievementsData[i];
-              const achievementImage = req.files ? req.files.find(file => file.fieldname === `sportsAchievements[achievements][${i}][image]`) : null;
-              
+              const achievementImage = req.files
+                ? req.files.find(
+                    (file) =>
+                      file.fieldname ===
+                      `sportsAchievements[achievements][${i}][image]`
+                  )
+                : null;
+
               // Determine image URL - preserve existing image if no new image uploaded
-              let imageUrl = '';
+              let imageUrl = "";
               if (achievementImage) {
                 // New image uploaded
                 imageUrl = `/uploads/${achievementImage.filename}`;
-              } else if (achievement.existingImage && achievement.existingImage.trim() !== '') {
+              } else if (
+                achievement.existingImage &&
+                achievement.existingImage.trim() !== ""
+              ) {
                 // Keep existing image
                 imageUrl = achievement.existingImage;
-              } else if (achievement.image && achievement.image.trim() !== '') {
+              } else if (achievement.image && achievement.image.trim() !== "") {
                 // Keep existing image from image field
                 imageUrl = achievement.image;
               }
-              
+
               achievements.push({
                 title: achievement.title,
                 description: achievement.description,
-                category: achievement.category || 'sports',
-                date: achievement.date ? new Date(achievement.date) : new Date(),
+                category: achievement.category || "sports",
+                date: achievement.date
+                  ? new Date(achievement.date)
+                  : new Date(),
                 image: imageUrl,
-                isActive: achievement.isActive === 'true' || achievement.isActive === 'on'
+                isActive:
+                  achievement.isActive === "true" ||
+                  achievement.isActive === "on",
               });
             }
           }
-          
+
           homeContent.sportsAchievements = {
-            title: req.body.sportsAchievements.title || 'Sports Achievements',
-            subtitle: req.body.sportsAchievements.subtitle || 'Excellence in Sports',
-            content: req.body.sportsAchievements.content || '',
+            title: req.body.sportsAchievements.title || "Sports Achievements",
+            subtitle:
+              req.body.sportsAchievements.subtitle || "Excellence in Sports",
+            content: req.body.sportsAchievements.content || "",
             achievements: achievements,
-            isActive: req.body.sportsAchievements.isActive === 'true' || req.body.sportsAchievements.isActive === 'on'
+            isActive:
+              req.body.sportsAchievements.isActive === "true" ||
+              req.body.sportsAchievements.isActive === "on",
           };
           // //console.log("Updated Sports Achievements section:", achievements.length, "achievements");
         }
@@ -964,92 +1188,127 @@ router.post(
       try {
         if (req.body.coCurricularAchievements) {
           const achievements = [];
-          const achievementsData = parseArrayData('coCurricularAchievements[achievements]');
-          
+          const achievementsData = parseArrayData(
+            "coCurricularAchievements[achievements]"
+          );
+
           if (achievementsData.length > 0) {
             for (let i = 0; i < achievementsData.length; i++) {
               const achievement = achievementsData[i];
-              const achievementImage = req.files ? req.files.find(file => file.fieldname === `coCurricularAchievements[achievements][${i}][image]`) : null;
-              
+              const achievementImage = req.files
+                ? req.files.find(
+                    (file) =>
+                      file.fieldname ===
+                      `coCurricularAchievements[achievements][${i}][image]`
+                  )
+                : null;
+
               // Determine image URL - preserve existing image if no new image uploaded
-              let imageUrl = '';
+              let imageUrl = "";
               if (achievementImage) {
                 // New image uploaded
                 imageUrl = `/uploads/${achievementImage.filename}`;
-              } else if (achievement.existingImage && achievement.existingImage.trim() !== '') {
+              } else if (
+                achievement.existingImage &&
+                achievement.existingImage.trim() !== ""
+              ) {
                 // Keep existing image
                 imageUrl = achievement.existingImage;
-              } else if (achievement.image && achievement.image.trim() !== '') {
+              } else if (achievement.image && achievement.image.trim() !== "") {
                 // Keep existing image from image field
                 imageUrl = achievement.image;
               }
-              
+
               achievements.push({
                 title: achievement.title,
                 description: achievement.description,
-                category: achievement.category || 'cultural',
-                date: achievement.date ? new Date(achievement.date) : new Date(),
+                category: achievement.category || "cultural",
+                date: achievement.date
+                  ? new Date(achievement.date)
+                  : new Date(),
                 image: imageUrl,
-                isActive: achievement.isActive === 'true' || achievement.isActive === 'on'
+                isActive:
+                  achievement.isActive === "true" ||
+                  achievement.isActive === "on",
               });
             }
           }
-          
+
           homeContent.coCurricularAchievements = {
-            title: req.body.coCurricularAchievements.title || 'Co-Curricular Achievements',
-            subtitle: req.body.coCurricularAchievements.subtitle || 'Excellence Beyond Academics',
-            content: req.body.coCurricularAchievements.content || '',
+            title:
+              req.body.coCurricularAchievements.title ||
+              "Co-Curricular Achievements",
+            subtitle:
+              req.body.coCurricularAchievements.subtitle ||
+              "Excellence Beyond Academics",
+            content: req.body.coCurricularAchievements.content || "",
             achievements: achievements,
-            isActive: req.body.coCurricularAchievements.isActive === 'true' || req.body.coCurricularAchievements.isActive === 'on'
+            isActive:
+              req.body.coCurricularAchievements.isActive === "true" ||
+              req.body.coCurricularAchievements.isActive === "on",
           };
           // //console.log("Updated Co-Curricular Achievements section:", achievements.length, "achievements");
         }
       } catch (error) {
-        console.error("Error updating Co-Curricular Achievements section:", error);
+        console.error(
+          "Error updating Co-Curricular Achievements section:",
+          error
+        );
       }
 
       // Update Achievers section
       try {
         if (req.body.achievers) {
           const achievers = [];
-          const achieversData = parseArrayData('achievers[achievers]');
-          
+          const achieversData = parseArrayData("achievers[achievers]");
+
           if (achieversData.length > 0) {
             for (let i = 0; i < achieversData.length; i++) {
               const achiever = achieversData[i];
-              const achieverImage = req.files ? req.files.find(file => file.fieldname === `achievers[achievers][${i}][image]`) : null;
-              
+              const achieverImage = req.files
+                ? req.files.find(
+                    (file) =>
+                      file.fieldname === `achievers[achievers][${i}][image]`
+                  )
+                : null;
+
               // Determine image URL - preserve existing image if no new image uploaded
-              let imageUrl = '';
+              let imageUrl = "";
               if (achieverImage) {
                 // New image uploaded
                 imageUrl = `/uploads/${achieverImage.filename}`;
-              } else if (achiever.existingImage && achiever.existingImage.trim() !== '') {
+              } else if (
+                achiever.existingImage &&
+                achiever.existingImage.trim() !== ""
+              ) {
                 // Keep existing image
                 imageUrl = achiever.existingImage;
-              } else if (achiever.image && achiever.image.trim() !== '') {
+              } else if (achiever.image && achiever.image.trim() !== "") {
                 // Keep existing image from image field
                 imageUrl = achiever.image;
               }
-              
+
               achievers.push({
                 name: achiever.name,
                 achievement: achiever.achievement,
-                category: achiever.category || 'student',
-                year: achiever.year || '',
+                category: achiever.category || "student",
+                year: achiever.year || "",
                 image: imageUrl,
                 order: parseInt(achiever.order) || i,
-                isActive: achiever.isActive === 'true' || achiever.isActive === 'on'
+                isActive:
+                  achiever.isActive === "true" || achiever.isActive === "on",
               });
             }
           }
-          
+
           homeContent.achievers = {
-            title: req.body.achievers.title || 'Our Achievers',
-            subtitle: req.body.achievers.subtitle || 'Celebrating Success',
-            content: req.body.achievers.content || '',
+            title: req.body.achievers.title || "Our Achievers",
+            subtitle: req.body.achievers.subtitle || "Celebrating Success",
+            content: req.body.achievers.content || "",
             achievers: achievers,
-            isActive: req.body.achievers.isActive === 'true' || req.body.achievers.isActive === 'on'
+            isActive:
+              req.body.achievers.isActive === "true" ||
+              req.body.achievers.isActive === "on",
           };
           // //console.log("Updated Achievers section:", achievers.length, "achievers");
         }
@@ -1074,20 +1333,61 @@ router.post(
       res.status(500).render("admin/home/edit", {
         error:
           "Failed to update home content. Please ensure all required fields are filled and try again.",
-        homeContent: existingContent || new HomeContent({
-          bannerSlides: req.body.bannerSlides || [],
-          welcomeTitle: req.body.welcomeTitle || "",
-          welcomeContent: req.body.welcomeContent || "",
-          featuredSections: req.body.featuredSections || [],
-          history: req.body.history || "",
-          ourSociety: req.body.ourSociety || { title: "Our Society", content: "", image: "", isActive: true },
-          whoWeAre: req.body.whoWeAre || { title: "Who We Are", content: "", image: "", isActive: true },
-          infrastructure: req.body.infrastructure || { title: "Infrastructure", subtitle: "Our Facilities", content: "", items: [], isActive: true },
-          recentAnnouncements: req.body.recentAnnouncements || { title: "Recent Announcements", subtitle: "Stay Updated", announcements: [], isActive: true },
-          sportsAchievements: req.body.sportsAchievements || { title: "Sports Achievements", subtitle: "Excellence in Sports", content: "", achievements: [], isActive: true },
-          coCurricularAchievements: req.body.coCurricularAchievements || { title: "Co-Curricular Achievements", subtitle: "Excellence Beyond Academics", content: "", achievements: [], isActive: true },
-          achievers: req.body.achievers || { title: "Our Achievers", subtitle: "Celebrating Success", content: "", achievers: [], isActive: true }
-        }),
+        homeContent:
+          existingContent ||
+          new HomeContent({
+            bannerSlides: req.body.bannerSlides || [],
+            welcomeTitle: req.body.welcomeTitle || "",
+            welcomeContent: req.body.welcomeContent || "",
+            featuredSections: req.body.featuredSections || [],
+            history: req.body.history || "",
+            ourSociety: req.body.ourSociety || {
+              title: "Our Society",
+              content: "",
+              image: "",
+              isActive: true,
+            },
+            whoWeAre: req.body.whoWeAre || {
+              title: "Who We Are",
+              content: "",
+              image: "",
+              isActive: true,
+            },
+            infrastructure: req.body.infrastructure || {
+              title: "Infrastructure",
+              subtitle: "Our Facilities",
+              content: "",
+              items: [],
+              isActive: true,
+            },
+            recentAnnouncements: req.body.recentAnnouncements || {
+              title: "Recent Announcements",
+              subtitle: "Stay Updated",
+              announcements: [],
+              isActive: true,
+            },
+            sportsAchievements: req.body.sportsAchievements || {
+              title: "Sports Achievements",
+              subtitle: "Excellence in Sports",
+              content: "",
+              achievements: [],
+              isActive: true,
+            },
+            coCurricularAchievements: req.body.coCurricularAchievements || {
+              title: "Co-Curricular Achievements",
+              subtitle: "Excellence Beyond Academics",
+              content: "",
+              achievements: [],
+              isActive: true,
+            },
+            achievers: req.body.achievers || {
+              title: "Our Achievers",
+              subtitle: "Celebrating Success",
+              content: "",
+              achievers: [],
+              isActive: true,
+            },
+          }),
         admin: req.admin,
         title: "Edit Home Content",
       });
@@ -1100,11 +1400,12 @@ router.post("/home/reset", auth, async (req, res) => {
   try {
     // Delete all existing HomeContent documents
     await HomeContent.deleteMany({});
-    
+
     // Create a fresh HomeContent document
     const newHomeContent = new HomeContent({
       welcomeTitle: "Welcome to Our School",
-      welcomeContent: "Welcome to our school website. We are committed to providing quality education.",
+      welcomeContent:
+        "Welcome to our school website. We are committed to providing quality education.",
       bannerSlides: [],
       featuredSections: [],
       history: "",
@@ -1112,50 +1413,50 @@ router.post("/home/reset", auth, async (req, res) => {
         title: "Our Society",
         content: "",
         image: "",
-        isActive: true
+        isActive: true,
       },
       whoWeAre: {
         title: "Who We Are",
         content: "",
         image: "",
-        isActive: true
+        isActive: true,
       },
       infrastructure: {
         title: "Infrastructure",
         subtitle: "Our Facilities",
         content: "",
         items: [],
-        isActive: true
+        isActive: true,
       },
       recentAnnouncements: {
         title: "Recent Announcements",
         subtitle: "Stay Updated",
         announcements: [],
-        isActive: true
+        isActive: true,
       },
       sportsAchievements: {
         title: "Sports Achievements",
         subtitle: "Excellence in Sports",
         content: "",
         achievements: [],
-        isActive: true
+        isActive: true,
       },
       coCurricularAchievements: {
         title: "Co-Curricular Achievements",
         subtitle: "Excellence Beyond Academics",
         content: "",
         achievements: [],
-        isActive: true
+        isActive: true,
       },
       achievers: {
         title: "Our Achievers",
         subtitle: "Celebrating Success",
         content: "",
         achievers: [],
-        isActive: true
-      }
+        isActive: true,
+      },
     });
-    
+
     await newHomeContent.save();
     res.redirect("/admin/home/edit?reset=success");
   } catch (error) {
@@ -1256,7 +1557,7 @@ router.get("/about/edit", auth, async (req, res) => {
     res.render("admin/about/edit", templateData);
   } catch (error) {
     console.error("Error rendering about edit page:", error);
-    res.status(500).json({
+    res.status(500).render("error", {
       error: "Failed to load about edit page",
       message: "Please try again later",
     });
@@ -1267,24 +1568,55 @@ router.get("/about/edit", auth, async (req, res) => {
 router.post("/about/update", auth, upload.single("image"), async (req, res) => {
   try {
     const {
-      missionTitle,
-      missionContent,
-      visionTitle,
-      visionContent,
       historyTitle,
       historyContent,
+      visionTitle,
+      visionContent,
+      missionTitle,
+      missionContent,
+      coreValuesTitle,
+      coreValues,
     } = req.body;
 
     // Create update data object with default values if fields are empty
-    const updateData = {
-      missionTitle: missionTitle || "Our Mission",
-      mission: missionContent || "",
-      visionTitle: visionTitle || "Our Vision",
-      vision: visionContent || "",
-      historyTitle: historyTitle || "Our Inspiration",
-      history: historyContent || "",
-    };
+    const updateData = {};
+    
+    // Handle About page fields
+    if (historyTitle !== undefined) updateData.historyTitle = historyTitle || "About Us";
+    if (historyContent !== undefined) updateData.history = historyContent || "";
+    
+    // Handle Vision & Mission fields
+    if (visionTitle !== undefined) updateData.visionTitle = visionTitle || "Our Vision";
+    if (visionContent !== undefined) updateData.vision = visionContent || "";
+    if (missionTitle !== undefined) updateData.missionTitle = missionTitle || "Our Mission";
+    if (missionContent !== undefined) updateData.mission = missionContent || "";
+    if (coreValuesTitle !== undefined) updateData.coreValuesTitle = coreValuesTitle || "Our Core Values";
+    
+    // Handle core values
+    if (coreValues) {
+      const coreValuesArray = [];
+      const valuesArray = Array.isArray(coreValues) ? coreValues : [coreValues];
+      
+      valuesArray.forEach((value, index) => {
+        if (value && value.title && value.description) {
+          coreValuesArray.push({
+            title: value.title,
+            description: value.description,
+            icon: value.icon || "fas fa-star",
+            color: value.color || "text-primary",
+            order: parseInt(value.order) || index + 1,
+          });
+        }
+      });
+      
+      // Sort by order
+      coreValuesArray.sort((a, b) => a.order - b.order);
+      updateData.coreValues = coreValuesArray;
+    }
 
+    // Find existing about document first
+    let about = await About.findOne();
+    
     // Handle file upload
     if (req.file) {
       if (!req.file.mimetype.startsWith("image/")) {
@@ -1293,15 +1625,43 @@ router.post("/about/update", auth, upload.single("image"), async (req, res) => {
           message: "Invalid file type",
         });
       }
+      
+      // Delete old image if exists
+      if (about && about.image) {
+        const oldImagePath = path.join(__dirname, "..", "..", "public", about.image);
+        try {
+          if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+          }
+        } catch (err) {
+          console.error("Error deleting old image:", err);
+        }
+      }
+      
       updateData.image = `/uploads/${req.file.filename}`;
     }
 
-    // Find existing about document or create new one
-    let about = await About.findOne();
+    // Create new about document if none exists
     if (!about) {
-      about = new About(updateData);
+      // Create new about document with default values for required fields
+      about = new About({
+        missionTitle: "Our Mission",
+        mission: "To provide quality education that empowers students to become responsible, creative, and successful global citizens through innovative teaching methods and holistic development.",
+        visionTitle: "Our Vision", 
+        vision: "To be a leading educational institution that nurtures excellence, innovation, and character development, preparing students to become responsible global citizens who contribute positively to society.",
+        ...updateData
+      });
     } else {
-      Object.assign(about, updateData);
+      // Only update the fields that were sent in the form
+      if (updateData.historyTitle !== undefined) about.historyTitle = updateData.historyTitle;
+      if (updateData.history !== undefined) about.history = updateData.history;
+      if (updateData.visionTitle !== undefined) about.visionTitle = updateData.visionTitle;
+      if (updateData.vision !== undefined) about.vision = updateData.vision;
+      if (updateData.missionTitle !== undefined) about.missionTitle = updateData.missionTitle;
+      if (updateData.mission !== undefined) about.mission = updateData.mission;
+      if (updateData.coreValuesTitle !== undefined) about.coreValuesTitle = updateData.coreValuesTitle;
+      if (updateData.coreValues !== undefined) about.coreValues = updateData.coreValues;
+      if (updateData.image !== undefined) about.image = updateData.image;
     }
 
     // Save the document
@@ -1311,11 +1671,29 @@ router.post("/about/update", auth, upload.single("image"), async (req, res) => {
     res.status(200).json({
       success: true,
       message: "About content updated successfully",
+      image: about.image,
     });
   } catch (error) {
     console.error("Error updating about content:", error);
+    console.error("Request body:", req.body);
+    console.error("Request file:", req.file);
     res.status(500).json({
       error: "Failed to update about content",
+      message: "Please try again later",
+      details: error.message
+    });
+  }
+});
+
+// Vision & Mission Management Route
+router.get("/vision-mission", auth, async (req, res) => {
+  try {
+    const aboutController = require("../controllers/aboutController");
+    await aboutController.getAdminVisionMission(req, res);
+  } catch (error) {
+    console.error("Error in vision-mission route:", error);
+    res.status(500).render("error", {
+      error: "Failed to load vision-mission page",
       message: "Please try again later",
     });
   }
@@ -1470,7 +1848,6 @@ router.post(
   upload.single("image"),
   async (req, res) => {
     try {
-
       const { title, description, duration, requirements, curriculum, level } =
         req.body;
 
@@ -1631,7 +2008,6 @@ router.get("/academics/sections", auth, async (req, res) => {
     }).sort({ order: 1 });
 
     // Log for debugging
-
 
     // Get the content for each section
     // const content = {
@@ -1803,7 +2179,6 @@ router.get("/activities", auth, async (req, res) => {
 });
 
 router.post("/activities/update", upload.single("image"), async (req, res) => {
-
   try {
     // Validate required fields
     if (!req.body.title || !req.body.description) {
@@ -2060,7 +2435,7 @@ router.get("/transport", auth, async (req, res) => {
       transports,
       admin: req.admin,
       title: "Manage Transport",
-      error: null
+      error: null,
     });
   } catch (error) {
     res.status(500).render("admin/transport/index", {
@@ -2080,7 +2455,7 @@ router.get("/transport/index", auth, async (req, res) => {
       transports,
       admin: req.admin,
       title: "Manage Transport",
-      error: null
+      error: null,
     });
   } catch (error) {
     res.status(500).render("admin/transport/index", {
@@ -2096,7 +2471,7 @@ router.get("/transport/add", auth, (req, res) => {
   res.render("admin/transport/add", {
     admin: req.admin,
     title: "Add Transport",
-    error: null
+    error: null,
   });
 });
 
@@ -2108,16 +2483,16 @@ router.post(
     try {
       const { rules, time, driverName, driverPhone, route } = req.body;
       const vehicleImage = req.file ? `/uploads/${req.file.filename}` : "";
-      
+
       const transport = new Transport({
         vehicleImage,
         rules,
         time,
         driverName,
         driverPhone,
-        route
+        route,
       });
-      
+
       await transport.save();
       res.redirect("/admin/transport");
     } catch (error) {
@@ -2154,14 +2529,14 @@ router.post(
       const { rules, time, driverName, driverPhone, route } = req.body;
       const transport = await Transport.findById(req.params.id);
       if (!transport) return res.redirect("/admin/transport");
-      
+
       if (req.file) transport.vehicleImage = `/uploads/${req.file.filename}`;
       transport.rules = rules;
       transport.time = time;
       transport.driverName = driverName;
       transport.driverPhone = driverPhone;
       transport.route = route;
-      
+
       await transport.save();
       res.redirect("/admin/transport");
     } catch (error) {
@@ -2182,12 +2557,12 @@ router.post("/transport/delete/:id", auth, async (req, res) => {
 
 // Helper function to clean up invalid image URLs
 const cleanImageUrl = (imageUrl) => {
-  if (!imageUrl) return '';
+  if (!imageUrl) return "";
   // Remove any URLs that contain invalid characters (like fieldnames)
-  if (imageUrl.includes('[') || imageUrl.includes(']')) {
+  if (imageUrl.includes("[") || imageUrl.includes("]")) {
     // //console.log(`Cleaning problematic URL: ${imageUrl}`);
     // Extract file extension and create a new clean filename
-    const fileExtension = imageUrl.split('.').pop() || 'jpg';
+    const fileExtension = imageUrl.split(".").pop() || "jpg";
     const timestamp = Date.now();
     const random = Math.round(Math.random() * 1e9);
     const newFilename = `${timestamp}-${random}.${fileExtension}`;
