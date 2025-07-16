@@ -23,35 +23,24 @@ const coreValueSchema = new mongoose.Schema({
   },
 });
 
+// =========================
+// ABOUT MODEL
+// Stores all About, Mission, Vision, and Core Values data
+// Used for both public and admin vision-mission pages
+// =========================
+
 const aboutSchema = new mongoose.Schema({
-  missionTitle: {
-    type: String,
-    required: true,
-  },
-  mission: {
-    type: String,
-    required: true,
-  },
-  visionTitle: {
-    type: String,
-    required: true,
-  },
-  vision: {
-    type: String,
-    required: true,
-  },
-  historyTitle: {
-    type: String,
-    required: true,
-  },
-  history: {
-    type: String,
-    required: true,
-  },
-  coreValuesTitle: {
-    type: String,
-    default: "Our Core Values",
-  },
+  // Mission Section (public & admin)
+  missionTitle: { type: String, required: true },
+  mission: { type: String, required: true },
+  // Vision Section (public & admin)
+  visionTitle: { type: String, required: true },
+  vision: { type: String, required: true },
+  // History Section (public & admin)
+  historyTitle: { type: String, required: true },
+  history: { type: String, required: true },
+  // Core Values Section
+  coreValuesTitle: { type: String, default: "Our Core Values" },
   coreValues: {
     type: [coreValueSchema],
     default: [
@@ -99,14 +88,9 @@ const aboutSchema = new mongoose.Schema({
       },
     ],
   },
-  image: {
-    type: String,
-    default: null,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+  // About Page Image
+  image: { type: String, default: null },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("About", aboutSchema);

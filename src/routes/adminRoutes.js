@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express");/// thi iw
 const router = express.Router();
 const Admin = require("../models/Admin");
 const HomeContent = require("../models/HomeContent");
@@ -1497,193 +1497,10 @@ router.get("/about", auth, async (req, res) => {
   }
 });
 
-// Add the edit route handler
-router.get("/about/edit", auth, async (req, res) => {
-  try {
-    // Set headers to prevent caching
-    res.set({
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
-    });
-
-    // Find existing about document
-    const about = await About.findOne();
-
-    // If no document exists, create one with default values
-    if (!about) {
-      const defaultAbout = new About({
-        missionTitle: "Our Mission",
-        mission: "",
-        visionTitle: "Our Vision",
-        vision: "",
-        historyTitle: "Our Inspiration",
-        history: "",
-        image: "",
-      });
-      await defaultAbout.save();
-      return res.render("admin/about/edit", {
-        about: defaultAbout,
-        missionTitle: defaultAbout.missionTitle,
-        missionContent: defaultAbout.mission,
-        visionTitle: defaultAbout.visionTitle,
-        visionContent: defaultAbout.vision,
-        historyTitle: defaultAbout.historyTitle,
-        historyContent: defaultAbout.history,
-        image: defaultAbout.image,
-      });
-    }
-
-    // Prepare the data to pass to the template
-    const templateData = {
-      about,
-      missionTitle: about.missionTitle,
-      missionContent: about.mission,
-      visionTitle: about.visionTitle,
-      visionContent: about.vision,
-      historyTitle: about.historyTitle,
-      historyContent: about.history,
-      image: about.image || null,
-      admin: req.admin,
-      title: "Edit About Content",
-    };
-
-    // Only add image if it exists
-    if (about.image) {
-      templateData.image = about.image;
-    }
-
-    // Render the edit page with existing content
-    res.render("admin/about/edit", templateData);
-  } catch (error) {
-    console.error("Error rendering about edit page:", error);
-    res.status(500).render("error", {
-      error: "Failed to load about edit page",
-      message: "Please try again later",
-    });
-  }
-});
-
-// Add the update route handler
-router.post("/about/update", auth, upload.single("image"), async (req, res) => {
-  try {
-    const {
-      historyTitle,
-      historyContent,
-      visionTitle,
-      visionContent,
-      missionTitle,
-      missionContent,
-      coreValuesTitle,
-      coreValues,
-    } = req.body;
-
-    // Create update data object with default values if fields are empty
-    const updateData = {};
-    
-    // Handle About page fields
-    if (historyTitle !== undefined) updateData.historyTitle = historyTitle || "About Us";
-    if (historyContent !== undefined) updateData.history = historyContent || "";
-    
-    // Handle Vision & Mission fields
-    if (visionTitle !== undefined) updateData.visionTitle = visionTitle || "Our Vision";
-    if (visionContent !== undefined) updateData.vision = visionContent || "";
-    if (missionTitle !== undefined) updateData.missionTitle = missionTitle || "Our Mission";
-    if (missionContent !== undefined) updateData.mission = missionContent || "";
-    if (coreValuesTitle !== undefined) updateData.coreValuesTitle = coreValuesTitle || "Our Core Values";
-    
-    // Handle core values
-    if (coreValues) {
-      const coreValuesArray = [];
-      const valuesArray = Array.isArray(coreValues) ? coreValues : [coreValues];
-      
-      valuesArray.forEach((value, index) => {
-        if (value && value.title && value.description) {
-          coreValuesArray.push({
-            title: value.title,
-            description: value.description,
-            icon: value.icon || "fas fa-star",
-            color: value.color || "text-primary",
-            order: parseInt(value.order) || index + 1,
-          });
-        }
-      });
-      
-      // Sort by order
-      coreValuesArray.sort((a, b) => a.order - b.order);
-      updateData.coreValues = coreValuesArray;
-    }
-
-    // Find existing about document first
-    let about = await About.findOne();
-    
-    // Handle file upload
-    if (req.file) {
-      if (!req.file.mimetype.startsWith("image/")) {
-        return res.status(400).json({
-          error: "Please upload a valid image file (JPG, PNG, GIF)",
-          message: "Invalid file type",
-        });
-      }
-      
-      // Delete old image if exists
-      if (about && about.image) {
-        const oldImagePath = path.join(__dirname, "..", "..", "public", about.image);
-        try {
-          if (fs.existsSync(oldImagePath)) {
-            fs.unlinkSync(oldImagePath);
-          }
-        } catch (err) {
-          console.error("Error deleting old image:", err);
-        }
-      }
-      
-      updateData.image = `/uploads/${req.file.filename}`;
-    }
-
-    // Create new about document if none exists
-    if (!about) {
-      // Create new about document with default values for required fields
-      about = new About({
-        missionTitle: "Our Mission",
-        mission: "To provide quality education that empowers students to become responsible, creative, and successful global citizens through innovative teaching methods and holistic development.",
-        visionTitle: "Our Vision", 
-        vision: "To be a leading educational institution that nurtures excellence, innovation, and character development, preparing students to become responsible global citizens who contribute positively to society.",
-        ...updateData
-      });
-    } else {
-      // Only update the fields that were sent in the form
-      if (updateData.historyTitle !== undefined) about.historyTitle = updateData.historyTitle;
-      if (updateData.history !== undefined) about.history = updateData.history;
-      if (updateData.visionTitle !== undefined) about.visionTitle = updateData.visionTitle;
-      if (updateData.vision !== undefined) about.vision = updateData.vision;
-      if (updateData.missionTitle !== undefined) about.missionTitle = updateData.missionTitle;
-      if (updateData.mission !== undefined) about.mission = updateData.mission;
-      if (updateData.coreValuesTitle !== undefined) about.coreValuesTitle = updateData.coreValuesTitle;
-      if (updateData.coreValues !== undefined) about.coreValues = updateData.coreValues;
-      if (updateData.image !== undefined) about.image = updateData.image;
-    }
-
-    // Save the document
-    await about.save();
-
-    // Send success response
-    res.status(200).json({
-      success: true,
-      message: "About content updated successfully",
-      image: about.image,
-    });
-  } catch (error) {
-    console.error("Error updating about content:", error);
-    console.error("Request body:", req.body);
-    console.error("Request file:", req.file);
-    res.status(500).json({
-      error: "Failed to update about content",
-      message: "Please try again later",
-      details: error.message
-    });
-  }
-});
+// === ADMIN ABOUT ROUTES ===
+router.get("/about/edit", auth, aboutController.getAdminAboutEdit); // Admin edit About page
+router.post("/about/update", auth, upload.single("image"), aboutController.updateAboutContent); // Admin update About page
+router.get("/about/vision-mission", auth, aboutController.getAdminVisionMission); // Admin manage Vision & Mission
 
 // Vision & Mission Management Route
 router.get("/vision-mission", auth, async (req, res) => {
@@ -2572,5 +2389,9 @@ const cleanImageUrl = (imageUrl) => {
   }
   return imageUrl;
 };
+
+// === PUBLIC ABOUT ROUTES ===
+router.get("/", aboutController.getAboutPage); // Public About page
+router.get("/vision-mission", aboutController.getVisionMissionPage); // Public Vision & Mission page
 
 module.exports = router;

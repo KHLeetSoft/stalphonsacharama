@@ -5,6 +5,10 @@ const aboutController = require("../controllers/aboutController");
 const upload = require("../middleware/fileUpload");
 const auth = require("../middleware/auth");
 
+// =========================
+// PUBLIC ABOUT ROUTES
+// Includes public About and Vision-Mission pages
+// =========================
 // Public route for viewing about page
 router.get("/", aboutController.getAboutPage);
 

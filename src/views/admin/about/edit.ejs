@@ -1,3 +1,8 @@
+<%-- =========================
+  ADMIN ABOUT EDIT PAGE
+  Lets admin update About, Mission, Vision, and History
+  Used for both public and public-facing vision-mission pages
+  ========================= --%>
 <%- include('../layouts/admin', { title: 'Edit About Content', style: '',
 script: '', content: `
 <div class="container-fluid">
@@ -74,7 +79,7 @@ script: '', content: `
               </div>
             </div>
 
-            <!-- Mission Section -->
+            <!-- Mission Section (public & admin) -->
             <div class="card mb-4">
               <div class="card-header">
                 <h4>Mission Statement</h4>
@@ -127,7 +132,7 @@ ${typeof visionContent !== 'undefined' ? visionContent : ''}</textarea>
               </div>
             </div>
 
-            <!-- History Section -->
+            <!-- History Section (public & admin) -->
             <div class="card mb-4">
               <div class="card-header">
                 <h4>About description</h4>

@@ -4,6 +4,12 @@ const fs = require("fs");
 
 const { getTestimonialsForAboutPage } = require("./testimonialController");
 
+// =========================
+// ABOUT CONTROLLER
+// Handles public and admin About, Vision & Mission pages
+// =========================
+
+// Public route: Render the public About page
 exports.getAboutPage = async (req, res) => {
   try {
     const [about, testimonials] = await Promise.all([
@@ -17,6 +23,7 @@ exports.getAboutPage = async (req, res) => {
   }
 };
 
+// Public route: Render the public Vision & Mission page
 exports.getVisionMissionPage = async (req, res) => {
   try {
     const about = await About.findOne();
@@ -27,6 +34,7 @@ exports.getVisionMissionPage = async (req, res) => {
   }
 };
 
+// Admin route: Render the admin About edit page
 exports.getAdminAboutEdit = async (req, res) => {
   try {
     const about = await About.findOne();
@@ -76,6 +84,7 @@ exports.getAdminAboutEdit = async (req, res) => {
   }
 };
 
+// Admin route: Update About content (mission, vision, history, etc.)
 exports.updateAboutContent = async (req, res) => {
   try {
     const {
@@ -171,6 +180,7 @@ exports.updateAboutContent = async (req, res) => {
   }
 };
 
+// Admin route: Render the admin Vision & Mission management page
 exports.getAdminVisionMission = async (req, res) => {
   try {
     const about = await About.findOne();

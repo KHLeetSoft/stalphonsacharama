@@ -1,3 +1,8 @@
+<%-- =========================
+  ADMIN VISION & MISSION PAGE
+  Lets admin update Vision, Mission, and Core Values
+  Used for both public and admin vision-mission pages
+  ========================= --%>
 <%- include('../layouts/admin', { title: 'Manage Vision & Mission', style: '', script: '', content: `
 <div class="container-fluid">
   <div class="row">
@@ -18,7 +23,7 @@
             method="POST"
             enctype="multipart/form-data"
           >
-            <!-- Vision Section -->
+            <!-- Vision Section (public & admin) -->
             <div class="card mb-4">
               <div class="card-header bg-warning text-white">
                 <h4 class="mb-0">
@@ -51,7 +56,7 @@
               </div>
             </div>
 
-            <!-- Mission Section -->
+            <!-- Mission Section (public & admin) -->
             <div class="card mb-4">
               <div class="card-header bg-success text-white">
                 <h4 class="mb-0">
@@ -84,7 +89,7 @@
               </div>
             </div>
 
-            <!-- Core Values Section -->
+            <!-- Core Values Section (public & admin) -->
             <div class="card mb-4">
               <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">
