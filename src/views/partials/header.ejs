@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>School Website</title>
+    <title>St. Alphonsa School</title>
+    <link rel="icon" type="image/png" href="<%= typeof logoUrl !== 'undefined' ? logoUrl : '/logo.png' %>">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -27,13 +28,12 @@
       <div class="container">
         <a href="/" class="navbar-logo">
           <img
-            src="<%= logo ? logo.logoUrl : '/uploads/default-logo.png' %>"
+            src="<%= typeof logoUrl !== 'undefined' ? logoUrl : '/uploads/default-logo.png' %>"
             alt="School Logo"
             style="
               height: 50px;
               width: auto;
               object-fit: contain;
-              max-width: 200px;
             "
           />
         </a>

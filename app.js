@@ -34,6 +34,7 @@ const flash = require("connect-flash");
 const adminViewMiddleware = require("./src/middleware/adminView");
 const bookListRoutes = require("./src/routes/bookListRoutes");
 const feeStructureRoutes = require("./src/routes/feeStructureRoutes");
+const logoMiddleware = require('./src/middleware/logo');
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
@@ -67,29 +68,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 app.use(methodOverride("_method"));
+app.use(logoMiddleware);
 
 // Import models after DB connection
 const Logo = require("./src/models/Logo");
-
-// Middleware to fetch logo data for all views
-app.use(async (req, res, next) => {
-  try {
-    // Check if database is connected
-    if (mongoose.connection.readyState !== 1) {
-      //console.log("Database not connected, skipping logo fetch");
-      res.locals.logo = null;
-      return next();
-    }
-
-    const logo = await Logo.findOne();
-    res.locals.logo = logo;
-    next();
-  } catch (error) {
-    console.error("Error fetching logo:", error.message);
-    res.locals.logo = null;
-    next();
-  }
-});
 
 // Middleware to fetch contact info for all views
 const contactMiddleware = require("./src/middleware/contact");
