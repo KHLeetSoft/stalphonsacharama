@@ -37,8 +37,8 @@ const aboutSchema = new mongoose.Schema({
   visionTitle: { type: String, required: true },
   vision: { type: String, required: true },
   // History Section (public & admin)
-  historyTitle: { type: String, required: true },
-  history: { type: String, required: true },
+  historyTitle: { type: String, required: false },
+  history: { type: String, required: false },
   // Core Values Section
   coreValuesTitle: { type: String, default: "Our Core Values" },
   coreValues: {
