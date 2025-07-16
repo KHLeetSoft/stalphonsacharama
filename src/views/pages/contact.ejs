@@ -37,6 +37,26 @@
               <p class="mb-2"><%= contactInfo.address %></p>
             </div>
             <!-- Social Media Icons -->
+            <% if (contactInfo.socialLinks && (
+              contactInfo.socialLinks.facebook ||
+              contactInfo.socialLinks.twitter ||
+              contactInfo.socialLinks.instagram ||
+              contactInfo.socialLinks.linkedin)) { %>
+              <div class="d-flex justify-content-center gap-3 mb-3">
+                <% if (contactInfo.socialLinks.facebook) { %>
+                  <a href="<%= contactInfo.socialLinks.facebook %>" target="_blank" rel="noopener" class="text-primary fs-4"><i class="fab fa-facebook"></i></a>
+                <% } %>
+                <% if (contactInfo.socialLinks.twitter) { %>
+                  <a href="<%= contactInfo.socialLinks.twitter %>" target="_blank" rel="noopener" class="text-info fs-4"><i class="fab fa-twitter"></i></a>
+                <% } %>
+                <% if (contactInfo.socialLinks.instagram) { %>
+                  <a href="<%= contactInfo.socialLinks.instagram %>" target="_blank" rel="noopener" class="text-danger fs-4"><i class="fab fa-instagram"></i></a>
+                <% } %>
+                <% if (contactInfo.socialLinks.linkedin) { %>
+                  <a href="<%= contactInfo.socialLinks.linkedin %>" target="_blank" rel="noopener" class="text-primary fs-4"><i class="fab fa-linkedin"></i></a>
+                <% } %>
+              </div>
+            <% } %>
             <% } else { %>
             <p class="text-center">
               Contact information will be available soon.
