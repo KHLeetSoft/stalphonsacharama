@@ -13,6 +13,6 @@ const auth = require("../middleware/auth");
 router.get("/", aboutController.getAboutPage);
 
 // Public route for viewing vision-mission page
-router.get("/vision-mission", aboutController.getVisionMissionPage);
+router.get("/vision-mission", aboutController.getVisionMissionPage);   /// this is the vision and mission page
 
 module.exports = router;

@@ -21,6 +21,11 @@ const fs = require("fs");
 const adminController = require("../controllers/adminController");
 const Transport = require("../models/Transport");
 
+// =========================
+// ADMIN CONTROLLERS
+// =========================
+const aboutController = require("../controllers/aboutController"); // Handles admin About, Vision & Mission logic
+
 // Create a specific multer configuration for home content updates
 const homeContentStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -49,7 +54,7 @@ const homeContentUpload = multer({
     cb(null, true);
   },
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size
+    fileSize: 10 * 1024 * 1024, // 10MB max file size data will show 
   },
 }).any();
 
@@ -1498,6 +1503,7 @@ router.get("/about", auth, async (req, res) => {
 });
 
 // === ADMIN ABOUT ROUTES ===
+// These routes let admin edit About, Vision & Mission pages
 router.get("/about/edit", auth, aboutController.getAdminAboutEdit); // Admin edit About page
 router.post("/about/update", auth, upload.single("image"), aboutController.updateAboutContent); // Admin update About page
 router.get("/about/vision-mission", auth, aboutController.getAdminVisionMission); // Admin manage Vision & Mission

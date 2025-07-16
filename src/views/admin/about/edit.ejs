@@ -1,8 +1,8 @@
-<%-- =========================
-  ADMIN ABOUT EDIT PAGE
-  Lets admin update About, Mission, Vision, and History
-  Used for both public and public-facing vision-mission pages
-  ========================= --%>
+<%# =========================
+    ADMIN ABOUT EDIT PAGE
+    Lets admin update About, Mission, Vision, and History
+    Used for both public and public-facing vision-mission pages
+    ========================= %>  ///// this is about pages
 <%- include('../layouts/admin', { title: 'Edit About Content', style: '',
 script: '', content: `
 <div class="container-fluid">
@@ -38,8 +38,7 @@ script: '', content: `
                         accept="image/*"
                       />
                       <small class="text-muted"
-                        >Recommended size: 1200x800px. Max file size: 2MB</small
-                      >
+                        >Recommended size: 1200x800px. Max file size: 2MB</small>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -106,6 +105,7 @@ ${typeof missionContent !== 'undefined' ? missionContent : ''}</textarea>
               </div>
             </div>
 
+            <!-- Vision Section (public & admin) -->
             <div class="card mb-4">
               <div class="card-header">
                 <h4>Vision Statement</h4>
@@ -155,8 +155,7 @@ ${typeof visionContent !== 'undefined' ? visionContent : ''}</textarea>
                     rows="5"
                     required
                   >
-${typeof historyContent !== 'undefined' ? historyContent : ''}</textarea
-                  >
+${typeof historyContent !== 'undefined' ? historyContent : ''}</textarea>
                 </div>
               </div>
             </div>
@@ -182,98 +181,3 @@ ${typeof historyContent !== 'undefined' ? historyContent : ''}</textarea
   </div>
 </div>
 ` }) %>
-
-<script>
-  // Image preview functionality
-  document
-    .querySelector('input[type="file"]')
-    .addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const currentImageContainer = document.querySelector(
-            ".current-image-container"
-          );
-          currentImageContainer.innerHTML = `
-        <img src="${e.target.result}" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
-        <div class="mt-2">
-          <small class="text-muted">New image preview</small>
-        </div>
-      `;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-  // Form submission handler
-  document.getElementById("aboutForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const alertContainer = document.getElementById("alert-container");
-
-    try {
-      const response = await fetch("/admin/about/update", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      // Clear previous alerts
-      alertContainer.innerHTML = "";
-
-      if (response.ok) {
-        // Show success message
-        const alert = document.createElement("div");
-        alert.className = "alert alert-success alert-dismissible fade show";
-        alert.innerHTML = `
-        ${data.message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      `;
-        alertContainer.appendChild(alert);
-
-        // Update the current image container if a new image was uploaded
-        if (data.image) {
-          const currentImageContainer = document.querySelector(
-            ".current-image-container"
-          );
-          currentImageContainer.innerHTML = `
-            <img src="${data.image}" alt="Current About Image" class="img-fluid rounded" style="max-height: 200px">
-            <div class="mt-2">
-              <a href="${data.image}" target="_blank" class="btn btn-sm btn-info">
-                <i class="fas fa-eye me-1"></i>View Full Image
-              </a>
-            </div>
-          `;
-        }
-
-        // Clear the file input
-        document.querySelector('input[type="file"]').value = "";
-
-        // Scroll to the top to show the success message
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        // Show error message
-        const alert = document.createElement("div");
-        alert.className = "alert alert-danger alert-dismissible fade show";
-        alert.innerHTML = `
-        ${data.error}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      `;
-        alertContainer.appendChild(alert);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alertContainer.innerHTML = `
-      <div class="alert alert-danger alert-dismissible fade show">
-        An unexpected error occurred. Please try again.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    `;
-    }
-  });
-</script>
-
-<%- include('../layouts/admin-footer') %>
