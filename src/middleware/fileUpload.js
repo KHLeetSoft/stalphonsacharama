@@ -59,13 +59,13 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size for images, videos, and PDFs
+    fileSize: 50 * 1024 * 1024, // 50MB max file size for images, videos, and PDFs
   },
   onError: function (err, req, next) {
     if (err instanceof multer.MulterError) {
       if (err.code === "LIMIT_FILE_SIZE") {
         req.fileValidationError =
-          "File size is too large. Maximum size is 10MB.";
+          "File size is too large. Maximum size is 50MB.";
       } else {
         req.fileValidationError = "File upload error: " + err.message;
       }

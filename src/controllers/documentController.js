@@ -38,10 +38,53 @@ const documentController = {
   // Get documents for admin panel
   getAdminDocuments: async (req, res) => {
     try {
-      const documents = await Document.find().sort({ uploadDate: -1 });
+      const documents = await Document.find().sort({ order: 1, uploadDate: -1 });
       res.render("admin/documents/manage", { documents });
     } catch (error) {
       res.status(500).send("Error fetching documents");
+    }
+  },
+
+  // Update document order (for drag and drop)
+  updateDocumentOrder: async (req, res) => {
+    try {
+      const { documentId, newOrder } = req.body;
+      
+      if (!documentId || newOrder === undefined) {
+        return res.status(400).json({ error: "Document ID and new order are required" });
+      }
+
+      const document = await Document.findById(documentId);
+      if (!document) {
+        return res.status(404).json({ error: "Document not found" });
+      }
+
+      document.order = newOrder;
+      await document.save();
+
+      res.json({ success: true, message: "Document order updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Error updating document order" });
+    }
+  },
+
+  // Reorder all documents
+  reorderDocuments: async (req, res) => {
+    try {
+      const { documentIds } = req.body;
+      
+      if (!Array.isArray(documentIds)) {
+        return res.status(400).json({ error: "Document IDs array is required" });
+      }
+
+      // Update order for each document
+      for (let i = 0; i < documentIds.length; i++) {
+        await Document.findByIdAndUpdate(documentIds[i], { order: i });
+      }
+
+      res.json({ success: true, message: "Documents reordered successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Error reordering documents" });
     }
   },
 
@@ -52,11 +95,16 @@ const documentController = {
         return res.status(400).send("No file uploaded");
       }
 
+      // Get the highest order number and add 1
+      const maxOrderDoc = await Document.findOne().sort({ order: -1 });
+      const nextOrder = maxOrderDoc ? maxOrderDoc.order + 1 : 0;
+
       const document = new Document({
         title: req.body.title,
         description: req.body.description,
         fileUrl: `/uploads/documents/${req.file.filename}`,
         fileType: path.extname(req.file.originalname).toLowerCase(),
+        order: nextOrder,
       });
 
       await document.save();
@@ -246,6 +294,7 @@ const documentController = {
   renderCbseCorner: async (req, res) => {
     try {
       const documents = await Document.find({ isActive: true }).sort({
+        order: 1,
         uploadDate: -1,
       });
       res.render("pages/cbse-corner", { documents });

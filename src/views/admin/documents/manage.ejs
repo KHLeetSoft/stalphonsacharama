@@ -1,4 +1,128 @@
-<%- include('../layouts/admin', { title: 'Manage CBSE Documents', content: `
+<%- include('../layouts/admin', { 
+  title: 'Manage CBSE Documents',
+  style: `
+    <style>
+      .drag-handle {
+        cursor: grab;
+        color: #6c757d;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        transition: color 0.2s;
+      }
+      .drag-handle:hover {
+        color: #495057;
+      }
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+      .document-row {
+        transition: background-color 0.2s, transform 0.2s;
+      }
+      .document-row:hover {
+        background-color: #f8f9fa;
+      }
+      .document-row.sortable-ghost {
+        opacity: 0.5;
+        background-color: #e9ecef;
+      }
+      .document-row.sortable-chosen {
+        background-color: #fff3cd;
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      .order-badge {
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+      .table th:first-child {
+        width: 60px;
+      }
+      .table th:nth-child(2) {
+        width: 50px;
+      }
+    </style>
+  `,
+  script: `
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const tbody = document.querySelector('#documentsTable tbody');
+        
+        if (tbody) {
+          new Sortable(tbody, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            onEnd: function(evt) {
+              const documentIds = [];
+              const rows = tbody.querySelectorAll('tr');
+              
+              rows.forEach((row, index) => {
+                const documentId = row.getAttribute('data-document-id');
+                if (documentId) {
+                  documentIds.push(documentId);
+                  // Update the order badge
+                  const orderBadge = row.querySelector('.order-badge');
+                  if (orderBadge) {
+                    orderBadge.textContent = index + 1;
+                  }
+                }
+              });
+              
+              // Send the new order to the server
+              fetch('/admin/documents/reorder', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ documentIds: documentIds })
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  // Show success message
+                  showNotification('Documents reordered successfully!', 'success');
+                } else {
+                  showNotification('Error reordering documents: ' + data.error, 'error');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error reordering documents', 'error');
+              });
+            }
+          });
+        }
+        
+        // Notification function
+        function showNotification(message, type) {
+          const notification = document.createElement('div');
+          notification.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' alert-dismissible fade show position-fixed';
+          notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+          notification.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+          
+          document.body.appendChild(notification);
+          
+          // Auto remove after 3 seconds
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.remove();
+            }
+          }, 3000);
+        }
+      });
+    </script>
+  `,
+  content: `
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2>Manage CBSE Documents</h2>
   <a href="/admin/documents/upload" class="btn btn-primary">
@@ -6,10 +130,17 @@
   </a>
 </div>
 
+<div class="alert alert-info">
+  <i class="bi bi-info-circle me-2"></i>
+  <strong>Drag and Drop:</strong> Use the drag handle (⋮⋮) to reorder documents. The first document will appear at the top of the CBSE Corner page.
+</div>
+
 <div class="table-responsive">
-  <table class="table table-hover">
-    <thead>
+  <table class="table table-hover" id="documentsTable">
+    <thead class="table-dark">
       <tr>
+        <th><i class="bi bi-grip-vertical"></i></th>
+        <th>Order</th>
         <th>Title</th>
         <th>Description</th>
         <th>File Type</th>
@@ -19,11 +150,21 @@
       </tr>
     </thead>
     <tbody>
-      ${documents.map(doc => `
-      <tr>
-        <td>${doc.title}</td>
-        <td>${doc.description}</td>
-        <td>${doc.fileType}</td>
+      ${documents.map((doc, index) => `
+      <tr class="document-row" data-document-id="${doc._id}">
+        <td>
+          <div class="drag-handle">
+            <i class="bi bi-grip-vertical"></i>
+          </div>
+        </td>
+        <td>
+          <div class="order-badge">${index + 1}</div>
+        </td>
+        <td><strong>${doc.title}</strong></td>
+        <td>${doc.description || 'No description'}</td>
+        <td>
+          <span class="badge bg-secondary">${doc.fileType}</span>
+        </td>
         <td>${new Date(doc.uploadDate).toLocaleDateString()}</td>
         <td>
           <span class="badge ${doc.isActive ? 'bg-success' : 'bg-secondary'}">
@@ -31,29 +172,47 @@
           </span>
         </td>
         <td>
-          <a
-            href="/admin/documents/edit/${doc._id}"
-            class="btn btn-sm btn-primary me-1"
-          >
-            <i class="bi bi-pencil"></i>
-          </a>
-          <form
-            action="/admin/documents/delete/${doc._id}"
-            method="POST"
-            class="d-inline"
-          >
+          <div class="btn-group" role="group">
+            <a
+              href="/admin/documents/edit/${doc._id}"
+              class="btn btn-sm btn-outline-primary"
+              title="Edit"
+            >
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a
+              href="${doc.fileUrl}"
+              target="_blank"
+              class="btn btn-sm btn-outline-info"
+              title="View"
+            >
+              <i class="bi bi-eye"></i>
+            </a>
             <button
-              type="submit"
-              class="btn btn-sm btn-danger"
-              onclick="return confirm('Are you sure you want to delete this document?')"
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              onclick="deleteDocument('${doc._id}', '${doc.title}')"
+              title="Delete"
             >
               <i class="bi bi-trash"></i>
             </button>
-          </form>
+          </div>
         </td>
       </tr>
       `).join('')}
     </tbody>
   </table>
 </div>
+
+<script>
+function deleteDocument(documentId, documentTitle) {
+  if (confirm('Are you sure you want to delete "' + documentTitle + '"?')) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/admin/documents/delete/' + documentId;
+    document.body.appendChild(form);
+    form.submit();
+  }
+}
+</script>
 ` }) %>

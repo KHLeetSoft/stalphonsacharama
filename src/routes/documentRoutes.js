@@ -115,4 +115,8 @@ router.post(
 router.post("/admin/documents/delete/:id", documentController.deleteDocument);
 router.post("/admin/documents/:id/share", documentController.generateShareLink);
 
+// Drag and drop reordering routes
+router.post("/admin/documents/update-order", documentController.updateDocumentOrder);
+router.post("/admin/documents/reorder", documentController.reorderDocuments);
+
 module.exports = router;
