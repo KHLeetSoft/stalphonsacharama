@@ -34,11 +34,11 @@ const flash = require("connect-flash");
 const adminViewMiddleware = require("./src/middleware/adminView");
 const bookListRoutes = require("./src/routes/bookListRoutes");
 const feeStructureRoutes = require("./src/routes/feeStructureRoutes");
-const logoMiddleware = require('./src/middleware/logo');
+const logoMiddleware = require("./src/middleware/logo");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
-SESSION_SECRET="STALPHONSACHARAMAAAAAAA"
+SESSION_SECRET = "STALPHONSACHARAMAAAAAAA";
 // Session and flash configuration
 app.use(
   session({
@@ -63,8 +63,8 @@ app.use(
     },
   })
 );
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(cors());
 app.use(methodOverride("_method"));
@@ -107,10 +107,9 @@ app.use("/", documentRoutes);
 app.use("/", require("./src/routes/testimonialRoutes"));
 //console.log("Line no 127", process.env.MONGO_URI);
 
-
 // Database connection
 const MONGO_URI =
-  "mongodb+srv://innovationleetsoft:stalphonsacharama@cluster0.m8br7ym.mongodb.net/stalphonsacharama1?retryWrites=true&w=majority&appName=Cluster0"
+  "mongodb+srv://innovationleetsoft:stalphonsacharama@cluster0.m8br7ym.mongodb.net/stalphonsacharama1?retryWrites=true&w=majority&appName=Cluster0";
 mongoose
   .connect(MONGO_URI, {
     // useNewUrlParser: true,
@@ -120,8 +119,12 @@ mongoose
   .catch((err) => {
     console.error("MongoDB connection error:", err.message);
     if (err.message.includes("bad auth")) {
-      console.error("Authentication failed. Please check your username and password.");
-      console.error("Current credentials: innovationleetsoft / StAlphonsa2024!");
+      console.error(
+        "Authentication failed. Please check your username and password."
+      );
+      console.error(
+        "Current credentials: innovationleetsoft / StAlphonsa2024!"
+      );
     }
     // Don't exit the process, let the app run with database errors
     // process.exit(1);

@@ -95,13 +95,13 @@ async function seedDemoData() {
     // HomeContent
     if (!(await models.HomeContent.findOne())) {
       await models.HomeContent.create({
-        welcomeTitle: 'Welcome to St. Alphonsa School',
+        welcomeTitle: 'Welcome to Chavara high school',
         welcomeContent: 'A place of learning, growth, and excellence.',
         bannerSlides: [
           { title: 'Our Campus', imageUrl: '/public/uploads/sample1.jpg', contentType: 'image' },
           { title: 'Annual Day', imageUrl: '/public/uploads/sample2.jpg', contentType: 'image' }
         ],
-        history: 'Founded in 1990, St. Alphonsa School has a rich tradition...',
+        history: 'Founded in 1990, Chavara high school has a rich tradition...',
         featuredSections: [
           { title: 'Academics', content: 'World-class curriculum and faculty.' },
           { title: 'Sports', content: 'State-of-the-art sports facilities.' }
@@ -117,8 +117,8 @@ async function seedDemoData() {
     // About
     if (!(await models.About.findOne())) {
       await models.About.create({
-        title: 'About St. Alphonsa School',
-        content: 'St. Alphonsa School is committed to academic excellence and character development.',
+        title: 'About Chavara high school',
+        content: 'Chavara high school is committed to academic excellence and character development.',
         vision: 'To nurture responsible citizens.',
         mission: 'To provide quality education to all.'
       });
